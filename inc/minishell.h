@@ -2,15 +2,18 @@
 # define MINISHELL_H
 
 # include "libft.h"
+# include <fcntl.h>
+# include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <fcntl.h>
+# include <readline/history.h>
+# include <readline/readline.h>
 
 // ========================= CONSTANTS =========================
 
-/*# ifndef TILE_SIZE
+# ifndef TILE_SIZE
 #  define TILE_SIZE 128
-# endif
+# endif/*
 
 // ========================= KEYBOARD INPUT =========================
 

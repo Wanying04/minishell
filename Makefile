@@ -1,8 +1,8 @@
 NAME		:= minishell
 
-CC		:= cc
+CC			:= cc
 CFLAGS		:= -Wall -Wextra -Werror
-INCLUDE		:= -Iinc -Iinc/libft
+INCLUDE		:= -Iinc -Iinc/libft -I/usr/local/include
 
 SRC_DIR		:= src
 OBJ_DIR		:= obj
@@ -19,7 +19,7 @@ DEPS		:= $(OBJS:.o=.d)
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT_A)
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT_A) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBFT_A) -lreadline -o $(NAME)
 	@echo "💻 minishell created"
 	@echo "-------------------------------"
 
