@@ -2,12 +2,17 @@
 # define MINISHELL_H
 
 # include "libft.h"
+# include <ctype.h>
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <string.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+
+# include "parser.h"
+//# include "executor.h"
 
 // ========================= CONSTANTS =========================
 
@@ -102,6 +107,5 @@ typedef struct s_game
 }		t_game;*/
 
 // ========================= FUNCTIONS =========================
-
 
 #endif
