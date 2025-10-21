@@ -67,15 +67,36 @@ int	builtin_pwd(char **args)
 int	builtin_exit(char **args)
 {
 	int	exit_status;
+	int	i;
 
 	exit_status = 0;
+	if (args[2])
+	{
+		printf("exit: too many arguments\n");
+		return (1);
+	}
 	if (args[1])
-		exit_status = ft_atoi(args[1]);
+	{
+		i = 0;
+		while (args[1][i])
+		{
+			if (args[1][i] < '0' || args[1][i] > '9')
+			{
+				printf("exit: numeric argument required\n");
+				return (1);
+			}
+			i++;
+		}
+	}
+	exit_status = ft_atoi(args[1]);
+	exit_status = exit_status % 256;
+	if (exit_status < 0)
+		exit_status += 256;
 	printf("exit\n");
 	exit(exit_status);
 }
 
-int	execute_builtins(char **args)
+int	execute_builtins(char **args, t_env *env)
 {
 	if (!args || !args[0])
 		return (1);
@@ -86,11 +107,11 @@ int	execute_builtins(char **args)
 	else if (ft_strncmp(args[0], "pwd", 4) == 0 && args[0][3] == '\0')
 		return (builtin_pwd(args));
 	else if (ft_strncmp(args[0], "export", 7) == 0 && args[0][6] == '\0')
-		return (builtin_export(args));
+		return (builtin_export(args, env));
 	else if (ft_strncmp(args[0], "unset", 6) == 0 && args[0][5] == '\0')
-		return (builtin_unset(args));
+		return (builtin_unset(args, env));
 	else if (ft_strncmp(args[0], "env", 4) == 0 && args[0][3] == '\0')
-		return (builtin_env(args));
+		return (builtin_env(args, env));
 	else if (ft_strncmp(args[0], "exit", 5) == 0 && args[0][4] == '\0')
 		return (builtin_exit(args));
 	else

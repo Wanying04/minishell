@@ -12,7 +12,7 @@
 # include <readline/readline.h>
 
 # include "parser.h"
-//# include "executor.h"
+# include "executor.h"
 
 // ========================= CONSTANTS =========================
 
