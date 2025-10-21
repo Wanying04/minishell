@@ -67,10 +67,31 @@ int	builtin_pwd(char **args)
 int	builtin_exit(char **args)
 {
 	int	exit_status;
+	int	i;
 
 	exit_status = 0;
+	if (args[2])
+	{
+		printf("exit: too many arguments\n");
+		return (1);
+	}
 	if (args[1])
-		exit_status = ft_atoi(args[1]);
+	{
+		i = 0;
+		while (args[1][i])
+		{
+			if (args[1][i] < '0' || args[1][i] > '9')
+			{
+				printf("exit: numeric arguments required\n");
+				return (1);
+			}
+			i++;
+		}
+	}
+	exit_status = ft_atoi(args[1]);
+	exit_status = exit_status % 256;
+	if (exit_status < 0)
+		exit_status += 256;
 	printf("exit\n");
 	exit(exit_status);
 }
