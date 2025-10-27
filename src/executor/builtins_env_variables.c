@@ -62,10 +62,13 @@ void	env_set(t_env *env, const char *var_str)
 
 	equal_sign = ft_strchr(var_str, '=');
 	if (!equal_sign)
-		return ;
-	new_var = ft_strdup(var_str);
-	name = new_var;
-	*equal_sign = '\0';
+		new_var = ft_strdup(var_str);
+	else
+	{
+		new_var = ft_strdup(var_str);
+		name = new_var;
+		*equal_sign = '\0';
+	}
 	i = 0;
 	while (i < env->count)
 	{
@@ -107,6 +110,24 @@ void	env_unset(t_env *env, const char *name)
 		}
 		i++;
 	}
+}
+
+int	is_valid_var_name(char *str)
+{
+	int	i;
+
+	if (!str || !str[0])
+		return (0);
+	if (!ft_isalpha(str[0]) && str[0] != '_')
+		return (0);
+	i = 1;
+	while (str[i] && str[i] != '=')
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 int	builtin_env(char **args, t_env *env)
