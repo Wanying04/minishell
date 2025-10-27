@@ -1,6 +1,8 @@
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
 
+# include <sys/wait.h>
+
 typedef struct s_env
 {
 	char	**vars;
