@@ -1,5 +1,6 @@
 #include "minishell.h"
 #include <signal.h>
+#include <termios.h>
 
 volatile sig_atomic_t	g_sigint_received = 0;
 
@@ -31,6 +32,9 @@ void	process_input(char *input)
 		if (ft_strncmp(input, "exit", 5) == 0)
 		{
 			free(input);
+			write(1, "exit\n", 5);
+			rl_clear_history();
+			exit(0);
 		}
 		tokens = ft_split_tokens(input);
 		if (tokens)
@@ -52,18 +56,14 @@ int	main(void)
 	{
 		g_sigint_received = 0;
 		input = readline("minishell$ ");
-		if (!input)  /* Handle Ctrl+D or NULL from readline after Ctrl+C */
+		if (!input)  /* Ctrl+D o Ctrl+C */
 		{
-			if (!g_sigint_received)  /* Only exit if it wasn't a Ctrl+C */
-			{
-				write(1, "exit\n", 5);
-				break;
-			}
-			continue;
+			write(1, "exit\n", 5);  /* Si fue Ctrl+D, salir */
+			rl_clear_history();
+			return (0);
 		}
 		process_input(input);
 	}
-	rl_clear_history();
 	return (0);
 }
 
