@@ -7,11 +7,6 @@ int	builtin_echo(char **args)
 
 	i = 1;
 	newline = 1;
-	if (!args[i])
-	{
-		printf("echo: arguments required\n");
-		return (1);
-	}
 	if (args[i] && ft_strncmp(args[i], "-n", 2) == 0 && args[i][2] == '\0')
 	{
 		newline = 0;
@@ -41,7 +36,7 @@ int	builtin_cd(char **args)
 		printf("cd: too many arguments\n");
 		return (1);
 	}
-	if (chdir(args[1] != 0))
+	if (chdir(args[1]) != 0)
 	{
 		perror("cd");
 		return (1);
@@ -69,23 +64,18 @@ int	builtin_exit(char **args)
 	int	exit_status;
 	int	i;
 
-	exit_status = 0;
-	if (args[2])
+	if (args[1] && args[2])
 	{
 		printf("exit: too many arguments\n");
 		return (1);
 	}
+	exit_status = 0;
 	if (args[1])
 	{
-		i = 0;
-		while (args[1][i])
+		if (!is_integer(args[1]))
 		{
-			if (args[1][i] < '0' || args[1][i] > '9')
-			{
-				printf("exit: numeric argument required\n");
-				return (1);
-			}
-			i++;
+			printf("exit: numeric argument required\n");
+			exit(2);
 		}
 	}
 	exit_status = ft_atoi(args[1]);
@@ -94,6 +84,24 @@ int	builtin_exit(char **args)
 		exit_status += 256;
 	printf("exit\n");
 	exit(exit_status);
+}
+
+int	is_integer(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] == '+' || str[i] == '-')
+		i++;
+	if (!str[i])
+		return (0);
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 int	execute_builtins(char **args, t_env *env)
