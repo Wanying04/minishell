@@ -59,33 +59,6 @@ int	builtin_pwd(char **args)
 	return (0);
 }
 
-int	builtin_exit(char **args)
-{
-	int	exit_status;
-	int	i;
-
-	if (args[1] && args[2])
-	{
-		printf("exit: too many arguments\n");
-		return (1);
-	}
-	exit_status = 0;
-	if (args[1])
-	{
-		if (!is_integer(args[1]))
-		{
-			printf("exit: numeric argument required\n");
-			exit(2);
-		}
-	}
-	exit_status = ft_atoi(args[1]);
-	exit_status = exit_status % 256;
-	if (exit_status < 0)
-		exit_status += 256;
-	printf("exit\n");
-	exit(exit_status);
-}
-
 int	is_integer(char *str)
 {
 	int	i;
@@ -102,6 +75,32 @@ int	is_integer(char *str)
 		i++;
 	}
 	return (1);
+}
+
+int	builtin_exit(char **args)
+{
+	int	exit_status;
+
+	if (args[1] && args[2])
+	{
+		printf("exit: too many arguments\n");
+		return (1);
+	}
+	exit_status = 0;
+	if (args[1])
+	{
+		if (!is_integer(args[1]))
+		{
+			printf("exit: numeric argument required\n");
+			exit(2);
+		}
+		exit_status = ft_atoi(args[1]);
+	}
+	exit_status = exit_status % 256;
+	if (exit_status < 0)
+		exit_status += 256;
+	printf("exit\n");
+	exit(exit_status);
 }
 
 int	execute_builtins(char **args, t_env *env)
