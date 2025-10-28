@@ -74,6 +74,16 @@ char	**ft_split_tokens(char *input)
 
 	if (!input)
 		return (NULL);
+	if (ft_check_quotes(input))
+	{
+		ft_putendl_fd("minishell: syntax error: unclosed quotes", 2);
+		return (NULL);
+	}
+	if (ft_check_escape_chars(input))
+	{
+		ft_putendl_fd("minishell: syntax error: invalid escape sequence", 2);
+		return (NULL);
+	}
 	token_count = ft_count_tokens(input);
 	tokens = malloc(sizeof(char *) * (token_count + 1));
 	if (!tokens)
