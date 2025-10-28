@@ -26,23 +26,23 @@ char	*ft_get_quoted_token(char *input, int *i)
 	char	*token;
 	int		size;
 	int		j;
-	int		start;
 
-	start = *i;
 	quote = input[*i];
-	size = ft_get_quoted_size(input + start, &start);
+	size = 0;
+	j = *i + 1;
+	while (input[j] && (input[j] != quote || (j > 0 && input[j - 1] == '\\')))
+	{
+		size++;
+		j++;
+	}
 	token = malloc(size + 1);
 	if (!token)
 		return (NULL);
-	*i = *i + 1;  // Skip opening quote
+	(*i)++;
 	j = 0;
-	while (input[*i] && j < size)
-	{
-		if (input[*i] != quote)
-			token[j++] = input[(*i)];
-		(*i)++;
-	}
-	if (input[*i])  // Skip closing quote if found
+	while (input[*i] && input[*i] != quote)
+		token[j++] = input[(*i)++];
+	if (input[*i])
 		(*i)++;
 	token[j] = '\0';
 	return (token);
