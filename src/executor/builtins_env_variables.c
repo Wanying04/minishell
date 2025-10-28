@@ -147,15 +147,7 @@ int	builtin_env(char **args, t_env *env)
 int	builtin_export(char **args, t_env *env)
 {
 	if (!args[1])
-	{
-		builtin_env(args, env);
-		return (0);
-	}
-	if (!ft_strchr(args[1], '='))
-	{
-		printf("export: equal sign required\n");
-		return (1);
-	}
+		return (builtin_env(args, env));
 	env_set(env, args[1]);
 	return (0);
 }
@@ -163,10 +155,7 @@ int	builtin_export(char **args, t_env *env)
 int	builtin_unset(char **args, t_env *env)
 {
 	if (!args[1])
-	{
-		printf("unset: arguments required\n");
-		return (1);
-	}
+		return (0);
 	env_unset(env, args[1]);
 	return (0);
 }
