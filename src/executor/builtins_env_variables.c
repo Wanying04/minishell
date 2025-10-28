@@ -1,5 +1,56 @@
 #include "minishell.h"
 
+void	env_expand(t_env *env)
+{
+	int		new_capacity;
+	char	**new_vars;
+	int		i;
+
+	new_capacity = env->capacity * 2;
+	new_vars = malloc(sizeof(char *) * new_capacity);
+	i = 0;
+	while (i < env->count)
+	{
+		new_vars[i] = env->vars[i];
+		i++;
+	}
+	free(env->vars);
+	env->vars = new_vars;
+	env->capacity = new_capacity;
+}
+
+void	env_set(t_env *env, const char *var_str)
+{
+	char	*new_var;
+	char	*equal_sign;
+	int		name_len;
+	int		i;
+
+	new_var = ft_strdup(var_str);
+	equal_sign = ft_strchr(new_var, '=');
+	if (equal_sign)
+		name_len = equal_sign - new_var;
+	else
+		name_len = ft_strlen(new_var);
+	i = 0;
+	while (i < env->count)
+	{
+		if (ft_strncmp(env->vars[i], new_var, name_len) == 0 && 
+			(env->vars[i][name_len] == '=' || env->vars[i][name_len] == '\0'))
+		{
+			free(env->vars[i]);
+			env->vars[i] = new_var;
+			return ;
+		}
+		i++;
+	}
+	if (env->count >= env->capacity)
+		env_expand(env);
+	env->vars[env->count] = new_var;
+	env->count++;
+	env->vars[env->count] = NULL;
+}
+
 t_env	*env_create(void)
 {
 	t_env *env = malloc(sizeof(t_env));
@@ -12,7 +63,7 @@ t_env	*env_create(void)
 	int	i;
 
 	i = 0;
-	while (environ[i] && i < (env->capacity - 1))
+	while (environ[i])
 	{
 		env_set(env, environ[i]);
 		i++;
@@ -34,68 +85,17 @@ void	env_destroy(t_env *env)
 	free(env);
 }
 
-void	env_expand(t_env *env)
-{
-	int	new_capacity;
-	char	**new_vars;
-	int	i;
-
-	new_capacity = env->capacity * 2;
-	new_vars = malloc(sizeof(char *) * new_capacity);
-	i = 0;
-	while (i < env->count)
-	{
-		new_vars[i] = env->vars[i];
-		i++;
-	}
-	free(env->vars);
-	env->vars = new_vars;
-	env->capacity =new_capacity;
-}
-
-void	env_set(t_env *env, const char *var_str)
-{
-	char	*equal_sign;
-	char	*new_var;
-	char	*name;
-	int		i;
-
-	equal_sign = ft_strchr(var_str, '=');
-	if (!equal_sign)
-		new_var = ft_strdup(var_str);
-	else
-	{
-		new_var = ft_strdup(var_str);
-		name = new_var;
-		*equal_sign = '\0';
-	}
-	i = 0;
-	while (i < env->count)
-	{
-		if (ft_strncmp(env->vars[i], name, ft_strlen(name)) == 0 && env->vars[i][ft_strlen(name)] == '=')
-		{
-			free(env->vars[i]);
-			env->vars[i] = new_var;
-			return ;
-		}
-		i++;
-	}
-	if (env->count >= env->capacity)
-		env_expand(env);
-	env->vars[env->count] = new_var;
-	env->count++;
-	env->vars[env->count] = NULL;
-}
-
 void	env_unset(t_env *env, const char *name)
 {
 	int	i;
 	int	j;
+	int	name_len;
 
+	name_len = ft_strlen(name);
 	i = 0;
 	while (i < env->count)
 	{
-		if (ft_strncmp(env->vars[i], name, ft_strlen(name)) == 0 && env->vars[i][ft_strlen(name)] == '=')
+		if (ft_strncmp(env->vars[i], name, name_len) == 0 && (env->vars[i][name_len] == '=' || env->vars[i][name_len] == '\0'))
 		{
 			free(env->vars[i]);
 			j = i;
@@ -146,16 +146,40 @@ int	builtin_env(char **args, t_env *env)
 
 int	builtin_export(char **args, t_env *env)
 {
+	int	i;
+
 	if (!args[1])
 		return (builtin_env(args, env));
-	env_set(env, args[1]);
+	i = 1;
+	while (args[i])
+	{
+		if (!is_valid_var_name(args[i]))
+		{
+			printf("export: not a valid identifier\n");
+			return (1);
+		}
+		env_set(env, args[i]);
+		i++;
+	}
 	return (0);
 }
 
 int	builtin_unset(char **args, t_env *env)
 {
+	int	i;
+
 	if (!args[1])
 		return (0);
-	env_unset(env, args[1]);
+	i = 1;
+	while (args[i])
+	{
+		if (!is_valid_var_name(args[i]))
+		{
+			printf("unset: not a valid identifier\n");
+			return (1);
+		}
+		env_unset(env, args[i]);
+		i++;
+	}
 	return (0);
 }
