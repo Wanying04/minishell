@@ -10,9 +10,19 @@ OBJ_DIR		:= obj
 LIBFT_DIR	:= inc/libft
 LIBFT_A		:= $(LIBFT_DIR)/libft.a
 
+# Source files
 LIBFT_SRCS	:= $(wildcard $(LIBFT_DIR)/*.c)
-SRCS		:= $(wildcard $(SRC_DIR)/*.c)
-OBJS		:= $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
+MAIN_SRCS	:= $(wildcard $(SRC_DIR)/*.c)
+PARSER_SRCS	:= $(wildcard $(SRC_DIR)/parser/*.c)
+EXECUTOR_SRCS:= $(wildcard $(SRC_DIR)/executor/*.c)
+
+# Object files
+MAIN_OBJS	:= $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(MAIN_SRCS))
+PARSER_OBJS	:= $(patsubst $(SRC_DIR)/parser/%.c,$(OBJ_DIR)/parser/%.o,$(PARSER_SRCS))
+EXECUTOR_OBJS:= $(patsubst $(SRC_DIR)/executor/%.c,$(OBJ_DIR)/executor/%.o,$(EXECUTOR_SRCS))
+
+# All objects combined
+OBJS		:= $(MAIN_OBJS) $(PARSER_OBJS) $(EXECUTOR_OBJS)
 
 DEPS		:= $(OBJS:.o=.d)
 
@@ -30,8 +40,14 @@ $(LIBFT_A): $(LIBFT_SRCS)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@$(CC) $(CFLAGS) $(INCLUDE) -MMD -MP -c $< -o $@
 
-$(OBJ_DIR):
-	@mkdir -p $(OBJ_DIR)
+$(OBJ_DIR)/parser/%.o: $(SRC_DIR)/parser/%.c | $(OBJ_DIR)/parser
+	@$(CC) $(CFLAGS) $(INCLUDE) -MMD -MP -c $< -o $@
+
+$(OBJ_DIR)/executor/%.o: $(SRC_DIR)/executor/%.c | $(OBJ_DIR)/executor
+	@$(CC) $(CFLAGS) $(INCLUDE) -MMD -MP -c $< -o $@
+
+$(OBJ_DIR) $(OBJ_DIR)/parser $(OBJ_DIR)/executor:
+	@mkdir -p $@
 
 clean:
 	@$(RM) -r $(OBJ_DIR)
@@ -49,6 +65,17 @@ fclean:
 
 re: fclean all
 
-.PHONY: all clean fclean re
+# Specific targets for parser and executor
+parser: $(LIBFT_A) $(MAIN_OBJS) $(PARSER_OBJS)
+	@$(CC) $(CFLAGS) $(MAIN_OBJS) $(PARSER_OBJS) $(LIBFT_A) -lreadline -o $(NAME)
+	@echo "💻 minishell parser components compiled"
+	@echo "-------------------------------"
+
+executor: $(LIBFT_A) $(MAIN_OBJS) $(EXECUTOR_OBJS)
+	@$(CC) $(CFLAGS) $(MAIN_OBJS) $(EXECUTOR_OBJS) $(LIBFT_A) -lreadline -o $(NAME)
+	@echo "💻 minishell executor components compiled"
+	@echo "-------------------------------"
+
+.PHONY: all clean fclean re parser executor
 
 -include $(DEPS)
