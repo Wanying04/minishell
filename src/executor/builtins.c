@@ -24,24 +24,44 @@ int	builtin_echo(char **args)
 	return (0);
 }
 
-int	builtin_cd(char **args)
+int	builtin_cd(char **args, t_env *env)
 {
+	char	*path;
+	char	*expanded;
+	int		ret;
+	
 	if (!args[1])
 	{
-		printf("cd: path parameters required\n");
-		return (1);
+		path = env_get(env, "HOME");
+		if (!path)
+		{
+			printf("cd: path parameters required\n");
+			return (1);
+		}
+		expanded = NULL;
 	}
-	if (args[2])
+	else
 	{
-		printf("cd: too many arguments\n");
-		return (1);
+		if (args[2])
+		{
+			printf("cd: too many arguments\n");
+			return (1);
+		}
+		expanded = expand_tilde(args[1], env);
+		if (expanded)
+			path = expanded;
+		else
+			path = args[1];
 	}
-	if (chdir(args[1]) != 0)
+	ret = 0;
+	if (chdir(path) != 0)
 	{
 		perror("cd");
-		return (1);
+		ret = 1;
 	}
-	return (0);
+	if (expanded && expanded != args[1])
+		free(expanded);
+	return (ret);
 }
 
 int	builtin_pwd(char **args)
@@ -110,7 +130,7 @@ int	execute_builtins(char **args, t_env *env)
 	if (ft_strncmp(args[0], "echo", 5) == 0 && args[0][4] == '\0')
 		return (builtin_echo(args));
 	else if (ft_strncmp(args[0], "cd", 3) == 0 && args[0][2] == '\0')
-		return (builtin_cd(args));
+		return (builtin_cd(args, env));
 	else if (ft_strncmp(args[0], "pwd", 4) == 0 && args[0][3] == '\0')
 		return (builtin_pwd(args));
 	else if (ft_strncmp(args[0], "export", 7) == 0 && args[0][6] == '\0')
