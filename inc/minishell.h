@@ -2,110 +2,77 @@
 # define MINISHELL_H
 
 # include "libft.h"
-# include <ctype.h>
-# include <fcntl.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
-# include <string.h>
-# include <readline/history.h>
-# include <readline/readline.h>
+
+// Standard C library headers
+# include <stdio.h>          // printf, perror
+# include <stdlib.h>         // malloc, free, exit, getenv
+# include <unistd.h>         // write, access, read, close, fork, execve, dup, dup2, pipe, getcwd, chdir, isatty, ttyname, ttyslot
+# include <fcntl.h>          // open, O_RDONLY, O_WRONLY, O_CREAT, O_TRUNC, O_APPEND
+# include <signal.h>         // signal, sigaction, sigemptyset, sigaddset, kill
+# include <string.h>         // strerror
+# include <sys/wait.h>       // wait, waitpid, wait3, wait4
+# include <sys/stat.h>       // stat, lstat, fstat
+# include <sys/ioctl.h>      // ioctl
+# include <termios.h>        // tcsetattr, tcgetattr
+# include <dirent.h>         // opendir, readdir, closedir
+
+// Readline library headers
+# include <readline/readline.h>  // readline, rl_on_new_line, rl_replace_line, rl_redisplay
+# include <readline/history.h>   // add_history, rl_clear_history
 
 # include "parser.h"
 # include "executor.h"
 
-// ========================= CONSTANTS =========================
+//constant definitions
+# define REDIR_IN 1
+# define REDIR_OUT 2
+# define REDIR_APPEND 3
+# define REDIR_HEREDOC 4
 
-# ifndef TILE_SIZE
-#  define TILE_SIZE 128
-# endif/*
+# define SUCCESS 0
+# define FAILURE 1
+# define SYNTAX_ERROR 2
 
-// ========================= KEYBOARD INPUT =========================
+//global variable
+extern volatile sig_atomic_t g_sigint_received;
 
-# define KEY_W     87
-# define KEY_A     65
-# define KEY_S     83
-# define KEY_D     68
-# define KEY_ESC   256
-
-// ========================= ENUMS =========================
-
-typedef enum e_tile
+//data structures
+typedef struct s_env
 {
-	EMPTY = '0',
-	WALL = '1',
-	COLLECTIBLE = 'C',
-	EXIT = 'E',
-	PLAYER = 'P'
-}		t_tile;
+	char	**vars;
+	int		count;
+	int		capacity;
+}	t_env;
 
-typedef enum e_direction
+typedef struct s_redirect
 {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
-}		t_direction;
+	char	*file;
+	int		type;
+	int		fd;
+}	t_redirect;
 
-// ========================= STRUCTS =========================
-
-// Position in the map
-typedef struct s_pos
+typedef struct s_command
 {
-	int	x;
-	int	y;
-}		t_pos;
+	char	**argv;
+	t_redirect	*redirects;
+	int		redirect_count;
+	struct s_command	*next;
+	struct s_command	*prev;
+	int		is_builtin;
+	char	*heredoc_delimiter;
+}	t_command;
 
-// Represent the map
-typedef struct s_map
-{
-	char	**grid;
-	int		width;
-	int		height;
-	int		collectibles;
-	int		exits;
-	int		players;
-}		t_map;
+//utility functions
+void	setup_signals(void);
+void	handle_signal(int sig);
 
-// Assets pointers for each type of tile
-typedef struct s_assets
-{
-	mlx_texture_t	*tx_wall;
-	mlx_texture_t	*tx_floor;
-	mlx_texture_t	*tx_collectible;
-	mlx_texture_t	*tx_exit;
-	mlx_texture_t	*tx_player_up;
-	mlx_texture_t	*tx_player_down;
-	mlx_texture_t	*tx_player_left;
-	mlx_texture_t	*tx_player_right;
-	mlx_image_t		*wall;
-	mlx_image_t		*floor;
-	mlx_image_t		*collectible;
-	mlx_image_t		*exit;
-	mlx_image_t		*player_up;
-	mlx_image_t		*player_down;
-	mlx_image_t		*player_left;
-	mlx_image_t		*player_right;
-}		t_assets;
-
-// Represent the player
-typedef struct s_player
-{
-	t_pos		pos;
-	int			moves;
-	int			collected;
-	t_direction	dir;
-}		t_player;
-
-// Represent the game status
-typedef struct s_game
-{
-	mlx_t		*mlx;
-	t_map		map;
-	t_player	player;
-	t_assets	assets;
-}		t_game;*/
-
-// ========================= FUNCTIONS =========================
+void	env_expand(t_env *env);
+void	env_set(t_env *env, const char *var_str);
+t_env	*env_create(char **envp);
+void	env_destroy(t_env *env);
+void	env_unset(t_env *env, const char *name);
+char	*env_get(t_env *env, const char *name);
+char	*expand_tilde(char *path, t_env *env);
+int		is_valid_var_name(char *str);
 
 #endif
