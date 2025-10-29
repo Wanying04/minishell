@@ -1,7 +1,17 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-/* Basic verification functions */
+// Declaración adelantada (evitar dependencias circulares)
+typedef struct s_command t_command;
+
+// ============ Funciones principales del Parser ============
+// Estas funciones serán llamadas por el equipo Executor
+t_command	*parse_input(char *input);      // Analizar entrada, devolver lista de comandos
+void		free_command(t_command *cmd);   // Liberar lista de comandos
+int			validate_syntax(char *input);   // Validar sintaxis
+
+// ============ Funciones auxiliares (uso interno) ============
+/* Funciones de verificación básica */
 int		ft_isspace(char c);
 int		ft_isspecial(char c);
 
