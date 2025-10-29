@@ -51,21 +51,46 @@ void	env_set(t_env *env, const char *var_str)
 	env->vars[env->count] = NULL;
 }
 
-t_env	*env_create(void)
+char	*env_get(t_env *env, const char *name)
 {
-	t_env *env = malloc(sizeof(t_env));
-	env->capacity = 10;
+	int		i;
+	int		name_len;
+	char	*equal_sign;
+
+	if (!env || !name)
+		return (NULL);
+	name_len = ft_strlen(name);
+	i = 0;
+	while (i < env->count)
+	{
+		if (ft_strncmp(env->vars[i], name, name_len) == 0 
+			&& env->vars[i][name_len] == '=')
+		{
+			equal_sign = ft_strchr(env->vars[i], '=');
+			if (equal_sign)
+				return (equal_sign + 1);
+		}
+		i++;
+	}
+	return (NULL);
+}
+
+t_env	*env_create(char **envp)
+{
+	t_env	*env;
+	int		i;
+
+	env = malloc(sizeof(t_env));
+	env->capacity = 100;
 	env->count = 0;
 	env->vars = malloc(sizeof(char *) * env->capacity);
 	env->vars[0] = NULL;
-
-	extern char	**environ;
-	int	i;
-
+	if (!envp)
+		return (env);
 	i = 0;
-	while (environ[i])
+	while (envp[i])
 	{
-		env_set(env, environ[i]);
+		env_set(env, envp[i]);
 		i++;
 	}
 	return (env);
