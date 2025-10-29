@@ -1,6 +1,4 @@
 #include "minishell.h"
-#include <signal.h>
-#include <termios.h>
 
 volatile sig_atomic_t	g_sigint_received = 0;
 
@@ -22,7 +20,52 @@ void	setup_signals(void)
 	signal(SIGQUIT, SIG_IGN);       /* Ctrl+\ */
 }
 
-void	process_input(char *input)
+static int	cleanup_and_exit(t_env *env)
+{
+	write(1, "exit\n", 5);
+	rl_clear_history();
+	env_destroy(env);
+	return (1);
+}
+
+static void	process_input(char *input, t_env *env)
+{
+	t_command	*cmd_list;
+
+	if (!*input)
+		return ;
+	add_history(input);
+	cmd_list = parse_input(input);
+	if (cmd_list)
+	{
+		execute(cmd_list, env);
+		free_command(cmd_list);
+	}
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	char	*input;
+	t_env	*env;
+
+	(void)argc;
+	(void)argv;
+	setup_signals();
+	env = env_create(envp);
+	while (1)
+	{
+		g_sigint_received = 0;
+		input = readline("minishell$ ");
+		if (!input && cleanup_and_exit(env))
+			break ;
+		if (input)
+			process_input(input, env);
+		free(input);
+	}
+	return (0);
+}
+
+/* void	process_input(char *input)
 {
 	char	**tokens;
 
@@ -45,50 +88,4 @@ void	process_input(char *input)
 		}
 	}
 	free(input);
-}
-
-int	main(void)
-{
-	char	*input;
-
-	setup_signals();
-	while (1)
-	{
-		g_sigint_received = 0;
-		input = readline("minishell$ ");
-		if (!input)  /* Ctrl+D o Ctrl+C */
-		{
-			write(1, "exit\n", 5);  /* Si fue Ctrl+D, salir */
-			rl_clear_history();
-			return (0);
-		}
-		process_input(input);
-	}
-	return (0);
-}
-
-/* int main(void)
-{
-    // 1. Configuración inicial
-    setup_signals();       // Configurar manejo de señales (Ctrl+C, etc.)
-    init_environment();    // Inicializar variables de entorno
-    setup_terminal();      // Configurar terminal si es necesario
-    
-    // 2. Bucle principal (REPL)
-    while (!should_exit) {
-        // Mostrar prompt
-        display_prompt();
-        
-        // Leer entrada del usuario
-        char *input = read_input();
-        
-        // Procesar el comando (aquí es donde entra tu pipeline)
-        if (input != NULL) {
-            execute_input(input);  // ← Aquí comienza Parser → Executor
-        }
-    }
-    
-    // 3. Limpieza antes de salir
-    cleanup();
-    return (0);
-}*/
+} */
