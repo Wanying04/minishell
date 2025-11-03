@@ -85,6 +85,9 @@ t_env	*env_create(char **envp)
 	env->count = 0;
 	env->vars = malloc(sizeof(char *) * env->capacity);
 	env->vars[0] = NULL;
+	env->pwd = malloc(sizeof(t_pwd));
+	env->pwd->pwd = NULL;
+	env->pwd->oldpwd = NULL;
 	if (!envp)
 		return (env);
 	i = 0;
@@ -107,6 +110,14 @@ void	env_destroy(t_env *env)
 		i++;
 	}
 	free(env->vars);
+	if (env->pwd)
+	{
+		if (env->pwd->pwd)
+			free(env->pwd->pwd);
+		if (env->pwd->oldpwd)
+			free(env->pwd->oldpwd);
+		free(env->pwd);
+	}
 	free(env);
 }
 

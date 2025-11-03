@@ -37,11 +37,18 @@
 extern volatile sig_atomic_t g_sigint_received;
 
 //data structures
+typedef struct s_pwd
+{
+	char	*pwd;
+	char	*oldpwd;
+}	t_pwd;
+
 typedef struct s_env
 {
 	char	**vars;
 	int		count;
 	int		capacity;
+	t_pwd	*pwd;
 }	t_env;
 
 typedef struct s_redirect

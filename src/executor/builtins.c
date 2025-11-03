@@ -24,46 +24,6 @@ int	builtin_echo(char **args)
 	return (0);
 }
 
-int	builtin_cd(char **args, t_env *env)
-{
-	char	*path;
-	char	*expanded;
-	int		ret;
-	
-	if (!args[1])
-	{
-		path = env_get(env, "HOME");
-		if (!path)
-		{
-			printf("cd: path parameters required\n");
-			return (1);
-		}
-		expanded = NULL;
-	}
-	else
-	{
-		if (args[2])
-		{
-			printf("cd: too many arguments\n");
-			return (1);
-		}
-		expanded = expand_tilde(args[1], env);
-		if (expanded)
-			path = expanded;
-		else
-			path = args[1];
-	}
-	ret = 0;
-	if (chdir(path) != 0)
-	{
-		perror("cd");
-		ret = 1;
-	}
-	if (expanded && expanded != args[1])
-		free(expanded);
-	return (ret);
-}
-
 int	builtin_pwd(char **args)
 {
 	char	cwd[4096];
