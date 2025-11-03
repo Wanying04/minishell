@@ -10,30 +10,55 @@ char	*ft_get_special_token(char *input, int *i)
 	return (ft_strdup(buffer));
 }
 
+static char	*ft_join_tokens(char *s1, char *s2)
+{
+	char	*result;
+	int		len1;
+	int		len2;
+
+	if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+		return (s1);
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	result = malloc(len1 + len2 + 1);
+	if (!result)
+		return (NULL);
+	ft_strlcpy(result, s1, len1 + 1);
+	ft_strlcpy(result + len1, s2, len2 + 1);
+	free(s1);
+	free(s2);
+	return (result);
+}
+
 char	*ft_get_normal_token(char *input, int *i)
 {
-	int		size;
 	char	*token;
-	int		j;
+	char	*temp;
 	int		start;
 
 	start = *i;
-	size = 0;
+	token = NULL;
 	while (input[*i] && !ft_isspace(input[*i]) && !ft_isspecial(input[*i]))
 	{
 		if (input[*i] == '"' || input[*i] == '\'')
-			return (ft_get_quoted_token(input, i));
-		size++;
-		(*i)++;
+		{
+			if (*i > start)
+				token = ft_join_tokens(token, ft_substr(input, start, *i - start));
+			temp = ft_get_quoted_token(input, i);
+			token = ft_join_tokens(token, temp);
+			start = *i;
+		}
+		else
+			(*i)++;
 	}
-	token = malloc(size + 1);
-	if (!token)
-		return (NULL);
-	j = 0;
-	while (start < *i)
-		token[j++] = input[start++];
-	token[j] = '\0';
-	return (token);
+	if (*i > start)
+		token = ft_join_tokens(token, ft_substr(input, start, *i - start));
+	if (token)
+		return (token);
+	else
+		return (ft_strdup(""));
 }
 
 int	ft_count_tokens(char *input)
@@ -74,6 +99,16 @@ char	**ft_split_tokens(char *input)
 
 	if (!input)
 		return (NULL);
+	if (ft_check_quotes(input))
+	{
+		ft_putendl_fd("minishell: syntax error: unclosed quotes", 2);
+		return (NULL);
+	}
+	if (ft_check_escape_chars(input))
+	{
+		ft_putendl_fd("minishell: syntax error: invalid escape sequence", 2);
+		return (NULL);
+	}
 	token_count = ft_count_tokens(input);
 	tokens = malloc(sizeof(char *) * (token_count + 1));
 	if (!tokens)

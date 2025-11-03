@@ -27,7 +27,6 @@ t_command	*parse_input(char *input)
 		// printf("token[%d]: %s\n", i, tokens[i]);
 		i++;
 	}
-	
 	// Crear estructura de comando simple
 	cmd = malloc(sizeof(t_command));
 	if (!cmd)
@@ -42,6 +41,5 @@ t_command	*parse_input(char *input)
 	cmd->prev = NULL;
 	cmd->is_builtin = 0;
 	cmd->heredoc_delimiter = NULL;
-	
 	return (cmd);
 }
