@@ -83,7 +83,7 @@ int	builtin_cd_execute(char *arg, t_env *env)
 	return (ret);
 }
 
-int	builtin_cd(char **args, t_env *env)
+int	builtin_cd(t_command *cmd, t_env *env)
 {
-	return (builtin_cd_execute(args[1], env));
+	return (builtin_cd_execute(cmd->argv[1], env));
 }
