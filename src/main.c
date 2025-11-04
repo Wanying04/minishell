@@ -16,8 +16,8 @@ void	handle_signal(int sig)
 
 void	setup_signals(void)
 {
-	signal(SIGINT, handle_signal);  /* Ctrl+C */
-	signal(SIGQUIT, SIG_IGN);       /* Ctrl+\ */
+	signal(SIGINT, handle_signal);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 static int	cleanup_and_exit(t_env *env)
@@ -28,11 +28,22 @@ static int	cleanup_and_exit(t_env *env)
 	return (1);
 }
 
+int	is_empty_input(const char *str)
+{
+	while (*str)
+	{
+		if (*str != ' ' && *str != '\t')
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
 static void	process_input(char *input, t_env *env)
 {
 	t_command	*cmd_list;
 
-	if (!*input)
+	if (!*input || is_empty_input(input))
 		return ;
 	add_history(input);
 	cmd_list = parse_input(input);
@@ -45,47 +56,28 @@ static void	process_input(char *input, t_env *env)
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	*input;
 	t_env	*env;
+	char	*input;
 
 	(void)argc;
 	(void)argv;
 	setup_signals();
 	env = env_create(envp);
+	if (!env)
+		return (1);
 	while (1)
 	{
 		g_sigint_received = 0;
 		input = readline("minishell$ ");
-		if (!input && cleanup_and_exit(env))
+		if (!input)
+		{
+			printf("exit\n");
+			cleanup_and_exit(env);
 			break ;
-		if (input)
+		}
+		if (*input != '\0')
 			process_input(input, env);
 		free(input);
 	}
 	return (0);
 }
-
-/* void	process_input(char *input)
-{
-	char	**tokens;
-
-	if (*input)
-	{
-		add_history(input);
-		if (ft_strncmp(input, "exit", 5) == 0)
-		{
-			free(input);
-			write(1, "exit\n", 5);
-			rl_clear_history();
-			exit(0);
-		}
-		tokens = ft_split_tokens(input);
-		if (tokens)
-		{
-			for (int i = 0; tokens[i]; i++)
-				printf("token[%d]: %s\n", i, tokens[i]);
-			ft_free_tokens(tokens);
-		}
-	}
-	free(input);
-} */
