@@ -23,7 +23,7 @@
 # include "parser.h"
 # include "executor.h"
 
-//constant definitions
+// Constant definitions
 # define REDIR_IN 1
 # define REDIR_OUT 2
 # define REDIR_APPEND 3
@@ -33,10 +33,10 @@
 # define FAILURE 1
 # define SYNTAX_ERROR 2
 
-//global variable
+// Global variable
 extern volatile sig_atomic_t g_sigint_received;
 
-//data structures
+// Data structures
 typedef struct s_pwd
 {
 	char	*pwd;
@@ -69,17 +69,24 @@ typedef struct s_command
 	char	*heredoc_delimiter;
 }	t_command;
 
-//utility functions
+// ============ Signals (main.c) ============
 void	setup_signals(void);
 void	handle_signal(int sig);
 
-void	env_expand(t_env *env);
-void	env_set(t_env *env, const char *var_str);
+// ============ Environment Management (executor/env.c) ============
+// These functions are used across the entire project (parser, executor, main)
 t_env	*env_create(char **envp);
 void	env_destroy(t_env *env);
-void	env_unset(t_env *env, const char *name);
 char	*env_get(t_env *env, const char *name);
+void	env_set(t_env *env, const char *var_str);
+void	env_unset(t_env *env, const char *name);
+
+// ============ Executor Main Interface (executor/execute.c) ============
+// Main execution entry point, called by main.c
+int		execute(t_command *cmd, t_env *env);
+
+// ============ Helper Functions ============
+// expand_tilde is used by both parser and executor
 char	*expand_tilde(char *path, t_env *env);
-int		is_valid_var_name(char *str);
 
 #endif
