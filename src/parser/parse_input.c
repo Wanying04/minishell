@@ -14,19 +14,12 @@ t_command	*parse_input(char *input)
 {
 	t_command	*cmd;
 	char		**tokens;
-	int			i;
 
 	// Implementación temporal: análisis léxico simple
 	// printf("=== Parser Debug Output ===\n");
 	tokens = ft_split_tokens(input);
 	if (!tokens)
 		return (NULL);
-	i = 0;
-	while (tokens[i])
-	{
-		// printf("token[%d]: %s\n", i, tokens[i]);
-		i++;
-	}
 	// Crear estructura de comando simple
 	cmd = malloc(sizeof(t_command));
 	if (!cmd)

@@ -71,7 +71,6 @@ int	main(int argc, char **argv, char **envp)
 		input = readline("minishell$ ");
 		if (!input)
 		{
-			printf("exit\n");
 			cleanup_and_exit(env);
 			break ;
 		}
