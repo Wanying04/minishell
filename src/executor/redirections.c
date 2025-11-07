@@ -1,5 +1,16 @@
 #include "minishell.h"
 
+
+char **env_to_array(t_env *env);
+//用来把链表（或哈希表）环境变量转成 char **
+
+
+
+find_command_path()
+{
+
+}
+
 /*
  * handle_redirections - 处理重定向
  * 
@@ -15,19 +26,19 @@
 // 	return (0);
 // }
 
-int	handle_redirections()
+int	handle_redirections(t_command *cmd)
 {
-
+	file = open(fd);
+	dup2(file, STDIN_FILENO);
+	if (!)
+	close();
 }
 
-char **env_to_array(t_env *env);
-//用来把链表（或哈希表）环境变量转成 char **
-
-reset_signals_to_default()
-
-find_command_path()
-
-
+void	reset_signals_to_default(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+}
 
 void	child_process(t_command *cmd, t_env *env)
 {
