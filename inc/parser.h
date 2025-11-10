@@ -9,6 +9,7 @@ typedef struct s_command t_command;
 t_command	*parse_input(char *input);      // Analizar entrada, devolver lista de comandos
 void		free_command(t_command *cmd);   // Liberar lista de comandos
 int			validate_syntax(char *input);   // Validar sintaxis
+void		print_command_list(t_command *head);
 
 // ============ Funciones auxiliares (uso interno) ============
 /* Funciones de verificación básica */
