@@ -49,8 +49,17 @@ static void	process_input(char *input, t_env *env)
 	cmd_list = parse_input(input);
 	if (cmd_list)
 	{
-		execute(cmd_list, env);
-		free_command(cmd_list);
+		/* If PARSER_DEBUG is set, print the parsed structure instead of executing */
+		if (getenv("PARSER_DEBUG"))
+		{
+			print_command_list(cmd_list);
+			free_command(cmd_list);
+		}
+		else
+		{
+			execute(cmd_list, env);
+			free_command(cmd_list);
+		}
 	}
 }
 
