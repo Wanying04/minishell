@@ -2,18 +2,18 @@
 
 typedef struct s_pctx
 {
-	char		**tokens;
-	char		**args_temp;
-	int			args_count;
-	int			args_cap;
-	t_redirect	*redir_temp;
-	int			redir_count;
-	int			redir_cap;
-	char		*heredoc_delim;
-	t_command	*head;
-	t_command	*curr;
-	int			i;
-	int			error;
+	char		**tokens;			// 1. Array de tokens (entrada dividida)
+	char		**args_temp;		// 2. Argumentos temporales del comando actual
+	int			args_count;			// 3. Cuántos argumentos llevamos
+	int			args_cap;			// 4. Capacidad del array args_temp
+	t_redirect	*redir_temp;		// 5. Redirecciones temporales
+	int			redir_count;		// 6. Cuántas redirecciones llevamos
+	int			redir_cap;			// 7. Capacidad del array redir_temp
+	char		*heredoc_delim;		// 8. Delimitador de heredoc (<<)
+	t_command	*head;				// 9. Primer comando de la lista
+	t_command	*curr;				// 10. Comando actual siendo construido
+	int			i;					// 11. Índice actual en tokens[]
+	int			error;				// 12. Flag de error
 }	t_pctx;
 
 static int	push_arg(t_pctx *ctx, const char *tok)
@@ -359,6 +359,49 @@ static int	process_token(t_pctx *ctx, char *tok)
 	return (0);
 }
 
+static void	parser_debug(t_pctx ctx)
+{
+	printf("\n\033[1;36m========== DEBUG PARSER ==========\033[0m\n");
+	printf("\033[1;33m[TOKENS]\033[0m\n");
+	for (int i = 0; ctx.tokens[i] != NULL; i++)
+	{
+		printf("  tokens[%d] = \"%s\"\n", i, ctx.tokens[i]);
+		if (ctx.tokens[i + 1] == NULL)
+			printf("  tokens[%d] = NULL\n", i + 1);
+	}
+	printf("\n\033[1;33m[CTX - args_temp] count=%d, cap=%d\033[0m\n",
+		ctx.args_count, ctx.args_cap);
+	if (ctx.args_temp)
+	{
+		for (int i = 0; i < ctx.args_count; i++)
+			printf("  args_temp[%d] = \"%s\"\n", i, ctx.args_temp[i]);
+	}
+	else
+		printf("  (null)\n");
+	printf("\n\033[1;33m[CTX - redir_temp] count=%d, cap=%d\033[0m\n",
+		ctx.redir_count, ctx.redir_cap);
+	if (ctx.redir_temp)
+	{
+		for (int i = 0; i < ctx.redir_count; i++)
+			printf("  redir[%d]: type=%d, file=\"%s\"\n", i,
+				ctx.redir_temp[i].type, ctx.redir_temp[i].file);
+	}
+	else
+		printf("  (null)\n");
+	printf("\n\033[1;33m[CTX - heredoc_delim]\033[0m\n");
+	printf("  %s\n", ctx.heredoc_delim ? ctx.heredoc_delim : "(null)");
+	printf("\n\033[1;33m[CTX - head]\033[0m\n");
+	printf("  %p\n", (void *)ctx.head);
+	printf("\n\033[1;33m[CTX - curr]\033[0m\n");
+	printf("  %p\n", (void *)ctx.curr);
+	printf("\n\033[1;33m[CTX - i]\033[0m\n");
+	printf("  %d\n", ctx.i);
+	printf("\n\033[1;33m[CTX - error]\033[0m\n");
+	printf("  %d\n", ctx.error);
+	printf("\033[1;36m==================================\033[0m\n\n");
+}
+// ctx = context
+// t_pctx = type parser context
 t_command	*parse_input(char *input)
 {
 	char	**tokens;
@@ -376,6 +419,18 @@ t_command	*parse_input(char *input)
 			break ;
 		}
 	}
+	// Comprobación de tokens -------
+	if (getenv("PARSER_DEBUG2"))
+	{
+		parser_debug(ctx);
+		ft_free_tokens(tokens);
+		if (ctx.error)
+			return (cleanup_resources(&ctx), NULL);
+		if (ctx.head)
+			free_command(ctx.head);
+		return (NULL);
+	}
+	// Hasta aquí -------------------
 	if (!ctx.error && ctx.args_count > 0)
 	{
 		if (finalize_and_append(&ctx))
