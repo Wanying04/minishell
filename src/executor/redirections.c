@@ -26,12 +26,80 @@ find_command_path()
 // 	return (0);
 // }
 
+int	process_single_redirection(t_redirect *redir)
+{
+	if (redir->type == REDIR_IN)
+	{
+		open(redir->file, O_RDONLY);
+		dup2(fd, STDIN_FILENO);
+		close(fd);
+	}
+	else if (redir->type == REDIR_OUT)
+	{
+			open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			dup2(fd, STDOUT_FILENO);
+			close(fd);
+	}
+	else if (redir->type == REDIR_APPEND)
+	{
+		open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		dup2(fd, STDERR_FILENO);
+		close(fd);
+	}
+	return (0);
+}
+
+int	handle_heredoc_redirection(char *delimiter)
+{
+Heredoc (<<) 实现步骤：
+
+pipe(pipefd) 创建管道
+
+循环读取用户输入：
+
+显示提示符
+
+读取一行输入
+
+如果输入 == 分隔符：退出循环
+
+否则：写入管道
+
+关闭管道写端
+
+dup2(pipefd[0], STDIN_FILENO) 重定向输入
+
+关闭管道读端
+}
+
 int	handle_redirections(t_command *cmd)
 {
-	file = open(fd);
-	dup2(file, STDIN_FILENO);
-	if (!)
-	close();
+	int	i;
+	int	result;
+
+	i = 0;
+	while(i < cmd->redirect_count)
+	{
+		if (cmd->redirects[i].type == REDIR_HEREDOC)
+		{
+			result = handle_heredoc_redirection(cmd->redirects[i].file);
+			if (result != 1)
+				return (0);
+		}
+		i++;
+	}
+	i = 0;
+	while(i < cmd->redirect_count)
+	{
+		if (cmd->redirects[i].type != REDIR_HEREDOC)
+		{
+			result = process_single_redirection(&cmd->redirects[i]);
+			if (result != 1)
+				return (0);
+		}
+		i++;
+	}
+	return (1);
 }
 
 void	reset_signals_to_default(void)
