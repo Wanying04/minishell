@@ -1,75 +1,91 @@
 #include "minishell.h"
 
-
 char **env_to_array(t_env *env);
 //用来把链表（或哈希表）环境变量转成 char **
-
-
 
 find_command_path()
 {
 
 }
 
-/*
- * handle_redirections - 处理重定向
- * 
- * 功能：根据 cmd->redirects 设置文件描述符
- * 
- * 输入：t_command *cmd - 包含重定向信息的命令
- * 返回：0 成功，-1 失败
- */
-// int	handle_redirections(t_command *cmd)
-// {
-// 	// TODO: Executor 团队实现
-// 	(void)cmd;
-// 	return (0);
-// }
+// Heredoc (<<) 实现步骤：
+// pipe(pipefd) 创建管道
+// 循环读取用户输入：
+// 显示提示符
+// 读取一行输入
+// 如果输入 == 分隔符：退出循环
+// 否则：写入管道
+// 关闭管道写端
+// dup2(pipefd[0], STDIN_FILENO) 重定向输入
+// 关闭管道读端
+
+int	handle_heredoc_redirection(char *delimiter)
+{
+	int		fd;
+	char	*line;
+
+	while(1)
+	{
+		while()
+	}
+}
 
 int	process_single_redirection(t_redirect *redir)
 {
 	if (redir->type == REDIR_IN)
 	{
-		open(redir->file, O_RDONLY);
-		dup2(fd, STDIN_FILENO);
-		close(fd);
+		redir->fd = open(redir->file, O_RDONLY);
+		if (redir->fd == -1)
+		{
+			perror("open");
+			return (FAILURE);
+		}
+		if (dup2(redir->fd, STDIN_FILENO) == -1)
+		{
+			perror("dup2");
+			close(redir->fd);
+			return (FAILURE);
+		}
+		close(redir->fd);
 	}
 	else if (redir->type == REDIR_OUT)
 	{
-			open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
+		redir->fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (redir->fd == -1)
+		{
+			perror("open");
+			return (FAILURE);
+		}
+		if (dup2(redir->fd, STDOUT_FILENO) == -1)
+		{
+			perror("dup2");
+			close(redir->fd);
+			return (FAILURE);
+		}
+		close(redir->fd);
 	}
 	else if (redir->type == REDIR_APPEND)
 	{
-		open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		dup2(fd, STDERR_FILENO);
-		close(fd);
+		redir->fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (redir->fd == -1)
+		{
+			perror("open");
+			return (FAILURE);
+		}
+		if (dup2(redir->fd, STDOUT_FILENO) == -1)
+		{
+			perror("dup2");
+			close(redir->fd);
+			return (FAILURE);
+		}
+		close(redir->fd);
 	}
-	return (0);
-}
-
-int	handle_heredoc_redirection(char *delimiter)
-{
-Heredoc (<<) 实现步骤：
-
-pipe(pipefd) 创建管道
-
-循环读取用户输入：
-
-显示提示符
-
-读取一行输入
-
-如果输入 == 分隔符：退出循环
-
-否则：写入管道
-
-关闭管道写端
-
-dup2(pipefd[0], STDIN_FILENO) 重定向输入
-
-关闭管道读端
+	else
+	{
+		write(2, "minishell: invalid redirection\n", 31);
+		return (FAILURE);
+	}
+	return (SUCCESS);
 }
 
 int	handle_redirections(t_command *cmd)
@@ -83,8 +99,8 @@ int	handle_redirections(t_command *cmd)
 		if (cmd->redirects[i].type == REDIR_HEREDOC)
 		{
 			result = handle_heredoc_redirection(cmd->redirects[i].file);
-			if (result != 1)
-				return (0);
+			if (result != SUCCESS)
+				return (FAILURE);
 		}
 		i++;
 	}
@@ -94,12 +110,12 @@ int	handle_redirections(t_command *cmd)
 		if (cmd->redirects[i].type != REDIR_HEREDOC)
 		{
 			result = process_single_redirection(&cmd->redirects[i]);
-			if (result != 1)
-				return (0);
+			if (result != SUCCESS)
+				return (FAILURE);
 		}
 		i++;
 	}
-	return (1);
+	return (SUCCESS);
 }
 
 void	reset_signals_to_default(void)
@@ -113,7 +129,8 @@ void	child_process(t_command *cmd, t_env *env)
 	char	*path;
 
 	reset_signals_to_default();
-	handle_redirections(cmd);
+	if (handle_redirections(cmd) != SUCCESS)
+		exit (EXIT_FAILURE);
 	path = find_command_path(cmd->argv[0], env);
 	if (!path)
 	{
@@ -125,7 +142,7 @@ void	child_process(t_command *cmd, t_env *env)
 	{
 		perror(cmd->argv[0]);
 		free(path);
-		exit(127);
+		exit(126);
 	}
 }
 
@@ -139,7 +156,7 @@ int	execute_external_command(t_command *cmd, t_env *env)
 	if (pid < 0)
 	{
 		perror("fork");
-		return (1);
+		return (FAILURE);
 	}
 	else if (pid == 0)
 		child_process(cmd, env);
@@ -150,6 +167,7 @@ int	execute_external_command(t_command *cmd, t_env *env)
 			return (WEXITSTATUS(status));
 		else if (WIFSIGNALED(status))
 			return (128 + WTERMSIG(status));
+		else
+			return (FAILURE);
 	}
-	return (status);
 }
