@@ -19,6 +19,11 @@ find_command_path()
 // dup2(pipefd[0], STDIN_FILENO) 重定向输入
 // 关闭管道读端
 
+// 创建临时文件或管道来存储输入内容
+// 循环读取用户输入，直到遇到单独的分隔符行
+// 将内容写入临时文件
+// 重定向标准输入到这个临时文件
+
 int	handle_heredoc_redirection(char *delimiter)
 {
 	int		fd;
