@@ -2,12 +2,25 @@
 
 char	*ft_get_special_token(char *input, int *i)
 {
-	char	buffer[2];
+	int pos;
+	char first;
+	char buf[3];
 
-	buffer[0] = input[*i];
-	buffer[1] = '\0';
-	(*i)++;
-	return (ft_strdup(buffer));
+	pos = *i;
+	first = input[pos];
+	/* Handle double-character operators like >> and << */
+	if ((first == '>' || first == '<') && input[pos + 1] == first)
+	{
+		buf[0] = first;
+		buf[1] = first;
+		buf[2] = '\0';
+		*i = pos + 2;
+		return (ft_strdup(buf));
+	}
+	buf[0] = first;
+	buf[1] = '\0';
+	*i = pos + 1;
+	return (ft_strdup(buf));
 }
 
 static char	*ft_join_tokens(char *s1, char *s2)

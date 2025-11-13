@@ -18,6 +18,7 @@ void	setup_signals(void)
 {
 	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
 }
 
 static int	cleanup_and_exit(t_env *env)
@@ -49,8 +50,17 @@ static void	process_input(char *input, t_env *env)
 	cmd_list = parse_input(input);
 	if (cmd_list)
 	{
-		execute(cmd_list, env);
-		free_command(cmd_list);
+		/* If PARSER_DEBUG is set, print the parsed structure instead of executing */
+		if (getenv("PARSER_DEBUG"))
+		{
+			print_command_list(cmd_list);
+			free_command(cmd_list);
+		}
+		else
+		{
+			execute(cmd_list, env);
+			free_command(cmd_list);
+		}
 	}
 }
 
@@ -71,7 +81,6 @@ int	main(int argc, char **argv, char **envp)
 		input = readline("minishell$ ");
 		if (!input)
 		{
-			printf("exit\n");
 			cleanup_and_exit(env);
 			break ;
 		}
