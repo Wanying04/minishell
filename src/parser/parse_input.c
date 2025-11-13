@@ -14,11 +14,13 @@ typedef struct s_pctx
 	t_command	*curr;				// 10. Comando actual siendo construido
 	int			i;					// 11. Índice actual en tokens[]
 	int			error;				// 12. Flag de error
+	t_env		*env;				// 13. Environment variables para expansión
 }	t_pctx;
 
 static int	push_arg(t_pctx *ctx, const char *tok)
 {
 	char	**tmp;
+	char	*expanded;
 	int		z;
 	int		newcap;
 
@@ -41,13 +43,16 @@ static int	push_arg(t_pctx *ctx, const char *tok)
 		ctx->args_temp = tmp;
 		ctx->args_cap = newcap;
 	}
-	ctx->args_temp[ctx->args_count++] = ft_strdup(tok);
+	// Expandir variables de entorno en el argumento
+	expanded = expand_variables((char *)tok, ctx->env, 0);
+	ctx->args_temp[ctx->args_count++] = expanded;
 	return (0);
 }
 
 static int	push_redir(t_pctx *ctx, const char *file, int typeval)
 {
 	t_redirect	*tmp;
+	char		*expanded;
 	int			z;
 	int			newcap;
 
@@ -70,7 +75,9 @@ static int	push_redir(t_pctx *ctx, const char *file, int typeval)
 		ctx->redir_temp = tmp;
 		ctx->redir_cap = newcap;
 	}
-	ctx->redir_temp[ctx->redir_count].file = ft_strdup(file);
+	// Expandir variables de entorno en el nombre del archivo
+	expanded = expand_variables((char *)file, ctx->env, 0);
+	ctx->redir_temp[ctx->redir_count].file = expanded;
 	ctx->redir_temp[ctx->redir_count].type = typeval;
 	ctx->redir_temp[ctx->redir_count].fd = -1;
 	ctx->redir_count++;
@@ -315,7 +322,7 @@ void	print_command_list(t_command *head)
 	}
 }
 
-static void	init_ctx(t_pctx *ctx, char **tokens)
+static void	init_ctx(t_pctx *ctx, char **tokens, t_env *env)
 {
 	ctx->tokens = tokens;
 	ctx->args_temp = NULL;
@@ -329,6 +336,7 @@ static void	init_ctx(t_pctx *ctx, char **tokens)
 	ctx->curr = NULL;
 	ctx->i = 0;
 	ctx->error = 0;
+	ctx->env = env;
 }
 
 static int	process_token(t_pctx *ctx, char *tok)
@@ -402,7 +410,7 @@ static void	parser_debug(t_pctx ctx)
 }
 // ctx = context
 // t_pctx = type parser context
-t_command	*parse_input(char *input)
+t_command	*parse_input(char *input, t_env *env)
 {
 	char	**tokens;
 	t_pctx	ctx;
@@ -410,7 +418,7 @@ t_command	*parse_input(char *input)
 	tokens = ft_split_tokens(input);
 	if (!tokens)
 		return (NULL);
-	init_ctx(&ctx, tokens);
+	init_ctx(&ctx, tokens, env);
 	while (ctx.tokens[ctx.i])
 	{
 		if (process_token(&ctx, ctx.tokens[ctx.i]))

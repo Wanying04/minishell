@@ -17,7 +17,7 @@ char	*resolve_cd_path(char *arg, t_env *env, int *should_free)
 	*should_free = 0;
 	if (!arg || arg[0] == '\0')
 		return (env_get(env, "HOME"));
-	if (ft_strncmp(arg, "-", 2) == 0 && arg[2] == '\0')
+	if (ft_strncmp(arg, "-", 2) == 0 && arg[1] == '\0')
 		return (env->pwd->oldpwd);
 	expanded = expand_tilde(arg, env);
 	if (expanded && expanded != arg)
@@ -32,7 +32,7 @@ char	*get_cd_path(char *arg, t_env *env, int *err, int *should_free)
 {
 	char	*path;
 
-	if (arg && ft_strncmp(arg, "-", 2) == 0 && arg[2] == '\0' && !env->pwd->oldpwd)
+	if (arg && ft_strncmp(arg, "-", 2) == 0 && arg[1] == '\0' && !env->pwd->oldpwd)
 	{
 		printf("cd: OLDPWD not set\n");
 		*err = 1;

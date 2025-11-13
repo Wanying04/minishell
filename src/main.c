@@ -47,7 +47,7 @@ static void	process_input(char *input, t_env *env)
 	if (!*input || is_empty_input(input))
 		return ;
 	add_history(input);
-	cmd_list = parse_input(input);
+	cmd_list = parse_input(input, env);
 	if (cmd_list)
 	{
 		/* If PARSER_DEBUG is set, print the parsed structure instead of executing */

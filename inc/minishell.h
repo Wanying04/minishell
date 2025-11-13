@@ -88,5 +88,7 @@ int		execute(t_command *cmd, t_env *env);
 // ============ Helper Functions ============
 // expand_tilde is used by both parser and executor
 char	*expand_tilde(char *path, t_env *env);
+// expand_variables expands $VAR with environment variables
+char	*expand_variables(char *str, t_env *env, int in_single_quote);
 
 #endif
