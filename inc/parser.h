@@ -3,12 +3,14 @@
 
 // Declaración adelantada (evitar dependencias circulares)
 typedef struct s_command t_command;
+typedef struct s_env t_env;
 
 // ============ Funciones principales del Parser ============
 // Estas funciones serán llamadas por el equipo Executor
-t_command	*parse_input(char *input);      // Analizar entrada, devolver lista de comandos
+t_command	*parse_input(char *input, t_env *env);      // Analizar entrada, devolver lista de comandos
 void		free_command(t_command *cmd);   // Liberar lista de comandos
 int			validate_syntax(char *input);   // Validar sintaxis
+void		print_command_list(t_command *head);
 
 // ============ Funciones auxiliares (uso interno) ============
 /* Funciones de verificación básica */
