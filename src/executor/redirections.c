@@ -19,20 +19,42 @@ find_command_path()
 // dup2(pipefd[0], STDIN_FILENO) 重定向输入
 // 关闭管道读端
 
-// 创建临时文件或管道来存储输入内容
-// 循环读取用户输入，直到遇到单独的分隔符行
-// 将内容写入临时文件
-// 重定向标准输入到这个临时文件
-
 int	handle_heredoc_redirection(char *delimiter)
 {
-	int		fd;
+	int		pipefd[2];
 	char	*line;
 
-	while(1)
+	if (pipe(pipefd) == -1)
 	{
-		while()
+		write(2, "minishell: pipe creation failed\n", 32);
+		return (FAILURE);
 	}
+	while (1)
+	{
+		line = readline("> ");
+		if (!line)
+		{
+			write(2, "minishell: warning: here-document delimited by end-of-file\n", 58);
+			break ;		
+		}
+		if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0 && line[ft_strlen(delimiter) + 1] == '\0')
+		{
+			free (line);
+			break ;
+		}
+		write(pipefd[1], line, ft_strlen(line));
+		write(pipefd[1], "\n", 1);
+		free(line);
+	}
+	close (pipefd[1]);
+	if (dup2(pipefd[0], STDIN_FILENO) == -1)
+	{
+		perror("dup2");
+		close(pipefd[0]);
+		return (FAILURE);
+	}
+	close (pipefd[0]);
+	return (SUCCESS);
 }
 
 int	process_single_redirection(t_redirect *redir)
