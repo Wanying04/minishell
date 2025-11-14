@@ -1,0 +1,5 @@
+total 0
+drwxr-xr-x 2 wtang 2024_42malaga 6 Nov 14 16:23 hola2
+drwxr-xr-x 2 wtang 2024_42malaga 6 Nov 14 16:23 hola3
+-rw-r--r-- 1 wtang 2024_42malaga 0 Nov 14 16:23 hola.txt
+-rw-r--r-- 1 wtang 2024_42malaga 0 Nov 14 16:24 out.txt

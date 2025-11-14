@@ -10,10 +10,10 @@
  * 
  * 返回：最后一个命令的退出状态码
  */
-int	execute_pipeline(t_command *cmd, t_env *env)
-{
-	// TODO: Executor 团队实现
-	(void)cmd;
-	(void)env;
-	return (0);
-}
+// int	execute_pipeline(t_command *cmd, t_env *env)
+// {
+// 	// TODO: Executor 团队实现
+// 	(void)cmd;
+// 	(void)env;
+// 	return (0);
+// }

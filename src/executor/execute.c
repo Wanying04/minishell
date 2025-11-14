@@ -48,14 +48,14 @@ int	execute(t_command *cmd, t_env *env)
 		return (0);
 	if (!cmd->next)
 	{
-		if (is_builtin_command(cmd->argv[0]))
+		if (is_builtin_command(cmd))
 			status = execute_builtins(cmd, env);
 		else
 			status = execute_external_command(cmd, env);
 	}
-	else
-	{
-		status = handle_pipes(cmd, env);
-	}
+	// else
+	// {
+	// 	status = handle_pipes(cmd, env);
+	// }
 	return (status);
 }
