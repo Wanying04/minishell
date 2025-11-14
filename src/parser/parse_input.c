@@ -227,6 +227,10 @@ static int	handle_redir(t_pctx *ctx)
 		return (1);
 	}
 	if (type == REDIR_HEREDOC)
+		ctx->heredoc_delim = ft_strdup(ctx->tokens[idx]);
+	if (push_redir(ctx, ctx->tokens[idx], type))
+			return (1);
+	/* if (type == REDIR_HEREDOC)
 	{
 		if (ctx->heredoc_delim)
 			free(ctx->heredoc_delim);
@@ -236,7 +240,7 @@ static int	handle_redir(t_pctx *ctx)
 	{
 		if (push_redir(ctx, ctx->tokens[idx], type))
 			return (1);
-	}
+	} */
 	return (0);
 }
 
@@ -439,7 +443,7 @@ t_command	*parse_input(char *input, t_env *env)
 		return (NULL);
 	}
 	// Hasta aquí -------------------
-	if (!ctx.error && ctx.args_count > 0)
+	if (!ctx.error && (ctx.args_count > 0 || ctx.redir_count > 0))
 	{
 		if (finalize_and_append(&ctx))
 			ctx.error = 1;

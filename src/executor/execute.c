@@ -42,10 +42,23 @@ int	is_builtin_command(t_command *cmd)
 int	execute(t_command *cmd, t_env *env)
 {
 	int	status;
+	int	saved_stdin;
 
 	status = 0;
-	if (!cmd || !cmd->argv || !cmd->argv[0])
+	if (!cmd || !cmd->argv)
 		return (0);
+	if (!cmd->argv[0])
+	{
+		if (cmd->redirect_count > 0)
+		{
+			saved_stdin = dup(STDIN_FILENO);
+			status = handle_redirections(cmd);
+			dup2(saved_stdin, STDIN_FILENO);
+			close(saved_stdin);
+			return (status);
+		}
+		return (0);
+	}
 	if (!cmd->next)
 	{
 		if (is_builtin_command(cmd))

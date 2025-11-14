@@ -119,7 +119,7 @@ int	handle_heredoc_redirection(char *delimiter)
 		line = readline("> ");
 		if (!line)
 		{
-			write(2, "minishell: warning: here-document delimited by end-of-file\n", 58);
+			write(2, "minishell: warning: here-document delimited by end-of-file\n", 59);
 			break ;		
 		}
 		if (ft_strncmp(line, delimiter, ft_strlen(delimiter)) == 0 && line[ft_strlen(delimiter)] == '\0')
@@ -229,7 +229,6 @@ int	handle_redirections(t_command *cmd)
 	}
 	return (SUCCESS);
 }
-
 void	reset_signals_to_default(void)
 {
 	signal(SIGINT, SIG_DFL);
@@ -281,7 +280,11 @@ int	execute_external_command(t_command *cmd, t_env *env)
 		if (WIFEXITED(status))
 			return (WEXITSTATUS(status));
 		else if (WIFSIGNALED(status))
+		{
+			if (WTERMSIG(status) == SIGQUIT)
+				write(1, "Quit (core dumped)\n", 19);
 			return (128 + WTERMSIG(status));
+		}
 		else
 			return (FAILURE);
 	}
