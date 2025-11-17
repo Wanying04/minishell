@@ -1,21 +1,15 @@
 #include "minishell.h"
 
-typedef struct s_pctx
+static void	reset_ctx(t_pctx *ctx)
 {
-	char		**tokens;			// 1. Array de tokens (entrada dividida)
-	char		**args_temp;		// 2. Argumentos temporales del comando actual
-	int			args_count;			// 3. Cuántos argumentos llevamos
-	int			args_cap;			// 4. Capacidad del array args_temp
-	t_redirect	*redir_temp;		// 5. Redirecciones temporales
-	int			redir_count;		// 6. Cuántas redirecciones llevamos
-	int			redir_cap;			// 7. Capacidad del array redir_temp
-	char		*heredoc_delim;		// 8. Delimitador de heredoc (<<)
-	t_command	*head;				// 9. Primer comando de la lista
-	t_command	*curr;				// 10. Comando actual siendo construido
-	int			i;					// 11. Índice actual en tokens[]
-	int			error;				// 12. Flag de error
-	t_env		*env;				// 13. Environment variables para expansión
-}	t_pctx;
+	ctx->args_temp = NULL;
+	ctx->args_count = 0;
+	ctx->args_cap = 0;
+	ctx->heredoc_delim = NULL;
+	ctx->redir_temp = NULL;
+	ctx->redir_count = 0;
+	ctx->redir_cap = 0;
+}
 
 static int	push_arg(t_pctx *ctx, const char *tok)
 {
@@ -185,22 +179,71 @@ static void	cleanup_resources(t_pctx *ctx)
 		free_command(ctx->head);
 }
 
-static int	handle_pipe(t_pctx *ctx)
+static int	handle_semicolon(t_pctx *ctx)
 {
+	char	*next_tok;
+
 	if (ctx->args_count == 0)
 	{
-		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
+		ft_putendl_fd("minishell: syntax error near unexpected token `;'", 2);
+		ctx->error = 1;
 		return (1);
 	}
 	if (finalize_and_append(ctx))
 		return (1);
-	ctx->args_temp = NULL;
-	ctx->args_count = 0;
-	ctx->args_cap = 0;
-	ctx->heredoc_delim = NULL;
-	ctx->redir_temp = NULL;
-	ctx->redir_count = 0;
-	ctx->redir_cap = 0;
+	next_tok = ctx->tokens[ctx->i + 1];
+	if (next_tok)
+	{
+		if (ft_strncmp(next_tok, "|", 2) == 0)
+		{
+			ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
+			ctx->error = 1;
+			return (1);
+		}
+		if (ft_strncmp(next_tok, ";", 2) == 0)
+		{
+			ft_putendl_fd("minishell: syntax error near unexpected token `;'", 2);
+			ctx->error = 1;
+			return (1);
+		}
+	}
+	
+	reset_ctx(ctx);
+	return (0);
+}
+
+static int	handle_pipe(t_pctx *ctx)
+{
+	char	*next_tok;
+
+	if (ctx->args_count == 0)
+	{
+		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
+		ctx->error = 1;
+		return (1);
+	}
+	next_tok = ctx->tokens[ctx->i + 1];
+	if (!next_tok)
+	{
+		ft_putendl_fd("minishell: syntax error: unexpected end of input", 2);
+		ctx->error = 1;
+		return (1);
+	}
+	if (ft_strncmp(next_tok, ";", 2) == 0)
+	{
+		ft_putendl_fd("minishell: syntax error near unexpected token `;'", 2);
+		ctx->error = 1;
+		return (1);
+	}
+	if (ft_strncmp(next_tok, "|", 2) == 0)
+	{
+		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
+		ctx->error = 1;
+		return (1);
+	}
+	if (finalize_and_append(ctx))
+		return (1);
+	reset_ctx(ctx);
 	return (0);
 }
 
@@ -345,30 +388,26 @@ static void	init_ctx(t_pctx *ctx, char **tokens, t_env *env)
 
 static int	process_token(t_pctx *ctx, char *tok)
 {
-	if (ft_strncmp(tok, "|", 2) == 0)
-	{
-		if (handle_pipe(ctx))
-			return (1);
-		ctx->i++;
-		return (0);
-	}
-	if (ft_strncmp(tok, ">", 2) == 0 || ft_strncmp(tok, ">>", 3) == 0
-		|| ft_strncmp(tok, "<", 2) == 0 || ft_strncmp(tok, "<<", 3) == 0)
-	{
-		if (!ctx->tokens[ctx->i + 1])
-		{
-			ft_putendl_fd("minishell: syntax error near unexpected token", 2);
-			return (1);
-		}
-		if (handle_redir(ctx))
-			return (1);
-		ctx->i = ctx->i + 2;
-		return (0);
-	}
-	if (push_arg(ctx, tok))
-		return (1);
-	ctx->i++;
-	return (0);
+    if (ft_strncmp(tok, ";;", 2) == 0)
+        return (ft_putendl_fd("minishell: syntax error near unexpected token `;;'", 2),
+            ctx->error = 1, 1);
+    if (ft_strncmp(tok, ";", 2) == 0)
+        return (handle_semicolon(ctx) || (ctx->i++, 0));
+    if (ft_strncmp(tok, "|", 2) == 0)
+        return (handle_pipe(ctx) || (ctx->i++, 0));
+    if (ft_strncmp(tok, ">", 2) == 0 || ft_strncmp(tok, ">>", 3) == 0
+        || ft_strncmp(tok, "<", 2) == 0 || ft_strncmp(tok, "<<", 3) == 0)
+    {
+        if (!ctx->tokens[ctx->i + 1])
+            return (ft_putendl_fd("minishell: syntax error", 2),
+                ctx->error = 1, 1);
+        if (handle_redir(ctx))
+            return (1);
+        return (ctx->i += 2, 0);
+    }
+    if (push_arg(ctx, tok))
+        return (1);
+    return (ctx->i++, 0);
 }
 
 static void	parser_debug(t_pctx ctx)
