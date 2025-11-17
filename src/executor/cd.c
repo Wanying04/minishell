@@ -61,13 +61,13 @@ int	builtin_cd_execute(char *arg, t_env *env)
 
 	old_cwd = getcwd(NULL, 0);
 	if (!old_cwd)
-		return (perror("getcwd"), 1);
+		return (perror("minishell: cd"), 1);
 	path = get_cd_path(arg, env, &ret, &should_free);
 	if (!path)
 		return (free(old_cwd), ret);
 	if (chdir(path) != 0)
 	{
-		perror("cd");
+		perror("minishell: cd");
 		free(old_cwd);
 		if (should_free)
 			free(path);

@@ -134,7 +134,7 @@ int	handle_heredoc_redirection(char *delimiter)
 	close (pipefd[1]);
 	if (dup2(pipefd[0], STDIN_FILENO) == -1)
 	{
-		perror("dup2");
+		perror("minishell");
 		close(pipefd[0]);
 		return (FAILURE);
 	}
@@ -149,12 +149,12 @@ int	process_single_redirection(t_redirect *redir)
 		redir->fd = open(redir->file, O_RDONLY);
 		if (redir->fd == -1)
 		{
-			perror("open");
+			perror("minishell");
 			return (FAILURE);
 		}
 		if (dup2(redir->fd, STDIN_FILENO) == -1)
 		{
-			perror("dup2");
+			perror("minishell");
 			close(redir->fd);
 			return (FAILURE);
 		}
@@ -165,12 +165,12 @@ int	process_single_redirection(t_redirect *redir)
 		redir->fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (redir->fd == -1)
 		{
-			perror("open");
+			perror("minishell");
 			return (FAILURE);
 		}
 		if (dup2(redir->fd, STDOUT_FILENO) == -1)
 		{
-			perror("dup2");
+			perror("minishell");
 			close(redir->fd);
 			return (FAILURE);
 		}
@@ -181,12 +181,12 @@ int	process_single_redirection(t_redirect *redir)
 		redir->fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (redir->fd == -1)
 		{
-			perror("open");
+			perror("minishell");
 			return (FAILURE);
 		}
 		if (dup2(redir->fd, STDOUT_FILENO) == -1)
 		{
-			perror("dup2");
+			perror("minishell");
 			close(redir->fd);
 			return (FAILURE);
 		}
@@ -266,7 +266,7 @@ int	execute_external_command(t_command *cmd, t_env *env)
 	pid = fork();
 	if (pid < 0)
 	{
-		perror("fork");
+		perror("minishell: fork");
 		return (FAILURE);
 	}
 	else if (pid == 0)

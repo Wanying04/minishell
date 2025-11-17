@@ -43,7 +43,7 @@ int	builtin_export(t_command *cmd, t_env *env)
 	{
 		if (!is_valid_var_name(cmd->argv[i]))
 		{
-			printf("export: not a valid identifier\n");
+			printf("minishell: export: not a valid identifier\n");
 			return (1);
 		}
 		env_set(env, cmd->argv[i]);
@@ -63,7 +63,7 @@ int	builtin_unset(t_command *cmd, t_env *env)
 	{
 		if (!is_valid_var_name(cmd->argv[i]))
 		{
-			printf("unset: not a valid identifier\n");
+			printf("minishell: unset: not a valid identifier\n");
 			return (1);
 		}
 		env_unset(env, cmd->argv[i]);
