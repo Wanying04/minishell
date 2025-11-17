@@ -2,7 +2,7 @@
 
 int	ft_isspecial(char c)
 {
-	return (c == '|' || c == '>' || c == '<');
+	return (c == '|' || c == '>' || c == '<' || c == ';');
 }
 
 int	ft_isspace(char c)
