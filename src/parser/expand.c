@@ -125,7 +125,11 @@ char	*expand_variables(char *str, t_env *env, int in_single_quote)
 	int		i;
 	int		start;
 
-	if (!str || in_single_quote)
+	if (!str)
+		return (ft_strdup(""));
+	if (str[0] == '\x01')
+		return (ft_strdup(str + 1));
+	if (in_single_quote)
 		return (ft_strdup(str));
 	
 	result = NULL;
