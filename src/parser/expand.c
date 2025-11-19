@@ -116,29 +116,82 @@ static char	*append_literal(char *result, char *str, int start, int end)
 	return (new_result);
 }
 
+// Update quote state based on current character
+static void	update_quote_state(char c, t_quote_state *qs)
+{
+	if (c == '\x01')
+	{
+		/* Marcador de inicio de contenido de comillas simples */
+		qs->state = 1;
+	}
+	else if (c == '\x02')
+	{
+		/* Marcador de inicio de contenido de comillas dobles */
+		qs->state = 2;
+	}
+	else if (c == '\'')
+	{
+		if (qs->state == 0)
+			qs->state = 1;
+		else if (qs->state == 1)
+			qs->state = 0;
+		/* si está en 2 (dobles), no hace nada */
+	}
+	else if (c == '"')
+	{
+		if (qs->state == 0)
+			qs->state = 2;
+		else if (qs->state == 2)
+			qs->state = 0;
+		/* si está en 1 (simples), no hace nada */
+	}
+}
+
+// Check if we should expand at current position
+static int	should_expand(char c, char next, t_quote_state *qs)
+{
+	if (c != '$')
+		return (0);
+	if (!next || (!ft_isalnum(next) && next != '_'))
+		return (0);
+	/* solo se expande si NO está en comillas simples (state != 1) */
+	if (qs->state == 1)
+		return (0);
+	return (1);
+}
+
 // Expandir variables de entorno $VAR
 // Nota: NO expandir dentro de comillas simples
 char	*expand_variables(char *str, t_env *env, int in_single_quote)
 {
-	char	*result;
-	char	*var_name;
-	int		i;
-	int		start;
+	char			*result;
+	char			*var_name;
+	int				i;
+	int				start;
+	t_quote_state	qs;
 
 	if (!str)
 		return (ft_strdup(""));
-	if (str[0] == '\x01')
-		return (ft_strdup(str + 1));
 	if (in_single_quote)
 		return (ft_strdup(str));
 	
 	result = NULL;
 	i = 0;
 	start = 0;
+	qs.state = 0;
 	
 	while (str[i])
 	{
-		if (str[i] == '$' && str[i + 1] && (ft_isalnum(str[i + 1]) || str[i + 1] == '_'))
+		update_quote_state(str[i], &qs);
+		
+		if (str[i] == '\x01' || str[i] == '\x02')
+		{
+			/* Saltar el marcador sin agregarlo al resultado */
+			result = append_literal(result, str, start, i);
+			i++;
+			start = i;
+		}
+		else if (should_expand(str[i], str[i + 1], &qs))
 		{
 			// Agregar el texto literal antes del $
 			result = append_literal(result, str, start, i);

@@ -371,7 +371,8 @@ void	print_command_list(t_command *head)
 
 static void	init_ctx(t_pctx *ctx, char **tokens, t_env *env)
 {
-	ctx->tokens = tokens;
+	if (tokens)
+		ctx->tokens = tokens;
 	ctx->args_temp = NULL;
 	ctx->args_count = 0;
 	ctx->args_cap = 0;
@@ -384,6 +385,7 @@ static void	init_ctx(t_pctx *ctx, char **tokens, t_env *env)
 	ctx->i = 0;
 	ctx->error = 0;
 	ctx->env = env;
+	ctx->in_single_quotes = 0;
 }
 
 static int	process_token(t_pctx *ctx, char *tok)
