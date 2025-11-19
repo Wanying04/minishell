@@ -385,7 +385,6 @@ static void	init_ctx(t_pctx *ctx, char **tokens, t_env *env)
 	ctx->i = 0;
 	ctx->error = 0;
 	ctx->env = env;
-	ctx->in_single_quotes = 0;
 }
 
 static int	process_token(t_pctx *ctx, char *tok)

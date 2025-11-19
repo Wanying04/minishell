@@ -152,7 +152,7 @@ static int	should_expand(char c, char next, t_quote_state *qs)
 {
 	if (c != '$')
 		return (0);
-	if (!next || (!ft_isalnum(next) && next != '_'))
+	if (!next || (!ft_isalpha(next) && next != '_'))
 		return (0);
 	/* solo se expande si NO está en comillas simples (state != 1) */
 	if (qs->state == 1)
