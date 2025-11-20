@@ -49,6 +49,7 @@ typedef struct s_env
 	int		count;
 	int		capacity;
 	t_pwd	*pwd;
+	int		exit_status;
 }	t_env;
 
 typedef struct s_redirect

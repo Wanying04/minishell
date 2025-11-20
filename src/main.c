@@ -62,6 +62,11 @@ static void	process_input(char *input, t_env *env)
 			free_command(cmd_list);
 		}
 	}
+	else
+	{
+		/* Si parse_input retorna NULL, hubo un error de sintaxis */
+		env->exit_status = 2;
+	}
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -79,6 +84,8 @@ int	main(int argc, char **argv, char **envp)
 	{
 		g_sigint_received = 0;
 		input = readline("minishell$ ");
+		if (g_sigint_received)
+			env->exit_status = 130;
 		if (!input)
 		{
 			cleanup_and_exit(env);

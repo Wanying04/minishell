@@ -147,16 +147,17 @@ int	execute(t_command *cmd, t_env *env)
             continue;
         }
         
-        // Ejecutar comando (con redirecciones ya aplicadas)
-        if (is_builtin_command(current))
-            status = execute_builtins(current, env);
-        else
-            status = execute_external_command(current, env);
-        
-        // Restaurar stdin/stdout después de ejecutar
-        restore_fds(saved_stdin, saved_stdout);
-        
-        current = current->next;
+		// Ejecutar comando (con redirecciones ya aplicadas)
+		if (is_builtin_command(current))
+			status = execute_builtins(current, env);
+		else
+			status = execute_external_command(current, env);
+		
+		// Guardar el exit status
+		env->exit_status = status;
+		
+		// Restaurar stdin/stdout después de ejecutar
+		restore_fds(saved_stdin, saved_stdout);        current = current->next;
     }
     return (status);
 }

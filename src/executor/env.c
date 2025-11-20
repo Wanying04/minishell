@@ -59,6 +59,7 @@ t_env	*env_create(char **envp)
 	env = malloc(sizeof(t_env));
 	env->capacity = 100;
 	env->count = 0;
+	env->exit_status = 0;
 	env->vars = malloc(sizeof(char *) * env->capacity);
 	env->vars[0] = NULL;
 	env->pwd = malloc(sizeof(t_pwd));

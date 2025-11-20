@@ -36,6 +36,14 @@ static char	*get_var_name(char *str, int *i)
 	char	*name;
 
 	(*i)++;  // saltar el $
+	
+	// Manejar $?
+	if (str[*i] == '?')
+	{
+		(*i)++;
+		return (ft_strdup("?"));
+	}
+	
 	start = *i;
 	
 	// El nombre de variable puede ser alfanumérico o _
@@ -58,23 +66,46 @@ static char	*replace_var(char *result, char *var_name, t_env *env)
 {
 	char	*value;
 	char	*new_result;
+	char	*exit_str;
 	size_t	len;
 
-	value = env_get(env, var_name);
-	if (!value)
-		value = "";  // Si no existe, es cadena vacía
+	// Manejar $?
+	if (ft_strncmp(var_name, "?", 2) == 0)
+	{
+		exit_str = ft_itoa(env->exit_status);
+		if (!exit_str)
+			return (result);
+		value = exit_str;
+	}
+	else
+	{
+		value = env_get(env, var_name);
+		exit_str = NULL;
+		if (!value)
+			value = "";  // Si no existe, es cadena vacía
+	}
 	
 	if (!result)
+	{
+		if (exit_str)
+			return (exit_str);
 		return (ft_strdup(value));
+	}
 	
 	len = ft_strlen(result) + ft_strlen(value) + 1;
 	new_result = malloc(len);
 	if (!new_result)
+	{
+		if (exit_str)
+			free(exit_str);
 		return (result);
+	}
 	
 	ft_strlcpy(new_result, result, len);
 	ft_strlcat(new_result, value, len);
 	free(result);
+	if (exit_str)
+		free(exit_str);
 	return (new_result);
 }
 
@@ -152,7 +183,7 @@ static int	should_expand(char c, char next, t_quote_state *qs)
 {
 	if (c != '$')
 		return (0);
-	if (!next || (!ft_isalpha(next) && next != '_'))
+	if (!next || (!ft_isalpha(next) && next != '_' && next != '?'))
 		return (0);
 	/* solo se expande si NO está en comillas simples (state != 1) */
 	if (qs->state == 1)

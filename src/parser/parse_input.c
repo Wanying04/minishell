@@ -186,8 +186,8 @@ static int	handle_semicolon(t_pctx *ctx)
 	if (ctx->args_count == 0)
 	{
 		ft_putendl_fd("minishell: syntax error near unexpected token `;'", 2);
-		ctx->error = 1;
-		return (1);
+		ctx->error = 2;
+		return (2);
 	}
 	if (finalize_and_append(ctx))
 		return (1);
@@ -197,14 +197,14 @@ static int	handle_semicolon(t_pctx *ctx)
 		if (ft_strncmp(next_tok, "|", 2) == 0)
 		{
 			ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
-			ctx->error = 1;
-			return (1);
+			ctx->error = 2;
+			return (2);
 		}
 		if (ft_strncmp(next_tok, ";", 2) == 0)
 		{
 			ft_putendl_fd("minishell: syntax error near unexpected token `;'", 2);
-			ctx->error = 1;
-			return (1);
+			ctx->error = 2;
+			return (2);
 		}
 	}
 	
@@ -219,27 +219,27 @@ static int	handle_pipe(t_pctx *ctx)
 	if (ctx->args_count == 0)
 	{
 		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
-		ctx->error = 1;
-		return (1);
+		ctx->error = 2;
+		return (2);
 	}
 	next_tok = ctx->tokens[ctx->i + 1];
 	if (!next_tok)
 	{
 		ft_putendl_fd("minishell: syntax error: unexpected end of input", 2);
-		ctx->error = 1;
-		return (1);
+		ctx->error = 2;
+		return (2);
 	}
 	if (ft_strncmp(next_tok, ";", 2) == 0)
 	{
 		ft_putendl_fd("minishell: syntax error near unexpected token `;'", 2);
-		ctx->error = 1;
-		return (1);
+		ctx->error = 2;
+		return (2);
 	}
 	if (ft_strncmp(next_tok, "|", 2) == 0)
 	{
 		ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
-		ctx->error = 1;
-		return (1);
+		ctx->error = 2;
+		return (2);
 	}
 	if (finalize_and_append(ctx))
 		return (1);
@@ -267,7 +267,8 @@ static int	handle_redir(t_pctx *ctx)
 	if (!ctx->tokens[idx] || ft_isspecial(ctx->tokens[idx][0]))
 	{
 		ft_putendl_fd("minishell: syntax error near unexpected token", 2);
-		return (1);
+		ctx->error = 2;
+		return (2);
 	}
 	if (type == REDIR_HEREDOC)
 		ctx->heredoc_delim = ft_strdup(ctx->tokens[idx]);
@@ -391,7 +392,7 @@ static int	process_token(t_pctx *ctx, char *tok)
 {
     if (ft_strncmp(tok, ";;", 2) == 0)
         return (ft_putendl_fd("minishell: syntax error near unexpected token `;;'", 2),
-            ctx->error = 1, 1);
+            ctx->error = 2, 2);
     if (ft_strncmp(tok, ";", 2) == 0)
         return (handle_semicolon(ctx) || (ctx->i++, 0));
     if (ft_strncmp(tok, "|", 2) == 0)
@@ -401,7 +402,7 @@ static int	process_token(t_pctx *ctx, char *tok)
     {
         if (!ctx->tokens[ctx->i + 1])
             return (ft_putendl_fd("minishell: syntax error", 2),
-                ctx->error = 1, 1);
+                ctx->error = 2, 2);
         if (handle_redir(ctx))
             return (1);
         return (ctx->i += 2, 0);
@@ -467,7 +468,8 @@ t_command	*parse_input(char *input, t_env *env)
 	{
 		if (process_token(&ctx, ctx.tokens[ctx.i]))
 		{
-			ctx.error = 1;
+			if (ctx.error == 0)
+				ctx.error = 1;
 			break ;
 		}
 	}
