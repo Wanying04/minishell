@@ -35,18 +35,13 @@ static char	*get_var_name(char *str, int *i)
 	int		len;
 	char	*name;
 
-	(*i)++;  // saltar el $
-	
-	// Manejar $?
+	(*i)++;
 	if (str[*i] == '?')
 	{
 		(*i)++;
 		return (ft_strdup("?"));
 	}
-	
 	start = *i;
-	
-	// El nombre de variable puede ser alfanumérico o _
 	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
 		(*i)++;
 	
@@ -83,8 +78,7 @@ static char	*replace_var(char *result, char *var_name, t_env *env)
 		exit_str = NULL;
 		if (!value)
 			value = "";  // Si no existe, es cadena vacía
-	}
-	
+	}   
 	if (!result)
 	{
 		if (exit_str)
@@ -205,12 +199,10 @@ char	*expand_variables(char *str, t_env *env, int in_single_quote)
 		return (ft_strdup(""));
 	if (in_single_quote)
 		return (ft_strdup(str));
-	
 	result = NULL;
 	i = 0;
 	start = 0;
 	qs.state = 0;
-	
 	while (str[i])
 	{
 		update_quote_state(str[i], &qs);
@@ -226,7 +218,7 @@ char	*expand_variables(char *str, t_env *env, int in_single_quote)
 		{
 			// Agregar el texto literal antes del $
 			result = append_literal(result, str, start, i);
-			
+
 			// Obtener el nombre de la variable
 			var_name = get_var_name(str, &i);
 			if (var_name)
@@ -239,11 +231,47 @@ char	*expand_variables(char *str, t_env *env, int in_single_quote)
 		else
 			i++;
 	}
-	
+
 	// Agregar el resto del texto
 	result = append_literal(result, str, start, i);
-	
+
 	if (!result)
 		return (ft_strdup(""));
 	return (result);
+}
+
+// Expandir variables en heredoc (siempre expande, ignora comillas)
+char	*expand_heredoc(char *str, t_env *env)
+{
+    char	*result;
+    char	*var_name;
+    int		i;
+    int		start;
+
+    if (!str)
+        return (ft_strdup(""));
+    result = NULL;
+    i = 0;
+    start = 0;
+    while (str[i])
+    {
+        if (str[i] == '$' && str[i + 1] && 
+            (ft_isalpha(str[i + 1]) || str[i + 1] == '_' || str[i + 1] == '?'))
+        {
+            result = append_literal(result, str, start, i);
+            var_name = get_var_name(str, &i);
+            if (var_name)
+            {
+                result = replace_var(result, var_name, env);
+                free(var_name);
+            }
+            start = i;
+        }
+        else
+            i++;
+    }
+    result = append_literal(result, str, start, i);
+    if (!result)
+        return (ft_strdup(""));
+    return (result);
 }

@@ -20,7 +20,7 @@ int		is_builtin_command(t_command *cmd);
 
 // ============ Redirections.c - Redirections and external commands ============
 int		redirections(void);
-int		handle_redirections(t_command *cmd);
+int		handle_redirections(t_command *cmd, t_env *env);
 int		execute_external_command(t_command *cmd, t_env *env);
 
 // ============ Builtins.c - Built-in commands ============

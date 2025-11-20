@@ -98,5 +98,6 @@ int		execute(t_command *cmd, t_env *env);
 char	*expand_tilde(char *path, t_env *env);
 // expand_variables expands $VAR with environment variables
 char	*expand_variables(char *str, t_env *env, int in_single_quote);
+char	*expand_heredoc(char *str, t_env *env);
 
 #endif

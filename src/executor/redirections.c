@@ -104,15 +104,16 @@ char	*find_command_path(char *cmd, t_env *env)
 // dup2(pipefd[0], STDIN_FILENO) 重定向输入
 // 关闭管道读端
 
-int	handle_heredoc_redirection(char *delimiter)
+int	handle_heredoc_redirection(char *delimiter, t_env *env)
 {
 	int		pipefd[2];
 	char	*line;
+	char	*expanded;
 
 	if (pipe(pipefd) == -1)
 	{
 		write(2, "minishell: pipe creation failed\n", 32);
-		return (FAILURE);
+		return (-1);
 	}
 	while (1)
 	{
@@ -127,24 +128,33 @@ int	handle_heredoc_redirection(char *delimiter)
 			free (line);
 			break ;
 		}
-		write(pipefd[1], line, ft_strlen(line));
+		expanded = expand_heredoc(line, env);
+		write(pipefd[1], expanded, ft_strlen(expanded));
 		write(pipefd[1], "\n", 1);
 		free(line);
+		free(expanded);
 	}
 	close (pipefd[1]);
-	if (dup2(pipefd[0], STDIN_FILENO) == -1)
-	{
-		perror("dup2");
-		close(pipefd[0]);
-		return (FAILURE);
-	}
-	close (pipefd[0]);
-	return (SUCCESS);
+	// Retornar el FD de lectura del pipe, NO hacer dup2 aquí
+	return (pipefd[0]);
 }
 
 int	process_single_redirection(t_redirect *redir)
 {
-	if (redir->type == REDIR_IN)
+	if (redir->type == REDIR_HEREDOC)
+	{
+		// Para heredoc, el FD ya fue creado en handle_heredoc_redirection
+		if (redir->fd == -1)
+			return (FAILURE);
+		if (dup2(redir->fd, STDIN_FILENO) == -1)
+		{
+			perror("dup2");
+			return (FAILURE);
+		}
+		// NO cerrar el FD aquí, podría necesitarse si handle_redirections se llama múltiples veces
+		return (SUCCESS);
+	}
+	else if (redir->type == REDIR_IN)
 	{
 		redir->fd = open(redir->file, O_RDONLY);
 		if (redir->fd == -1)
@@ -200,31 +210,32 @@ int	process_single_redirection(t_redirect *redir)
 	return (SUCCESS);
 }
 
-int	handle_redirections(t_command *cmd)
+int	handle_redirections(t_command *cmd, t_env *env)
 {
 	int	i;
 	int	result;
 
+	// Procesar heredocs solo si aún no han sido procesados (fd == -1)
 	i = 0;
 	while(i < cmd->redirect_count)
 	{
-		if (cmd->redirects[i].type == REDIR_HEREDOC)
+		if (cmd->redirects[i].type == REDIR_HEREDOC && cmd->redirects[i].fd == -1)
 		{
-			result = handle_heredoc_redirection(cmd->redirects[i].file);
-			if (result != SUCCESS)
+			result = handle_heredoc_redirection(cmd->redirects[i].file, env);
+			if (result < 0)
 				return (FAILURE);
+			// Guardar el FD del pipe para usarlo después
+			cmd->redirects[i].fd = result;
 		}
 		i++;
 	}
+	// Aplicar todas las redirecciones (incluyendo heredocs)
 	i = 0;
 	while(i < cmd->redirect_count)
 	{
-		if (cmd->redirects[i].type != REDIR_HEREDOC)
-		{
-			result = process_single_redirection(&cmd->redirects[i]);
-			if (result != SUCCESS)
-				return (FAILURE);
-		}
+		result = process_single_redirection(&cmd->redirects[i]);
+		if (result != SUCCESS)
+			return (FAILURE);
 		i++;
 	}
 	return (SUCCESS);
@@ -240,7 +251,7 @@ void	child_process(t_command *cmd, t_env *env)
 	char	*path;
 
 	reset_signals_to_default();
-	if (handle_redirections(cmd) != SUCCESS)
+	if (handle_redirections(cmd, env) != SUCCESS)
 		exit (EXIT_FAILURE);
 	path = find_command_path(cmd->argv[0], env);
 	if (!path)

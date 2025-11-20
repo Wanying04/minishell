@@ -53,7 +53,7 @@ static void	restore_fds(int saved_stdin, int saved_stdout)
     }
 }
 
-static int	setup_redirections(t_command *cmd, int *saved_stdin, int *saved_stdout)
+static int	setup_redirections(t_command *cmd, int *saved_stdin, int *saved_stdout, t_env *env)
 {
     *saved_stdin = -1;
     *saved_stdout = -1;
@@ -69,7 +69,7 @@ static int	setup_redirections(t_command *cmd, int *saved_stdin, int *saved_stdou
             return (1);
         }
         
-        if (handle_redirections(cmd) != 0)
+        if (handle_redirections(cmd, env) != 0)
         {
             restore_fds(*saved_stdin, *saved_stdout);
             return (1);
@@ -101,7 +101,7 @@ int	execute(t_command *cmd, t_env *env)
      *   Lista: [cmd1: echo] → [cmd2: cat] → [cmd3: wc]
      *   TODO: Detectar que cmd->next forma un pipeline y llamar:
      *         execute_pipeline(current, env);
-     *   
+     *
      * Nota: El parser NO diferencia entre ; y | en la lista enlazada.
      *       Ambos crean una lista: cmd1 → cmd2 → cmd3
      *       El executor debe determinar si hay pipes mirando algún flag
@@ -121,7 +121,7 @@ int	execute(t_command *cmd, t_env *env)
             if (current->redirect_count > 0)
             {
                 saved_stdin = dup(STDIN_FILENO);
-                status = handle_redirections(current);
+                status = handle_redirections(current, env);
                 dup2(saved_stdin, STDIN_FILENO);
                 close(saved_stdin);
             }
@@ -140,7 +140,7 @@ int	execute(t_command *cmd, t_env *env)
         // }
         
         // Aplicar redirecciones ANTES de ejecutar (tanto builtin como external)
-        if (setup_redirections(current, &saved_stdin, &saved_stdout))
+        if (setup_redirections(current, &saved_stdin, &saved_stdout, env))
         {
             status = 1;
             current = current->next;
