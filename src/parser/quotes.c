@@ -10,7 +10,7 @@ int	ft_get_quoted_size(char *input, int *i)
 	(*i)++;  // Skip the opening quote
 	while (input[*i])
 	{
-		if (input[*i] == quote && input[*i - 1] != '\\')
+		if (input[*i] == quote)
 			break ;
 		size++;
 		(*i)++;
@@ -30,23 +30,22 @@ char	*ft_get_quoted_token(char *input, int *i)
 	quote = input[*i];
 	j = *i + 1;
 	size = 0;
-	while (input[j] && (input[j] != quote || input[j - 1] == '\\'))
+	while (input[j] && input[j] != quote)
 	{
-		if (!(input[j - 1] == '\\' && quote == '"'))
-			size++;
+		size++;
 		j++;
 	}
-	token = malloc(size + 1);
+	token = malloc(size + 2);
 	if (!token)
 		return (NULL);
 	(*i)++;
 	j = 0;
-	while (input[*i] && (input[*i] != quote || (input[*i - 1] == '\\' && quote == '"')))
-	{
-		if (input[*i] == '\\' && input[*i + 1] && quote == '"')
-			(*i)++;
+	if (quote == '\'')
+		token[j++] = '\x01';
+	else if (quote == '"')
+		token[j++] = '\x02';
+	while (input[*i] && input[*i] != quote)
 		token[j++] = input[(*i)++];
-	}
 	if (input[*i])
 		(*i)++;
 	token[j] = '\0';
@@ -59,7 +58,7 @@ int	ft_skip_quoted_section(char *input, int *i)
 
 	quote = input[*i];
 	(*i)++;
-	while (input[*i] && (input[*i] != quote || input[*i - 1] == '\\'))
+	while (input[*i] && input[*i] != quote)
 		(*i)++;
 	if (input[*i])
 		(*i)++;

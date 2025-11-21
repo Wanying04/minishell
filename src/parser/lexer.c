@@ -117,10 +117,19 @@ char	**ft_split_tokens(char *input)
 		ft_putendl_fd("minishell: syntax error: unclosed quotes", 2);
 		return (NULL);
 	}
-	if (ft_check_escape_chars(input))
+	// Check for invalid characters: '\\' and ';'
+	for (int j = 0; input[j]; j++)
 	{
-		ft_putendl_fd("minishell: syntax error: invalid escape sequence", 2);
-		return (NULL);
+		if (input[j] == '\\')
+		{
+			ft_putendl_fd("minishell: syntax error: invalid character '\\'", 2);
+			return (NULL);
+		}
+		if (input[j] == ';')
+		{
+			ft_putendl_fd("minishell: syntax error: invalid character ';'", 2);
+			return (NULL);
+		}
 	}
 	token_count = ft_count_tokens(input);
 	tokens = malloc(sizeof(char *) * (token_count + 1));

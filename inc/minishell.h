@@ -49,6 +49,7 @@ typedef struct s_env
 	int		count;
 	int		capacity;
 	t_pwd	*pwd;
+	int		exit_status;
 }	t_env;
 
 typedef struct s_redirect
@@ -68,6 +69,13 @@ typedef struct s_command
 	int		is_builtin;
 	char	*heredoc_delimiter;
 }	t_command;
+
+// Parser state for quote handling
+// 0 = OUTSIDE, 1 = INSIDE_SINGLE_QUOTES, 2 = INSIDE_DOUBLE_QUOTES
+typedef struct s_quote_state
+{
+	int	state;
+}	t_quote_state;
 
 // ============ Signals (main.c) ============
 void	setup_signals(void);
@@ -90,5 +98,6 @@ int		execute(t_command *cmd, t_env *env);
 char	*expand_tilde(char *path, t_env *env);
 // expand_variables expands $VAR with environment variables
 char	*expand_variables(char *str, t_env *env, int in_single_quote);
+char	*expand_heredoc(char *str, t_env *env);
 
 #endif
