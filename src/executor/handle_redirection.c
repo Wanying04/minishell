@@ -21,4 +21,42 @@ typedef struct s_redirect
 	char	*file;
 }	t_redirect;
 
-int	handle_
+typedef struct s_redir_config
+{
+	char	*final_input;
+	char	*final_output;
+	char	**delimiters;
+	int		output_mode;
+	int		delim_count;
+}	t_redir_config;
+
+int	handle_redirections(t_command *cmd)
+{
+	t_redir_config	redir_config;
+
+	ft_memset(&redir_config, 0, sizeof(redir_config));
+	if (analyze_redirections(cmd, &redir_config) != SUCCESS)
+		return (FAILURE);
+	if (execute_redirections(cmd, &redir_config) != SUCCESS)
+	{
+		cleanup_redirections(&redir_config);
+		return (FAILURE);
+	}
+	cleanup_redirections(&redir_config);
+	return (SUCCESS);
+}
+
+int	analyze_redirections(t_command *cmd, t_redir_config *config)
+{
+
+}
+
+int	execute_redirections(t_command *cmd, t_redir_config *config)
+{
+
+}
+
+void	cleanup_redirections(t_redir_config *config)
+{
+
+}
