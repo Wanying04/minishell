@@ -48,7 +48,58 @@ int	handle_redirections(t_command *cmd)
 
 int	analyze_redirections(t_command *cmd, t_redir_config *config)
 {
+	int	i;
+	int	final_input_exists;
+	int	final_output_exists;
 
+	if (!cmd || !cmd->argv || !cmd->argv[0])
+		return (FAILURE);
+	final_input_exists = 0;
+	final_output_exists = 0;
+	if (cmd->redirects[cmd->redirect_count - 1].type == REDIR_IN || cmd->redirects[cmd->redirect_count - 1].type == REDIR_HEREDOC)
+	{
+		config->final_input = cmd->redirects[cmd->redirect_count - 1].file;
+		i = 1;
+		while (i < cmd->redirect_count)
+		{
+			if (cmd->redirects[cmd->redirect_count - 1 - i].type == REDIR_OUT || cmd->redirects[cmd->redirect_count - 1 - i].type == REDIR_APPEND)
+			{
+				config->final_output = cmd->redirects[cmd->redirect_count - 1 - i].file;
+				final_output_exists = 1;
+				break ;
+			}
+			i++;
+		}
+		if (!final_output_exists)
+			config->final_output = NULL;
+	}
+	else
+	{
+		config->final_output = cmd->redirects[cmd->redirect_count - 1].file;
+		i = 1;
+		while (i < cmd->redirect_count)
+		{
+			if (cmd->redirects[cmd->redirect_count - 1 - i].type == REDIR_IN || cmd->redirects[cmd->redirect_count - 1].type == REDIR_HEREDOC)
+			{
+				config->final_input = cmd->redirects[cmd->redirect_count - 1 - i].file;
+				final_input_exists = 1;
+				break ;
+			}
+			i++;
+		}
+		if (!final_input_exists)
+			config->final_input = NULL;
+	}
+	i = 0;
+	while (i < cmd->redirect_count)
+	{
+		if (cmd->redirects[i].type == REDIR_HEREDOC)
+		{
+			config->delimiters[i] = cmd->redirects[i].file;
+			config->delim_count++;
+		}
+		i++;
+	}
 }
 
 int	execute_redirections(t_command *cmd, t_redir_config *config)
