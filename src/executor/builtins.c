@@ -32,7 +32,7 @@ int	builtin_pwd(t_command *cmd)
 
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
-		perror("pwd");
+		perror("minishell: pwd");
 		return (1);
 	}
 	printf("%s\n", cwd);

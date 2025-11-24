@@ -46,4 +46,7 @@ int		builtin_cd(t_command *cmd, t_env *env);
 // ============ Env.c - Environment management internal functions ============
 void	env_expand(t_env *env);
 
+char 	**env_to_array(t_env *env);
+char	*find_command_path(char *cmd, t_env *env);
+
 #endif
