@@ -274,17 +274,6 @@ static int	handle_redir(t_pctx *ctx)
 		ctx->heredoc_delim = ft_strdup(ctx->tokens[idx]);
 	if (push_redir(ctx, ctx->tokens[idx], type))
 			return (1);
-	/* if (type == REDIR_HEREDOC)
-	{
-		if (ctx->heredoc_delim)
-			free(ctx->heredoc_delim);
-		ctx->heredoc_delim = ft_strdup(ctx->tokens[idx]);
-	}
-	else
-	{
-		if (push_redir(ctx, ctx->tokens[idx], type))
-			return (1);
-	} */
 	return (0);
 }
 
