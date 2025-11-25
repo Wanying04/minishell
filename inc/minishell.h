@@ -71,13 +71,6 @@ typedef struct s_command
 	char	*heredoc_delimiter;
 }	t_command;
 
-// Parser state for quote handling
-// 0 = OUTSIDE, 1 = INSIDE_SINGLE_QUOTES, 2 = INSIDE_DOUBLE_QUOTES
-typedef struct s_quote_state
-{
-	int	state;
-}	t_quote_state;
-
 // ============ Signals (main.c) ============
 void	setup_signals(void);
 void	handle_signal(int sig);

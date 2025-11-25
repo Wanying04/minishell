@@ -13,12 +13,12 @@ LIBFT_A		:= $(LIBFT_DIR)/libft.a
 # Source files
 LIBFT_SRCS	:= $(wildcard $(LIBFT_DIR)/*.c)
 MAIN_SRCS	:= $(wildcard $(SRC_DIR)/*.c)
-PARSER_SRCS	:= $(wildcard $(SRC_DIR)/parser/*.c)
+PARSER_SRCS	:= $(shell find $(SRC_DIR)/parser -name '*.c')
 EXECUTOR_SRCS:= $(wildcard $(SRC_DIR)/executor/*.c)
 
 # Object files
 MAIN_OBJS	:= $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(MAIN_SRCS))
-PARSER_OBJS	:= $(patsubst $(SRC_DIR)/parser/%.c,$(OBJ_DIR)/parser/%.o,$(PARSER_SRCS))
+PARSER_OBJS	:= $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(PARSER_SRCS))
 EXECUTOR_OBJS:= $(patsubst $(SRC_DIR)/executor/%.c,$(OBJ_DIR)/executor/%.o,$(EXECUTOR_SRCS))
 
 # All objects combined
@@ -37,16 +37,11 @@ $(LIBFT_A): $(LIBFT_SRCS)
 	@$(MAKE) --no-print-directory -C $(LIBFT_DIR)
 	@echo "-------------------------------"
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(INCLUDE) -MMD -MP -c $< -o $@
 
-$(OBJ_DIR)/parser/%.o: $(SRC_DIR)/parser/%.c | $(OBJ_DIR)/parser
-	@$(CC) $(CFLAGS) $(INCLUDE) -MMD -MP -c $< -o $@
-
-$(OBJ_DIR)/executor/%.o: $(SRC_DIR)/executor/%.c | $(OBJ_DIR)/executor
-	@$(CC) $(CFLAGS) $(INCLUDE) -MMD -MP -c $< -o $@
-
-$(OBJ_DIR) $(OBJ_DIR)/parser $(OBJ_DIR)/executor:
+$(OBJ_DIR):
 	@mkdir -p $@
 
 clean:

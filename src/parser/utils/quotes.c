@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   quotes.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/25 15:18:30 by albarrei          #+#    #+#             */
+/*   Updated: 2025/11/25 15:38:45 by albarrei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	ft_get_quoted_size(char *input, int *i)
@@ -7,7 +19,7 @@ int	ft_get_quoted_size(char *input, int *i)
 
 	quote = input[*i];
 	size = 0;
-	(*i)++;  // Skip the opening quote
+	(*i)++;
 	while (input[*i])
 	{
 		if (input[*i] == quote)
@@ -15,7 +27,7 @@ int	ft_get_quoted_size(char *input, int *i)
 		size++;
 		(*i)++;
 	}
-	if (input[*i])  // Skip the closing quote if found
+	if (input[*i])
 		(*i)++;
 	return (size);
 }
@@ -49,25 +61,18 @@ char	*ft_get_quoted_token(char *input, int *i)
 
 	quote = input[*i];
 	token = NULL;
-	
-	// Agregar marcador de tipo de comilla
 	if (quote == '\'')
 		token = append_char(token, '\x01');
 	else if (quote == '"')
 		token = append_char(token, '\x02');
-	
-	(*i)++;  // Saltar la comilla de apertura
-	
-	// Copiar contenido hasta encontrar la comilla de cierre
+	(*i)++;
 	while (input[*i] && input[*i] != quote)
 	{
 		token = append_char(token, input[*i]);
 		(*i)++;
 	}
-	
 	if (input[*i] == quote)
-		(*i)++;  // Saltar la comilla de cierre
-	
+		(*i)++;
 	if (!token)
 		return (ft_strdup(""));
 	return (token);
