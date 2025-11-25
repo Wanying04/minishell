@@ -20,35 +20,56 @@ int	ft_get_quoted_size(char *input, int *i)
 	return (size);
 }
 
+static char	*append_char(char *str, char c)
+{
+	char	*new;
+	int		len;
+
+	if (!str)
+		len = 0;
+	else
+		len = ft_strlen(str);
+	new = malloc(len + 2);
+	if (!new)
+		return (str);
+	if (str)
+	{
+		ft_strlcpy(new, str, len + 1);
+		free(str);
+	}
+	new[len] = c;
+	new[len + 1] = '\0';
+	return (new);
+}
+
 char	*ft_get_quoted_token(char *input, int *i)
 {
 	char	quote;
 	char	*token;
-	int		size;
-	int		j;
 
 	quote = input[*i];
-	j = *i + 1;
-	size = 0;
-	while (input[j] && input[j] != quote)
-	{
-		size++;
-		j++;
-	}
-	token = malloc(size + 2);
-	if (!token)
-		return (NULL);
-	(*i)++;
-	j = 0;
+	token = NULL;
+	
+	// Agregar marcador de tipo de comilla
 	if (quote == '\'')
-		token[j++] = '\x01';
+		token = append_char(token, '\x01');
 	else if (quote == '"')
-		token[j++] = '\x02';
+		token = append_char(token, '\x02');
+	
+	(*i)++;  // Saltar la comilla de apertura
+	
+	// Copiar contenido hasta encontrar la comilla de cierre
 	while (input[*i] && input[*i] != quote)
-		token[j++] = input[(*i)++];
-	if (input[*i])
+	{
+		token = append_char(token, input[*i]);
 		(*i)++;
-	token[j] = '\0';
+	}
+	
+	if (input[*i] == quote)
+		(*i)++;  // Saltar la comilla de cierre
+	
+	if (!token)
+		return (ft_strdup(""));
 	return (token);
 }
 

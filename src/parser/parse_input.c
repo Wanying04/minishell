@@ -9,6 +9,7 @@ static void	reset_ctx(t_pctx *ctx)
 	ctx->redir_temp = NULL;
 	ctx->redir_count = 0;
 	ctx->redir_cap = 0;
+	ctx->is_in_pipe = 0;
 }
 
 static int	push_arg(t_pctx *ctx, const char *tok)
@@ -130,6 +131,7 @@ static t_command	*create_node_from_ctx(t_pctx *ctx)
 	node->heredoc_delimiter = ctx->heredoc_delim;
 	ctx->heredoc_delim = NULL;
 	node->is_builtin = 0;
+	node->is_piped = ctx->is_in_pipe;
 	node->next = NULL;
 	node->prev = NULL;
 	ctx->args_temp = NULL;
@@ -241,9 +243,11 @@ static int	handle_pipe(t_pctx *ctx)
 		ctx->error = 2;
 		return (2);
 	}
+	ctx->is_in_pipe = 1;
 	if (finalize_and_append(ctx))
 		return (1);
 	reset_ctx(ctx);
+	ctx->is_in_pipe = 1;
 	return (0);
 }
 
@@ -375,6 +379,7 @@ static void	init_ctx(t_pctx *ctx, char **tokens, t_env *env)
 	ctx->i = 0;
 	ctx->error = 0;
 	ctx->env = env;
+	ctx->is_in_pipe = 0;
 }
 
 static int	process_token(t_pctx *ctx, char *tok)

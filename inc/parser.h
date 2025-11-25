@@ -21,6 +21,7 @@ typedef struct s_pctx
 	int			i;					// 11. Índice actual en tokens[]
 	int			error;				// 12. Flag de error
 	t_env		*env;				// 13. Environment variables para expansión
+	int			is_in_pipe;			// 14. Flag: comando actual es parte de un pipe
 }	t_pctx;
 
 // ============ Funciones principales del Parser ============
