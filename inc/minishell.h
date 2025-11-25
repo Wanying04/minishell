@@ -67,6 +67,7 @@ typedef struct s_command
 	struct s_command	*next;
 	struct s_command	*prev;
 	int		is_builtin;
+	int		is_piped;
 	char	*heredoc_delimiter;
 }	t_command;
 
