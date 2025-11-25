@@ -8,6 +8,7 @@
 typedef struct s_command
 {
 	char	**argv;
+	int		is_piped;
 	int		is_builtin;
 	int		redirect_count;
 	t_redirect	*redirects;
