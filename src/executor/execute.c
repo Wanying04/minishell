@@ -8,7 +8,7 @@ int	execute(t_command *cmd, t_env *env)
 		return (handle_redirections_only(cmd));
 	if (!cmd->argv[0])
 		return (0);
-	if (cmd->is_piped == 1 || (cmd->next && cmd->next->is_piped == 1))
+	if (cmd->is_piped == 1)
 		return (execute_pipeline(cmd, env));
 	else
 		return (execute_single_command(cmd, env));
