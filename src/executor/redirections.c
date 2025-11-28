@@ -1,15 +1,17 @@
 #include "minishell.h"
 
-// Heredoc (<<) 实现步骤：
-// pipe(pipefd) 创建管道
-// 循环读取用户输入：
-// 显示提示符
-// 读取一行输入
-// 如果输入 == 分隔符：退出循环
-// 否则：写入管道
-// 关闭管道写端
-// dup2(pipefd[0], STDIN_FILENO) 重定向输入
-// 关闭管道读端
+/*
+ * Heredoc (<<) implementation steps:
+ * pipe(pipefd) - create pipe
+ * Loop reading user input:
+ *   - Display prompt
+ *   - Read a line
+ *   - If input == delimiter: exit loop
+ *   - Otherwise: write to pipe
+ * Close pipe write end
+ * dup2(pipefd[0], STDIN_FILENO) - redirect input
+ * Close pipe read end
+ */
 
 int	handle_heredoc_redirection(char *delimiter, t_env *env)
 {
@@ -42,7 +44,7 @@ int	handle_heredoc_redirection(char *delimiter, t_env *env)
 		free(expanded);
 	}
 	close (pipefd[1]);
-	// Retornar el FD de lectura del pipe, NO hacer dup2 aquí
+	// Return the read FD of the pipe, do NOT do dup2 here
 	return (pipefd[0]);
 }
 
@@ -50,7 +52,7 @@ int	process_single_redirection(t_redirect *redir)
 {
 	if (redir->type == REDIR_HEREDOC)
 	{
-		// Para heredoc, el FD ya fue creado en handle_heredoc_redirection
+		// For heredoc, the FD was already created in handle_heredoc_redirection
 		if (redir->fd == -1)
 			return (FAILURE);
 		if (dup2(redir->fd, STDIN_FILENO) == -1)
@@ -58,7 +60,7 @@ int	process_single_redirection(t_redirect *redir)
 			perror("dup2");
 			return (FAILURE);
 		}
-		// NO cerrar el FD aquí, podría necesitarse si handle_redirections se llama múltiples veces
+		// Do NOT close the FD here, it might be needed if handle_redirections is called multiple times
 		return (SUCCESS);
 	}
 	else if (redir->type == REDIR_IN)
@@ -122,23 +124,23 @@ int	handle_redirections(t_command *cmd, t_env *env)
 	int	i;
 	int	result;
 
-	// Procesar heredocs solo si aún no han sido procesados (fd == -1)
+	// Process heredocs only if not yet processed (fd == -1)
 	i = 0;
-	while(i < cmd->redirect_count)
+	while (i < cmd->redirect_count)
 	{
 		if (cmd->redirects[i].type == REDIR_HEREDOC && cmd->redirects[i].fd == -1)
 		{
 			result = handle_heredoc_redirection(cmd->redirects[i].file, env);
 			if (result < 0)
 				return (FAILURE);
-			// Guardar el FD del pipe para usarlo después
+			// Save pipe FD for later use
 			cmd->redirects[i].fd = result;
 		}
 		i++;
 	}
-	// Aplicar todas las redirecciones (incluyendo heredocs)
+	// Apply all redirections (including heredocs)
 	i = 0;
-	while(i < cmd->redirect_count)
+	while (i < cmd->redirect_count)
 	{
 		result = process_single_redirection(&cmd->redirects[i]);
 		if (result != SUCCESS)
