@@ -64,12 +64,16 @@ int	execute_single_command(t_command *cmd, t_env *env)
 	int	saved_stdout;
 	int	status;
 
-	if (setup_redirections(cmd, &saved_stdin, &saved_stdout, env) != SUCCESS)
-		return (FAILURE);
-	if (is_builtin_command(cmd))
+	if (is_builtin_command(cmd) == SUCCESS)
+	{
+		if (setup_redirections(cmd, &saved_stdin, &saved_stdout, env) != SUCCESS)
+			return (FAILURE);
 		status = execute_builtins(cmd, env);
+		restore_fds(saved_stdin, saved_stdout);
+	}
 	else
+	{
 		status = execute_external_command(cmd, env);
-	restore_fds(saved_stdin, saved_stdout);
+	}
 	return (status);
 }
