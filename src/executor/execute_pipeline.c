@@ -23,7 +23,7 @@ void	execute_pipeline_command(t_command *cmd, t_env *env)
 {
 	int	status;
 
-	if (is_builtin_command(cmd))
+	if (is_builtin_command(cmd) == SUCCESS)
 	{
 		status = execute_builtins(cmd, env);
 		exit(status);
