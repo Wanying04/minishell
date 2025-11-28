@@ -1,56 +1,110 @@
 #include "minishell.h"
 
+int	is_valid_pipeline(t_command *cmd)
+{
+	while (cmd->next && cmd->is_piped == 1)
+	{
+		if (!cmd || !cmd->argv || !cmd->argv[0])
+		{
+			ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", STDERR_FILENO);
+			return (FAILURE);
+		}
+		cmd = cmd->next;
+	}
+	if (!cmd || !cmd->argv || !cmd->argv[0])
+	{
+		ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", STDERR_FILENO);
+		return (FAILURE);
+	}
+	return (SUCCESS);
+}
+
+void	execute_pipeline_command(t_command *cmd, t_env *env)
+{
+	int	status;
+
+	if (is_builtin_command(cmd))
+	{
+		status = execute_builtins(cmd, env);
+		exit(status);
+	}
+	else
+		child_process(cmd, env);
+}
+
+void	setup_child_pipe_io(int in_fd, int pipefd[2], t_command *cmd)
+{
+	if (in_fd != STDIN_FILENO)
+	{
+		dup2(in_fd, STDIN_FILENO);
+		close(in_fd);
+	}
+	if (cmd->next)
+	{
+		dup2(pipefd[1], STDOUT_FILENO);
+		close(pipefd[1]);
+	}
+	if (cmd->next)
+		close(pipefd[0]);
+}
+
+void	manage_parent_process(int *in_fd, int pipefd[2], t_command *cmd)
+{
+	if (*in_fd != STDIN_FILENO)
+		close(*in_fd);
+	if (cmd->next)
+	{
+		close(pipefd[1]);
+		*in_fd = pipefd[0];
+	}	
+}
+
+int	wait_for_all(void)
+{
+	int	status;
+	int	last_status;
+
+	last_status = 0;
+	while (wait(&status) > 0)
+	{
+		if (WIFEXITED(status))
+			last_status = WEXITSTATUS(status);
+	}
+	if (last_status == 0)
+		return (SUCCESS);
+	return (FAILURE);
+}
+
+int	execute_pipeline_core(t_command *cmd, t_env *env)
+{
+	int		in_fd;
+	int		pipefd[2];
+	pid_t	pid;
+
+	in_fd = STDIN_FILENO;
+	while (cmd)
+	{
+		if (cmd->next && pipe(pipefd) == -1)
+			return (perror("pipe"), FAILURE);
+		if ((pid = fork()) == -1)
+			return (perror("fork"), FAILURE);
+		if (pid == 0)
+		{
+			setup_child_pipe_io(in_fd, pipefd, cmd);
+			execute_pipeline_command(cmd, env);
+			exit (EXIT_FAILURE);
+		}
+		manage_parent_process(&in_fd, pipefd, cmd);
+		cmd = cmd->next;
+	}
+	return (wait_for_all());
+}
+
 int	execute_pipeline(t_command *cmd, t_env *env)
 {
-	
-}
-
-// 在 execute_pipeline 中处理：
-// - 不完整管道 "cmd |"
-// - 空命令管道 " | cmd"  
-// - 多级管道 "cmd1 | cmd2 | cmd3"
-// - 管道错误处理
-
-// 管道函数处理所有管道相关边界情况
-int execute_pipeline(t_command *first_cmd, t_env *env)
-{
-    // 检查管道完整性
-    // 创建进程和管道
-    // 处理管道错误
-    // 等待子进程
-    // 返回统一状态码
-}
-
-int execute_pipeline(t_command *first_cmd, t_env *env)
-{
-    t_command *current = first_cmd;
-    t_command *last_valid_cmd = NULL;
-    
-    // 找到管道中最后一个有效的命令
-    while (current)
-    {
-        if (current->argv && current->argv[0])
-            last_valid_cmd = current;
-        
-        // 如果遇到管道符但下一个命令无效
-        if (current->is_piped && 
-            (!current->next || !current->next->argv || !current->next->argv[0]))
-        {
-            // 模仿 bash：执行到最后一个有效命令，然后报错
-            if (last_valid_cmd)
-            {
-                // 执行有效的管道部分
-                return execute_partial_pipeline(first_cmd, last_valid_cmd, env);
-            }
-            else
-            {
-                ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
-                return (2);
-            }
-        }
-        current = current->next;
-    }
-    
-    // 正常执行完整的管道
-    return execute_full_pipeline(first_cmd, env);
+	if (is_valid_pipeline(cmd) != SUCCESS)
+		return (FAILURE);
+	if (execute_pipeline_core(cmd, env) != SUCCESS)
+		return (FAILURE);
+	return (SUCCESS);
 }

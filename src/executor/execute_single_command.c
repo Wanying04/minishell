@@ -70,6 +70,6 @@ int	execute_single_command(t_command *cmd, t_env *env)
 		status = execute_builtins(cmd, env);
 	else
 		status = execute_external_command(cmd, env);
-	restore_fds(&saved_stdin, &saved_stdout);
+	restore_fds(saved_stdin, saved_stdout);
 	return (status);
 }

@@ -16,11 +16,14 @@ typedef struct s_env t_env;
 
 // ============ Execute.c - Execution functions ============
 int		execute_pipeline(t_command *cmd, t_env *env);
+int		execute_single_command(t_command *cmd, t_env *env);
 int		is_builtin_command(t_command *cmd);
 
 // ============ Redirections.c - Redirections and external commands ============
 int		redirections(void);
 int		handle_redirections(t_command *cmd, t_env *env);
+int		handle_redirections_only(t_command *cmd);
+void	child_process(t_command *cmd, t_env *env);
 int		execute_external_command(t_command *cmd, t_env *env);
 
 // ============ Builtins.c - Built-in commands ============
