@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/11/25 15:38:45 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:57:11 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void	process_tokens_loop(t_pctx *ctx)
 {
 	while (ctx->tokens[ctx->i])
 	{
+		//printf("Token[%i] = %s", ctx->i, ctx->tokens[ctx->i]);
 		if (process_token(ctx, ctx->tokens[ctx->i]))
 		{
 			if (ctx->error == 0)
