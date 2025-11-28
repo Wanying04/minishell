@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/11/25 15:38:45 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/11/28 19:37:06 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char	*expand_tilde(char *path, t_env *env)
 {
 	char	*home;
 
-	if (!path || path[0] != '~')
+	if (!path || path[0] == '\x01' || path[0] != '~')
 		return (path);
 	home = env_get(env, "HOME");
 	if (!home)

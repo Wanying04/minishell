@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/11/28 18:44:49 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/11/28 19:37:06 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ static int	realloc_args(t_pctx *ctx)
 //-poner_argumentos----context del parser, tokens individuales (Ej. "ls", "-la", pero uno a uno)
 int	push_arg(t_pctx *ctx, const char *tok)
 {
+	char	*tilde_expanded;
 	char	*expanded;
 	//si hace falta más espacio
 	if (ctx->args_count + 1 > ctx->args_cap)
@@ -49,8 +50,12 @@ int	push_arg(t_pctx *ctx, const char *tok)
 		if (realloc_args(ctx))
 			return (1);
 	}
-	//revisamos si hay variables para expandir
-	expanded = expand_variables((char *)tok, ctx->env, 0);
+	//primero expandir tilde
+	tilde_expanded = expand_tilde((char *)tok, ctx->env);
+	//luego expandir variables
+	expanded = expand_variables(tilde_expanded, ctx->env, 0);
+	if (expanded != tilde_expanded && tilde_expanded != tok)
+		free(tilde_expanded);
 	ctx->args_temp[ctx->args_count++] = expanded;
 	return (0);
 }
@@ -82,6 +87,7 @@ static int	realloc_redir(t_pctx *ctx)
 //-poner_redirecciones--parser context, redirection file, redirection type
 int	push_redir(t_pctx *ctx, const char *file, int typeval)
 {
+	char	*tilde_expanded;
 	char	*expanded;
 	//si hace falta más espacio
 	if (ctx->redir_count + 1 > ctx->redir_cap)
@@ -90,8 +96,12 @@ int	push_redir(t_pctx *ctx, const char *file, int typeval)
 		if (realloc_redir(ctx))
 			return (1);
 	}
-	//revisamos si hay variables para expandir
-	expanded = expand_variables((char *)file, ctx->env, 0);
+	//primero expandir tilde
+	tilde_expanded = expand_tilde((char *)file, ctx->env);
+	//luego expandir variables
+	expanded = expand_variables(tilde_expanded, ctx->env, 0);
+	if (expanded != tilde_expanded && tilde_expanded != file)
+		free(tilde_expanded);
 	//guardamos el redirection file
 	ctx->redir_temp[ctx->redir_count].file = expanded;
 	//guardamos el redirection type
