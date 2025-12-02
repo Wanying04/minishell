@@ -1,18 +1,5 @@
 #include "minishell.h"
 
-/*
- * Heredoc (<<) implementation steps:
- * pipe(pipefd) - create pipe
- * Loop reading user input:
- *   - Display prompt
- *   - Read a line
- *   - If input == delimiter: exit loop
- *   - Otherwise: write to pipe
- * Close pipe write end
- * dup2(pipefd[0], STDIN_FILENO) - redirect input
- * Close pipe read end
- */
-
 int	handle_heredoc_redirection(char *delimiter, t_env *env)
 {
 	int		pipefd[2];

@@ -1,5 +1,27 @@
 #include "minishell.h"
 
+int	execute_builtins(t_command *cmd, t_env *env)
+{
+	if (!cmd || !cmd->argv || !cmd->argv[0])
+		return (FAILURE);
+	if (ft_strncmp(cmd->argv[0], "echo", 4) == 0 && cmd->argv[0][4] == '\0')
+		return (builtin_echo(cmd));
+	else if (ft_strncmp(cmd->argv[0], "cd", 2) == 0 && cmd->argv[0][2] == '\0')
+		return (builtin_cd(cmd, env));
+	else if (ft_strncmp(cmd->argv[0], "pwd", 3) == 0 && cmd->argv[0][3] == '\0')
+		return (builtin_pwd(cmd));
+	else if (ft_strncmp(cmd->argv[0], "export", 6) == 0 && cmd->argv[0][6] == '\0')
+		return (builtin_export(cmd, env));
+	else if (ft_strncmp(cmd->argv[0], "unset", 5) == 0 && cmd->argv[0][5] == '\0')
+		return (builtin_unset(cmd, env));
+	else if (ft_strncmp(cmd->argv[0], "env", 3) == 0 && cmd->argv[0][3] == '\0')
+		return (builtin_env(cmd, env));
+	else if (ft_strncmp(cmd->argv[0], "exit", 4) == 0 && cmd->argv[0][4] == '\0')
+		return (builtin_exit(cmd));
+	else
+		return (FAILURE);
+}
+
 int	is_builtin_command(t_command *cmd)
 {
 	if (!cmd || !cmd->argv || !cmd->argv[0])

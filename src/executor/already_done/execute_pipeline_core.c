@@ -1,37 +1,5 @@
 #include "minishell.h"
 
-int	is_valid_pipeline(t_command *cmd)
-{
-	while (cmd->next && cmd->is_piped == 1)
-	{
-		if (!cmd || !cmd->argv || !cmd->argv[0])
-		{
-			ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", STDERR_FILENO);
-			return (FAILURE);
-		}
-		cmd = cmd->next;
-	}
-	if (!cmd || !cmd->argv || !cmd->argv[0])
-	{
-		ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", STDERR_FILENO);
-		return (FAILURE);
-	}
-	return (SUCCESS);
-}
-
-void	execute_pipeline_command(t_command *cmd, t_env *env)
-{
-	int	status;
-
-	if (is_builtin_command(cmd) == SUCCESS)
-	{
-		status = execute_builtins(cmd, env);
-		exit(status);
-	}
-	else
-		child_process(cmd, env);
-}
-
 void	setup_child_pipe_io(int in_fd, int pipefd[2], t_command *cmd)
 {
 	if (in_fd != STDIN_FILENO)
@@ -48,6 +16,19 @@ void	setup_child_pipe_io(int in_fd, int pipefd[2], t_command *cmd)
 		close(pipefd[0]);
 }
 
+void	execute_pipeline_command(t_command *cmd, t_env *env)
+{
+	int	status;
+
+	if (is_builtin_command(cmd) == SUCCESS)
+	{
+		status = execute_builtins(cmd, env);
+		exit(status);
+	}
+	else
+		child_process(cmd, env);
+}
+
 void	manage_parent_process(int *in_fd, int pipefd[2], t_command *cmd)
 {
 	if (*in_fd != STDIN_FILENO)
@@ -59,15 +40,16 @@ void	manage_parent_process(int *in_fd, int pipefd[2], t_command *cmd)
 	}	
 }
 
-int	wait_for_all(void)
+int	wait_for_all(pid_t last_pid)
 {
-	int	status;
-	int	last_status;
+	int		status;
+	int		last_status;
+	pid_t	pid;
 
 	last_status = 0;
-	while (wait(&status) > 0)
+	while ((pid = wait(&status)) > 0)
 	{
-		if (WIFEXITED(status))
+		if (pid == last_pid && WIFEXITED(status))
 			last_status = WEXITSTATUS(status);
 	}
 	if (last_status == 0)
@@ -80,8 +62,10 @@ int	execute_pipeline_core(t_command *cmd, t_env *env)
 	int		in_fd;
 	int		pipefd[2];
 	pid_t	pid;
+	pid_t	last_pid;
 
 	in_fd = STDIN_FILENO;
+	last_pid = 0;
 	while (cmd)
 	{
 		if (cmd->next && pipe(pipefd) == -1)
@@ -94,17 +78,9 @@ int	execute_pipeline_core(t_command *cmd, t_env *env)
 			execute_pipeline_command(cmd, env);
 			exit (EXIT_FAILURE);
 		}
+		last_pid = pid;
 		manage_parent_process(&in_fd, pipefd, cmd);
 		cmd = cmd->next;
 	}
-	return (wait_for_all());
-}
-
-int	execute_pipeline(t_command *cmd, t_env *env)
-{
-	if (is_valid_pipeline(cmd) != SUCCESS)
-		return (FAILURE);
-	if (execute_pipeline_core(cmd, env) != SUCCESS)
-		return (FAILURE);
-	return (SUCCESS);
+	return (wait_for_all(last_pid));
 }
