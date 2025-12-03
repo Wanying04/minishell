@@ -43,7 +43,7 @@ int	is_builtin_command(t_command *cmd)
 	return (FAILURE);
 }
 
-void	restore_fds(int saved_stdin, int saved_stdout)
+static void	restore_fds(int saved_stdin, int saved_stdout)
 {
 	if (saved_stdin != -1)
 	{
@@ -57,7 +57,7 @@ void	restore_fds(int saved_stdin, int saved_stdout)
 	}
 }
 
-int	setup_redirections(t_command *cmd, int *saved_stdin, int *saved_stdout, t_env *env)
+static int	setup_redirections(t_command *cmd, int *saved_stdin, int *saved_stdout, t_env *env)
 {
 	*saved_stdin = -1;
 	*saved_stdout = -1;
