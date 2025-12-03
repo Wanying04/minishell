@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	redir_without_command(t_redirect *redir)
+static int	redir_without_command(t_redirect *redir)
 {
 	int	fd;
 
@@ -23,7 +23,7 @@ int	redir_without_command(t_redirect *redir)
 	}
 }
 
-int	heredoc_without_command(t_redirect *redir)
+static int	heredoc_without_command(t_redirect *redir)
 {
 	char	*line;
 
