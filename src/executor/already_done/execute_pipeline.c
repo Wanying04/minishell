@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	is_valid_pipeline(t_command *cmd)
+static int	is_valid_pipeline(t_command *cmd)
 {
 	while (cmd->next && cmd->is_piped == 1)
 	{
