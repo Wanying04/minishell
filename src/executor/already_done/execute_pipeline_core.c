@@ -49,12 +49,15 @@ int	wait_for_all(pid_t last_pid)
 	last_status = 0;
 	while ((pid = wait(&status)) > 0)
 	{
-		if (pid == last_pid && WIFEXITED(status))
-			last_status = WEXITSTATUS(status);
+		if (pid == last_pid)
+		{
+			if (WIFEXITED(status))
+				last_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				last_status = 128 + WTERMSIG(status);
+		}
 	}
-	if (last_status == 0)
-		return (SUCCESS);
-	return (FAILURE);
+	return (last_status);
 }
 
 int	execute_pipeline_core(t_command *cmd, t_env *env)
