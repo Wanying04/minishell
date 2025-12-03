@@ -22,8 +22,6 @@ int	is_valid_pipeline(t_command *cmd)
 int	execute_pipeline(t_command *cmd, t_env *env)
 {
 	if (is_valid_pipeline(cmd) != SUCCESS)
-		return (FAILURE);
-	if (execute_pipeline_core(cmd, env) != SUCCESS)
-		return (FAILURE);
-	return (SUCCESS);
+		return (SYNTAX_ERROR);
+	return (execute_pipeline_core(cmd, env));
 }
