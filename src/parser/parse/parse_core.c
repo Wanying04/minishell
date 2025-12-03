@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/02 18:08:25 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/03 13:03:08 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,9 @@ t_command	*parse_input(char *input, t_env *env)
 	char	**tokens;
 	t_pctx	ctx;
 
+	init_ctx(&ctx, NULL, env);
 	//Extrae los tokens del input y los guarda en un array de strings. MALLOC.
-	tokens = ft_split_tokens(input); //["echo", "hello", ">", "out.txt", "|", "cat", "out.txt"]
+	tokens = ft_split_tokens(input, &ctx); //["echo", "hello", ">", "out.txt", "|", "cat", "out.txt"]
 	if (!tokens)
 		return (NULL);
 	//Inicializa el contexto, una estructura (t_pctx ctx)

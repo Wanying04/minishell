@@ -13,6 +13,7 @@ typedef struct s_quote_state
 
 typedef struct s_pctx
 {
+	int			heredoc_dont_expand;// 0. 0 expande, 1 no expande.
 	char		**tokens;			// 1. Array de tokens (entrada dividida)
 	t_env		*env;				// 2. Environment variables para expansión
 	char		**args_temp;		// 3. Argumentos temporales del comando actual
@@ -71,17 +72,17 @@ char		*append_literal(char *result, char *str, int start, int end);
 // ============ Funciones de lexer (lexer_*.c) ============
 int			ft_isspace(char c);
 int			ft_isspecial(char c);
-int			ft_get_quoted_size(char *input, int *i);
 char		*ft_get_quoted_token(char *input, int *i);
 int			ft_skip_quoted_section(char *input, int *i);
+char		*ft_get_quoted_delimiter(char *input, int *i);
 char		*ft_get_special_token(char *input, int *i);
 char		*ft_get_normal_token(char *input, int *i);
+char		*ft_join_tokens(char *s1, char *s2);
 int			ft_count_tokens(char *input);
-char		**ft_split_tokens(char *input);
+char		**ft_split_tokens(char *input, t_pctx *ctx);
 void		ft_free_tokens(char **tokens);
 
 // ============ Funciones de verificación (quote_check.c) ============
 int			ft_check_quotes(char *input);
-int			ft_check_escape_chars(char *input);
 
 #endif

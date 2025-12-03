@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:26 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/02 13:34:42 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/03 12:51:30 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char	*ft_get_special_token(char *input, int *i)
 	return (ft_strdup(buf));
 }
 //Concatena dos strings y libera los originales para evitar memory leaks
-static char	*ft_join_tokens(char *s1, char *s2)
+char	*ft_join_tokens(char *s1, char *s2)
 {
 	char	*result;
 	int		len1;

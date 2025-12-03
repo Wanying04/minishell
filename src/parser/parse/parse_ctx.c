@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/02 19:21:48 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/03 12:40:31 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	free_redir_temp(t_pctx *ctx)
 //Resetea campos temporales para procesar un nuevo comando
 void	reset_ctx(t_pctx *ctx)
 {
+	ctx->heredoc_dont_expand = 0;
 	//Resetea argumentos temporales y libera si hace falta
 	if (ctx->args_temp)
 		free_args_temp(ctx->args_temp, ctx->args_count);
@@ -69,6 +70,8 @@ void	reset_ctx(t_pctx *ctx)
 //Inicializa ctx
 void	init_ctx(t_pctx *ctx, char **tokens, t_env *env)
 {
+	if (!ctx->heredoc_dont_expand)
+		ctx->heredoc_dont_expand = 0;
 	//Guarda referencia a tokens y variables de entorno
 	if (tokens)
 		ctx->tokens = tokens;
