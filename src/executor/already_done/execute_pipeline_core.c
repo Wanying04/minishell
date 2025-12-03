@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	setup_child_pipe_io(int in_fd, int pipefd[2], t_command *cmd)
+static void	setup_child_pipe_io(int in_fd, int pipefd[2], t_command *cmd)
 {
 	if (in_fd != STDIN_FILENO)
 	{
@@ -16,7 +16,7 @@ void	setup_child_pipe_io(int in_fd, int pipefd[2], t_command *cmd)
 		close(pipefd[0]);
 }
 
-void	execute_pipeline_command(t_command *cmd, t_env *env)
+static void	execute_pipeline_command(t_command *cmd, t_env *env)
 {
 	int	status;
 
@@ -29,7 +29,7 @@ void	execute_pipeline_command(t_command *cmd, t_env *env)
 		child_process(cmd, env);
 }
 
-void	manage_parent_process(int *in_fd, int pipefd[2], t_command *cmd)
+static void	manage_parent_process(int *in_fd, int pipefd[2], t_command *cmd)
 {
 	if (*in_fd != STDIN_FILENO)
 		close(*in_fd);
@@ -40,13 +40,13 @@ void	manage_parent_process(int *in_fd, int pipefd[2], t_command *cmd)
 	}	
 }
 
-int	wait_for_all(pid_t last_pid)
+static int	wait_for_all(pid_t last_pid)
 {
 	int		status;
 	int		last_status;
 	pid_t	pid;
 
-	last_status = 0;
+	last_status = SUCCESS;
 	while ((pid = wait(&status)) > 0)
 	{
 		if (pid == last_pid)
