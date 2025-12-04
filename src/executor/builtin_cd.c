@@ -6,7 +6,7 @@
 /*   By: wtang <wtang@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 18:57:08 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/04 19:29:39 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/04 21:35:50 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,11 +87,18 @@ int	builtin_cd(t_command *cmd, t_env *env)
 	if (!path)
 		return (free(old_cwd), ret);
 	if (chdir(path) != 0)
-		return (perror("minishell: cd"), free(old_cwd),
-			(should_free && (free(path), 0)), FAILURE);
+	{
+		perror("minishell: cd");
+		free(old_cwd);
+		if (should_free)
+			free(path);
+		return (FAILURE);
+	}
 	if (cmd->argv[1] && ft_strncmp(cmd->argv[1], "-", 2) == 0
 		&& cmd->argv[1][1] == '\0')
 		printf("%s\n", path);
 	update_pwd_oldpwd(env, old_cwd, getcwd(NULL, 0));
-	return (should_free && (free(path), 0), SUCCESS);
+	if (should_free)
+		free(path);
+	return (SUCCESS);
 }
