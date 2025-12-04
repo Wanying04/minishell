@@ -25,7 +25,7 @@ int	builtin_exit(t_command *cmd)
 	if (cmd->argv[1] && cmd->argv[2])
 	{
 		printf("exit: too many arguments\n");
-		return (1);
+		return (FAILURE);
 	}
 	exit_status = 0;
 	if (cmd->argv[1])

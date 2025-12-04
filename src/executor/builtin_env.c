@@ -11,5 +11,5 @@ int	builtin_env(t_command *cmd, t_env *env)
 		printf("%s\n", env->vars[i]);
 		i++;
 	}
-	return (0);
+	return (SUCCESS);
 }

@@ -1,5 +1,21 @@
 #include "minishell.h"
 
+static int	is_n_option(char *str)
+{
+	int	i;
+
+	if (!str || str[0] != '-' || str[1] != 'n')
+		return (0);
+	i = 1;
+	while (str[i])
+	{
+		if (str[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 int	builtin_echo(t_command *cmd)
 {
 	int	i;
@@ -7,19 +23,19 @@ int	builtin_echo(t_command *cmd)
 
 	i = 1;
 	newline = 1;
-	if (cmd->argv[i] && ft_strncmp(cmd->argv[i], "-n", 2) == 0 && cmd->argv[i][2] == '\0')
+	while (cmd->argv[i] && is_n_option(cmd->argv[i]))
 	{
 		newline = 0;
 		i++;
 	}
 	while (cmd->argv[i])
 	{
-		printf("%s", cmd->argv[i]);
+		write(1, cmd->argv[i], ft_strlen(cmd->argv[i]));
 		if (cmd->argv[i + 1])
-			printf(" ");
+			write(1, " ", 1);
 		i++;
 	}
 	if (newline)
-		printf("\n");
-	return (0);
+		write(1, "\n", 1);
+	return (SUCCESS);
 }

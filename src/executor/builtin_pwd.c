@@ -9,8 +9,9 @@ int	builtin_pwd(t_command *cmd)
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("minishell: pwd");
-		return (1);
+		return (FAILURE);
 	}
-	printf("%s\n", cwd);
-	return (0);
+	write(1, cwd, ft_strlen(cwd));
+	write(1, "\n", 1);
+	return (SUCCESS);
 }

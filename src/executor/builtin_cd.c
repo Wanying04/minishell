@@ -1,16 +1,59 @@
 #include "minishell.h"
 
+static char	*create_env_string(const char *name, const char *value)
+{
+	char	*result;
+	int		i;
+	int		j;
+
+	result = malloc(ft_strlen(name) + ft_strlen(value) + 2);
+	if (!result)
+		return (NULL);
+	i = 0;
+	while (name[i])
+	{
+		result[i] = name[i];
+		i++;
+	}
+	result[i++] = '=';
+	j = 0;
+	while (value[j])
+		result[i++] = value[j++];
+	result[i] = '\0';
+	return (result);
+}
+
 void	update_pwd_oldpwd(t_env *env, char *old_cwd, char *new_cwd)
 {
+	char	*env_str;
+
 	if (env->pwd->oldpwd)
 		free(env->pwd->oldpwd);
 	env->pwd->oldpwd = old_cwd;
 	if (env->pwd->pwd)
 		free(env->pwd->pwd);
 	env->pwd->pwd = new_cwd;
+	if (old_cwd)
+	{
+		env_str = create_env_string("OLDPWD", old_cwd);
+		if (env_str)
+		{
+			env_set(env, env_str);
+			free(env_str);
+		}
+	}
+	if (new_cwd)
+	{
+		env_str = create_env_string("PWD", new_cwd);
+		if (env_str)
+		{
+			env_set(env, env_str);
+			free(env_str);
+		}
+	}
 }
 
-char	*resolve_cd_path(char *arg, t_env *env, int *should_free)
+static char	*resolve_cd_path(char *arg, t_env *env, int *should_free)
 {
 	char	*expanded;
 
@@ -28,7 +71,7 @@ char	*resolve_cd_path(char *arg, t_env *env, int *should_free)
 		return (arg);
 }
 
-char	*get_cd_path(char *arg, t_env *env, int *err, int *should_free)
+static char	*get_cd_path(char *arg, t_env *env, int *err, int *should_free)
 {
 	char	*path;
 
@@ -52,16 +95,18 @@ char	*get_cd_path(char *arg, t_env *env, int *err, int *should_free)
 	return (path);
 }
 
-int	builtin_cd_execute(char *arg, t_env *env)
+static int	builtin_cd_execute(char *arg, t_env *env)
 {
 	char	*path;
 	char	*old_cwd;
 	int		ret;
 	int		should_free;
+	int		is_oldpwd;
 
 	old_cwd = getcwd(NULL, 0);
 	if (!old_cwd)
-		return (perror("minishell: cd"), 1);
+		return (perror("minishell: cd"), FAILURE);
+	is_oldpwd = (arg && ft_strncmp(arg, "-", 2) == 0 && arg[1] == '\0');
 	path = get_cd_path(arg, env, &ret, &should_free);
 	if (!path)
 		return (free(old_cwd), ret);
@@ -71,14 +116,17 @@ int	builtin_cd_execute(char *arg, t_env *env)
 		free(old_cwd);
 		if (should_free)
 			free(path);
-		ret = 1;
+		return (FAILURE);
 	}
 	else
 	{
 		char *new_cwd = getcwd(NULL, 0);
+		if (is_oldpwd)
+			printf("%s\n", path);
 		update_pwd_oldpwd(env, old_cwd, new_cwd);
 		if (should_free)
 			free(path);
+		ret = SUCCESS;
 	}
 	return (ret);
 }

@@ -58,14 +58,14 @@ static void	process_input(char *input, t_env *env)
 		}
 		else
 		{
-			execute(cmd_list, env);
+			env->exit_status = execute(cmd_list, env);
 			free_command(cmd_list);
 		}
 	}
 	else
 	{
 		/* Si parse_input retorna NULL, hubo un error de sintaxis */
-		env->exit_status = 2;
+		env->exit_status = SYNTAX_ERROR;
 	}
 }
 

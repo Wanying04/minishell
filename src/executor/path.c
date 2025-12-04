@@ -1,32 +1,5 @@
 #include "minishell.h"
 
-char **env_to_array(t_env *env)
-{
-	char	**env_array;
-	int		i;
-
-	if (!env || !env->vars)
-		return (NULL);
-	env_array = malloc(sizeof(char *) * (env->count + 1));
-	if (!env_array)
-		return (NULL);
-	i = 0;
-	while (i < env->count)
-	{
-		env_array[i] = ft_strdup(env->vars[i]);
-		if (!env_array[i])
-		{
-			while (--i >= 0)
-				free(env_array[i]);
-			free(env_array);
-			return (NULL);
-		}
-		i++;
-	}
-	env_array[env->count] = NULL;
-	return (env_array);
-}
-
 char	*search_in_directory(char *dir, char *cmd)
 {
 	char	full_path[1024];
@@ -39,13 +12,24 @@ char	*search_in_directory(char *dir, char *cmd)
 	return (NULL);
 }
 
-char	*search_in_path(char *cmd, char *path_env)
+static char	*try_directory(char *current, char *cmd, char *end)
+{
+	char	saved_char;
+	char	*result;
+
+	saved_char = *end;
+	*end = '\0';
+	result = search_in_directory(current, cmd);
+	*end = saved_char;
+	return (result);
+}
+
+static char	*search_in_path(char *cmd, char *path_env)
 {
 	char	*path_copy;
 	char	*current;
 	char	*end;
 	char	*result;
-	char	saved_char;
 
 	path_copy = ft_strdup(path_env);
 	if (!path_copy)
@@ -56,22 +40,15 @@ char	*search_in_path(char *cmd, char *path_env)
 		end = current;
 		while (*end && *end != ':')
 			end++;
-		saved_char = *end;
-		*end = '\0';
-		result = search_in_directory(current, cmd);
-		*end = saved_char;
+		result = try_directory(current, cmd, end);
 		if (result)
-		{
-			free(path_copy);
-			return (result);
-		}
+			return (free(path_copy), result);
 		if (*end == ':')
 			current = end + 1;
 		else
 			current = end;
 	}
-	free(path_copy);
-	return (NULL);
+	return (free(path_copy), NULL);
 }
 
 char	*find_command_path(char *cmd, t_env *env)
