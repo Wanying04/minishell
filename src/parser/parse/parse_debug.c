@@ -6,12 +6,12 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/11/25 15:38:45 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/02 18:21:58 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+//ARCHIVO DE DEBUG NO HACE FALTA ENTENDER
 static void	debug_tokens(t_pctx ctx)
 {
 	int	i;

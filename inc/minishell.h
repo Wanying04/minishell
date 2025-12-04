@@ -69,6 +69,7 @@ typedef struct s_command
 	int		is_builtin;
 	int		is_piped;
 	char	*heredoc_delimiter;
+	int		dont_expand;
 }	t_command;
 
 // ============ Signals (main.c) ============
