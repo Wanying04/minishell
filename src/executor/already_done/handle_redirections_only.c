@@ -35,7 +35,8 @@ static int	heredoc_without_command(t_redirect *redir)
 			write(2, "minishell: warning: here-document delimited by end-of-file\n", 59);
 			break ;
 		}
-		if (ft_strncmp(line, redir->file, ft_strlen(redir->file)) == 0 && line[ft_strlen(redir->file)] == '\0')
+		if (ft_strncmp(line, redir->file, ft_strlen(redir->file)) == 0
+			&& line[ft_strlen(redir->file)] == '\0')
 		{
 			free(line);
 			break ;
