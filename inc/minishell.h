@@ -69,6 +69,7 @@ typedef struct s_command
 	int		is_builtin;
 	int		is_piped;
 	char	*heredoc_delimiter;
+	int		dont_expand;
 }	t_command;
 
 // ============ Signals (main.c) ============
@@ -92,6 +93,6 @@ int		execute(t_command *cmd, t_env *env);
 char	*expand_tilde(char *path, t_env *env);
 // expand_variables expands $VAR with environment variables
 char	*expand_variables(char *str, t_env *env, int in_single_quote);
-char	*expand_heredoc(char *str, t_env *env);
+char	*expand_heredoc(char *str, t_env *env, int dont_expand);
 
 #endif

@@ -6,12 +6,12 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/11/25 15:38:45 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/02 19:04:57 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+//Código de debug no hace falta entenderlo
 static void	print_redir_type(t_redirect *redir)
 {
 	if (redir->type == REDIR_OUT)

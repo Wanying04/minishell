@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/11/28 19:37:06 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/04 13:32:49 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ static int	realloc_redir(t_pctx *ctx)
 	int			z;
 	int			newcap;
 
+	//Amplía espacio
 	if (ctx->redir_cap)
 		newcap = ctx->redir_cap * 2;
 	else
@@ -79,6 +80,7 @@ static int	realloc_redir(t_pctx *ctx)
 		tmp[z] = ctx->redir_temp[z];
 		z++;
 	}
+	//libera la memoria reservada por malloc a la que apuntaba redir_temp
 	free(ctx->redir_temp);
 	ctx->redir_temp = tmp;
 	ctx->redir_cap = newcap;
