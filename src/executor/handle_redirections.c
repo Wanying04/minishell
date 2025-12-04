@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static int	read_heredoc_input(int write_fd, char *delimiter, t_env *env， int dont_expand)
+static int	read_heredoc_input(int write_fd, char *delimiter, t_env *env, int dont_expand)
 {
 	char	*line;
 	char	*expanded;
