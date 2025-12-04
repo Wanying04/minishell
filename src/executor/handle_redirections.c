@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_redirections.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: wtang <wtang@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/04 18:59:14 by wtang             #+#    #+#             */
+/*   Updated: 2025/12/04 19:26:42 by wtang            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static int	read_heredoc_input(int write_fd, char *delimiter, t_env *env， int dont_expand)
+static int	read_heredoc_input(int write_fd, char *delimiter, t_env *env, int dont_expand)
 {
 	char	*line;
 	char	*expanded;
