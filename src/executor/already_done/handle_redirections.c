@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static int	read_heredoc_input(int write_fd, char *delimiter, t_env *env)
+static int	read_heredoc_input(int write_fd, char *delimiter, t_env *env， int dont_expand)
 {
 	char	*line;
 	char	*expanded;
@@ -19,7 +19,7 @@ static int	read_heredoc_input(int write_fd, char *delimiter, t_env *env)
 			free(line);
 			return (SUCCESS);
 		}
-		expanded = expand_heredoc(line, env);
+		expanded = expand_heredoc(line, env, dont_expand);
 		write(write_fd, expanded, ft_strlen(expanded));
 		write(write_fd, "\n", 1);
 		free(line);
@@ -27,7 +27,7 @@ static int	read_heredoc_input(int write_fd, char *delimiter, t_env *env)
 	}
 }
 
-static int	process_heredoc(char *delimiter, t_env *env)
+static int	process_heredoc(char *delimiter, t_env *env, int dont_expand)
 {
 	int	pipefd[2];
 
@@ -36,7 +36,7 @@ static int	process_heredoc(char *delimiter, t_env *env)
 		perror("minishell");
 		return (FAILURE);
 	}
-	read_heredoc_input(pipefd[1], delimiter, env);
+	read_heredoc_input(pipefd[1], delimiter, env, dont_expand);
 	close(pipefd[1]);
 	if (dup2(pipefd[0], STDIN_FILENO) == -1)
 	{
@@ -69,12 +69,12 @@ static int	open_and_dup(char *file, int flags, int mode, int target_fd)
 	return (SUCCESS);
 }
 
-static int	process_single_redirection(t_redirect *redir, t_env *env)
+static int	process_single_redirection(t_redirect *redir, t_env *env, int dont_expand)
 {
 	if (redir->type == REDIR_IN)
 		return (open_and_dup(redir->file, O_RDONLY, 0, STDIN_FILENO));
 	if (redir->type == REDIR_HEREDOC)
-		return (process_heredoc(redir->file, env));
+		return (process_heredoc(redir->file, env, dont_expand));
 	if (redir->type == REDIR_OUT)
 		return (open_and_dup(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
 			0644, STDOUT_FILENO));
@@ -92,7 +92,7 @@ int	handle_redirections(t_command *cmd, t_env *env)
 	i = 0;
 	while (i < cmd->redirect_count)
 	{
-		if (process_single_redirection(&cmd->redirects[i], env) != SUCCESS)
+		if (process_single_redirection(&cmd->redirects[i], env, cmd->dont_expand) != SUCCESS)
 			return (FAILURE);
 		i++;
 	}
