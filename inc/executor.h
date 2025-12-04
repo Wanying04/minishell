@@ -48,4 +48,6 @@ void	env_expand(t_env *env);
 char	**env_to_array(t_env *env);
 char	*find_command_path(char *cmd, t_env *env);
 
+void	reset_signals_to_default(void);
+
 #endif
