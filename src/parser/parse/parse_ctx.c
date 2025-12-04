@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/03 12:40:31 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/04 18:58:35 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,7 @@ void	reset_ctx(t_pctx *ctx)
 //Inicializa ctx
 void	init_ctx(t_pctx *ctx, char **tokens, t_env *env)
 {
-	if (!ctx->heredoc_dont_expand)
-		ctx->heredoc_dont_expand = 0;
+	ctx->heredoc_dont_expand = 0;
 	//Guarda referencia a tokens y variables de entorno
 	if (tokens)
 		ctx->tokens = tokens;
