@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:26 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/03 15:45:06 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:50:16 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,7 @@ static void	fill_tokens(char **tokens, char *input, t_pctx *ctx)
 				ctx->heredoc_dont_expand = 1;
 			/* 	tokens[k++] = ft_get_quoted_delimiter(input, &i); */
 			//Llama a una función que lo gestiona
-			else
-				tokens[k++] = ft_get_normal_token(input, &i);
+			tokens[k++] = ft_get_normal_token(input, &i);
 		}
 	}
 /* 	for(int j = 0; j < k; j++)

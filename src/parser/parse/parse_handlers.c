@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/03 11:32:23 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:44:12 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ int	handle_redir(t_pctx *ctx)
 
 	//Obtiene el token de redirección actual
 	tok = ctx->tokens[ctx->i];
+	//printf("ctx->tokens[%i]: %s\n", ctx->i, ctx->tokens[idx]);
 	//Identifica qué tipo de redirección es
 	type = get_redir_type(tok);
 	//El siguiente token debe ser el archivo/delimitador

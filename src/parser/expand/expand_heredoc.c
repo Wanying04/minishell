@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/03 14:24:03 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:53:30 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static char	*process_heredoc_var(char *result, char *str, int *i, t_env *env)
 	return (result);
 }
 //Expande variables en una línea de heredoc
-char	*expand_heredoc(char *str, t_env *env/* , int dont_expand */)
+char	*expand_heredoc(char *str, t_env *env, int dont_expand)
 {
 	char	*result;
 	int		i;
@@ -50,7 +50,7 @@ char	*expand_heredoc(char *str, t_env *env/* , int dont_expand */)
 	if (!str)
 		return (ft_strdup(""));
 	//Si el delimitador estaba entre comillas, NO expande
-	/* if (dont_expand)
+	if (dont_expand)
 		return (ft_strdup(str));//o result = append_literal(result, str, start, i); */
 	result = NULL;
 	i = 0;

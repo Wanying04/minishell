@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/02 18:56:17 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:53:04 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ static void	copy_argv_to_node(t_command *node, t_pctx *ctx)
 		j++;
 	}
 	node->argv[ctx->args_count] = NULL;
+	free(ctx->args_temp);
 }
 //Transfiere las redirecciones del contexto al nodo
 static void	set_redirects(t_command *node, t_pctx *ctx)
@@ -72,6 +73,7 @@ t_command	*create_node_from_ctx(t_pctx *ctx)
 	set_redirects(node, ctx);
 	//transfiere heredoc_delimiter
 	node->heredoc_delimiter = ctx->heredoc_delim;
+	node->dont_expand = ctx->heredoc_dont_expand;
 	ctx->heredoc_delim = NULL;
 	//aprovechamos para inicializar otros campos de la estructura t_command
 	node->is_builtin = 0;
