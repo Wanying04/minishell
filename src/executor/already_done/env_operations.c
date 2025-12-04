@@ -32,7 +32,7 @@ void	env_set(t_env *env, const char *var_str)
 		name_len = equal_sign - new_var;
 	else
 		name_len = ft_strlen(new_var);
-	if (update_if_exists(env, new_var, name_len))
+	if (update_if_exists(env, new_var, name_len) == SUCCESS)
 		return ;
 	if (env->count >= env->capacity)
 		env_expand(env);
