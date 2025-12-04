@@ -57,7 +57,8 @@ static void	restore_fds(int saved_stdin, int saved_stdout)
 	}
 }
 
-static int	setup_redirections(t_command *cmd, int *saved_stdin, int *saved_stdout, t_env *env)
+static int	setup_redirections(t_command *cmd, int *saved_stdin,
+		int *saved_stdout, t_env *env)
 {
 	*saved_stdin = -1;
 	*saved_stdout = -1;
