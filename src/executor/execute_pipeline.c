@@ -6,7 +6,7 @@
 /*   By: wtang <wtang@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 18:58:39 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/04 18:58:40 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/04 21:56:31 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,15 @@
 
 static int	is_valid_pipeline(t_command *cmd)
 {
-	while (cmd->next && cmd->is_piped == 1)
+	while (cmd)
 	{
-		if (!cmd || !cmd->argv || !cmd->argv[0])
+		if (!cmd->argv || !cmd->argv[0])
 		{
 			ft_putstr_fd("minishell: syntax error near unexpected token `|'\\n",
 				STDERR_FILENO);
 			return (FAILURE);
 		}
 		cmd = cmd->next;
-	}
-	if (!cmd || !cmd->argv || !cmd->argv[0])
-	{
-		ft_putstr_fd("minishell: syntax error near unexpected token `|'\\n",
-			STDERR_FILENO);
-		return (FAILURE);
 	}
 	return (SUCCESS);
 }
