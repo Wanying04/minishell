@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42malaga.c      +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/19 15:33:14 by albarrei          #+#    #+#             */
-/*   Updated: 2024/12/21 18:51:27 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:28:35 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char	**ft_split(const char *s, char c)
 	if (!s)
 		return (NULL);
 	words = ft_wordcount(s, c);
-	result = (char **)malloc((words + 1) * sizeof(char *));
+	result = (char **)ft_calloc((words + 1) * sizeof(char *), 1);
 	if (!result)
 		return (NULL);
 	i = 0;

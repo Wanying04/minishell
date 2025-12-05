@@ -6,23 +6,27 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:26 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/04 15:50:16 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:21:46 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 //Básicamente que si hay backslash "\" o semicolon ";" lanza error
-static int	check_invalid_chars(char *input)
+/* static int	check_invalid_chars(char *input)
 {
 	int	j;
 
 	j = 0;
 	while (input[j])
 	{
+		if (!ft_isalpha(input[j]))
+		{
+			ft_putendl_fd("minishell: syntax error: invalid character '\\'", 2);
+			return (1);
+		}
 		if (input[j] == '\\')
 		{
-			ft_putendl_fd("minishell: syntax error: invalid character '\\'",
-				2);
+			ft_putendl_fd("minishell: syntax error: invalid character '\\'", 2);
 			return (1);
 		}
 		if (input[j] == ';')
@@ -33,7 +37,7 @@ static int	check_invalid_chars(char *input)
 		j++;
 	}
 	return (0);
-}
+} */
 
 /* char	*ft_get_quoted_delimiter(char *input, int *i)
 {
@@ -101,12 +105,12 @@ char	**ft_split_tokens(char *input, t_pctx *ctx)
 		return (NULL);
 	}
 	//Verifica si hay caracteres inválidos ("\", ";")
-	if (check_invalid_chars(input))
-		return (NULL);
+	/* if (check_invalid_chars(input))
+		return (NULL); */
 	//Cuenta los tokens
 	token_count = ft_count_tokens(input);
 	//Reserva memoria para el array de tokens. MALLOC.
-	tokens = malloc(sizeof(char *) * (token_count + 1));
+	tokens = ft_calloc(sizeof(char *), (token_count + 1));
 	if (!tokens)
 		return (NULL);
 	//Y llena el array con lo que haya en el input

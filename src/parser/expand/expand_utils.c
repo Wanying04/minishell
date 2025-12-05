@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/03 16:15:31 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:21:27 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*get_var_name(char *str, int *i)
 	if (len == 0)
 		return (NULL);
 	//Hace malloc y copia el nombre
-	name = malloc(len + 1);
+	name = ft_calloc(len + 1, 1);
 	if (!name)
 		return (NULL);
 	ft_strlcpy(name, str + start, len + 1);

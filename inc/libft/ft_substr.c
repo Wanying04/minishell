@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42malaga.c      +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:55:46 by albarrei          #+#    #+#             */
-/*   Updated: 2024/12/11 23:11:41 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:25:08 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_substr(char const *s, int unsigned start, size_t len)
 
 	if (start > ft_strlen(s))
 	{
-		str = (char *)malloc(1);
+		str = (char *)ft_calloc(1, 1);
 		if (str == NULL)
 			return (NULL);
 		str[0] = '\0';
@@ -26,7 +26,7 @@ char	*ft_substr(char const *s, int unsigned start, size_t len)
 	}
 	if (len > ft_strlen(s) - start)
 		len = ft_strlen(s) - start;
-	str = (char *)malloc(len + 1);
+	str = (char *)ft_calloc(len + 1, 1);
 	if (str == NULL)
 		return (NULL);
 	ft_memcpy(str, s + start, len);

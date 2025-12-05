@@ -20,7 +20,7 @@ char **env_to_array(t_env *env)
 
 	if (!env || !env->vars)
 		return (NULL);
-	env_array = malloc(sizeof(char *) * (env->count + 1));
+	env_array = ft_calloc(sizeof(char *), (env->count + 1));
 	if (!env_array)
 		return (NULL);
 	i = 0;

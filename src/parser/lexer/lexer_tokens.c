@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:26 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/04 13:24:00 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:22:10 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char	*ft_join_tokens(char *s1, char *s2)
 	len1 = ft_strlen(s1);
 	len2 = ft_strlen(s2);
 	//Hace un nuevo malloc
-	result = malloc(len1 + len2 + 1);
+	result = ft_calloc(len1 + len2 + 1, 1);
 	if (!result)
 		return (NULL);
 	ft_strlcpy(result, s1, len1 + 1);

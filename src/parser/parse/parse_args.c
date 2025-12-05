@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/04 13:32:49 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:14:43 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	realloc_args(t_pctx *ctx)
 		newcap = ctx->args_cap * 2;
 	else
 		newcap = 8;
-	tmp = malloc(sizeof(char *) * newcap);
+	tmp = ft_calloc(sizeof(char *), newcap);
 	if (!tmp)
 		return (1);
 	z = 0;
@@ -71,7 +71,7 @@ static int	realloc_redir(t_pctx *ctx)
 		newcap = ctx->redir_cap * 2;
 	else
 		newcap = 4;
-	tmp = malloc(sizeof(t_redirect) * newcap);
+	tmp = ft_calloc(sizeof(t_redirect), newcap);
 	if (!tmp)
 		return (1);
 	z = 0;

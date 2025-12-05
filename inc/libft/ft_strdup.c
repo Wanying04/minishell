@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42malaga.c      +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 23:11:25 by albarrei          #+#    #+#             */
-/*   Updated: 2024/12/23 10:20:28 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:24:09 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_strdup(const char *s)
 	size_t	len;
 
 	len = ft_strlen(s);
-	dup = malloc(len + 1);
+	dup = ft_calloc(len + 1, 1);
 	if (dup == NULL)
 		return (NULL);
 	ft_strlcpy(dup, s, len + 1);

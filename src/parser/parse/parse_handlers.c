@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/04 15:44:12 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/05 17:32:39 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,11 @@ int	handle_pipe(t_pctx *ctx)
 	if (check_pipe_syntax(ctx))
 		return (2);
 	//Si todo va bien, marca que estamos en un pipe y finaliza el comando actual
+	ctx->is_in_pipe = 1;
 	if (finalize_and_append(ctx))
 		return (1);
 	//Resetea el contexto para el próximo comando del pipe
 	reset_ctx(ctx);
-	ctx->is_in_pipe = 1;
 	return (0);
 }
 //Determina el tipo de redirección

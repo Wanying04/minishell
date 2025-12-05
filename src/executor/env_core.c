@@ -5,13 +5,13 @@ t_env	*env_create(char **envp)
 	t_env	*env;
 	int		i;
 
-	env = malloc(sizeof(t_env));
+	env = ft_calloc(sizeof(t_env), 1);
 	env->capacity = 100;
 	env->count = 0;
 	env->exit_status = SUCCESS;
-	env->vars = malloc(sizeof(char *) * env->capacity);
+	env->vars = ft_calloc(sizeof(char *), env->capacity);
 	env->vars[0] = NULL;
-	env->pwd = malloc(sizeof(t_pwd));
+	env->pwd = ft_calloc(sizeof(t_pwd), 1);
 	env->pwd->pwd = NULL;
 	env->pwd->oldpwd = NULL;
 	if (!envp)
@@ -54,7 +54,7 @@ void	env_expand(t_env *env)
 	int		i;
 
 	new_capacity = env->capacity * 2;
-	new_vars = malloc(sizeof(char *) * new_capacity);
+	new_vars = ft_calloc(sizeof(char *), new_capacity);
 	i = 0;
 	while (i < env->count)
 	{

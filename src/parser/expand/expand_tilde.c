@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/03 15:02:04 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:16:04 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static char	*expand_tilde_home(char *path, char *home)
 	{
 		//Calcula tamaño: HOME + /algo + \0
 		len = ft_strlen(home) + ft_strlen(path + 1) + 1;
-		expanded = malloc(len);
+		expanded = ft_calloc(len, 1);
 		if (!expanded)
 			return (NULL);
 		//Copia HOME

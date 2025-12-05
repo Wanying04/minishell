@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42.fr>                +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 19:31:10 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/04 19:31:11 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/05 20:45:59 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int		is_builtin_command(t_command *cmd);
 int		execute_builtins(t_command *cmd, t_env *env);
 int		builtin_echo(t_command *cmd);
 int		builtin_cd(t_command *cmd, t_env *env);
-int		builtin_pwd(t_command *cmd);
+int		builtin_pwd(t_command *cmd, t_env *env);
 int		builtin_export(t_command *cmd, t_env *env);
 int		builtin_unset(t_command *cmd, t_env *env);
 int		builtin_env(t_command *cmd, t_env *env);

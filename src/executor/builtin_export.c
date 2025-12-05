@@ -11,7 +11,9 @@ int	builtin_export(t_command *cmd, t_env *env)
 	{
 		if (!is_valid_var_name(cmd->argv[i]))
 		{
-			printf("minishell: export: not a valid identifier\n");
+			write(2, "minishell: export: `", 20);
+			write(2, cmd->argv[i], ft_strlen(cmd->argv[i]));
+			write(2, "' not a valid identifier\n", 26);
 			return (FAILURE);
 		}
 		env_set(env, cmd->argv[i]);

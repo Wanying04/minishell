@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/03 16:59:24 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:16:29 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static char	*create_new_result(char *result, char *value)
 	size_t	len;
 
 	len = ft_strlen(result) + ft_strlen(value) + 1;
-	new_result = malloc(len);
+	new_result = ft_calloc(len, 1);
 	if (!new_result)
 		return (result);
 	ft_strlcpy(new_result, result, len);
@@ -88,7 +88,7 @@ static char	*create_literal(char *result, char *str, int start, int end)
 	size_t	len;
 
 	len = ft_strlen(result) + (end - start) + 1;
-	new_result = malloc(len);
+	new_result = ft_calloc(len, 1);
 	if (!new_result)
 		return (result);
 	ft_strlcpy(new_result, result, len);

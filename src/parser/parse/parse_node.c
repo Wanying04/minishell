@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/04 15:53:04 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:15:34 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,12 @@ t_command	*create_node_from_ctx(t_pctx *ctx)
 	t_command	*node;
 
 	//malloc estructura t_command
-	node = malloc(sizeof(t_command));
+	node = ft_calloc(sizeof(t_command), 1);
 	if (!node)
 		return (NULL);
 	//malloc array de punteros (tamaño exacto).
 	//ej.: para ["echo", "hello", "world"] se hace malloc(sizeof(char *) x (3+1))
-	node->argv = malloc(sizeof(char *) * (ctx->args_count + 1));
+	node->argv = ft_calloc(sizeof(char *), (ctx->args_count + 1));
 	if (!node->argv)
 		return (free(node), NULL);
 	//copia los punteros a "echo", "hello" y "world" de ctx->args_temp a node->argv

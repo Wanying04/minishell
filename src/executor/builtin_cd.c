@@ -77,7 +77,12 @@ int	builtin_cd(t_command *cmd, t_env *env)
 	int		ret;
 	int		should_free;
 
-	if (!(old_cwd = getcwd(NULL, 0)))
+	if (cmd->argv[2])
+		return (write(1, "minishell: cd: too many arguments\n", 35), FAILURE);
+	old_cwd = getcwd(NULL, 0);
+	if (!old_cwd && env && env->pwd && env->pwd->pwd)
+		old_cwd = ft_strdup(env->pwd->pwd);
+	if (!old_cwd)
 		return (perror("minishell: cd"), FAILURE);
 	path = get_cd_path(cmd->argv[1], env, &ret, &should_free);
 	if (!path)

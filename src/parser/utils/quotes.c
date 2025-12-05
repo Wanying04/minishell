@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:18:30 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/03 18:49:00 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:15:58 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static char	*append_char(char *str, char c)
 	else
 		len = ft_strlen(str);
 	//Se reserva memoria para el nuevo token. MALLOC.
-	new = malloc(len + 2);
+	new = ft_calloc(len + 2, 1);
 	if (!new)
 		return (str);
 	if (str)
