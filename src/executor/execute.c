@@ -6,7 +6,7 @@
 /*   By: wtang <wtang@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 18:58:55 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/04 18:58:56 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/04 21:56:40 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	execute(t_command *cmd, t_env *env)
 		return (handle_redirections_only(cmd));
 	if (!cmd->argv[0])
 		return (SUCCESS);
-	if (cmd->is_piped == 1)
+	if (cmd->next != NULL)
 		return (execute_pipeline(cmd, env));
 	else
 		return (execute_single_command(cmd, env));
