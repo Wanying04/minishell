@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   builtin_cd.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/04 18:57:08 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/04 21:35:50 by wtang            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
 static void	set_env_var(t_env *env, const char *name, const char *value)
@@ -52,7 +40,9 @@ static char	*resolve_cd_path(char *arg, t_env *env, int *should_free)
 	expanded = expand_tilde(arg, env);
 	if (expanded && expanded != arg)
 		*should_free = 1;
-	return (expanded ? expanded : arg);
+	if (expanded)
+		return (expanded);
+	return (arg);
 }
 
 static char	*get_cd_path(char *arg, t_env *env, int *err, int *should_free)
@@ -61,7 +51,11 @@ static char	*get_cd_path(char *arg, t_env *env, int *err, int *should_free)
 
 	if (arg && ft_strncmp(arg, "-", 2) == 0 && arg[1] == '\0'
 		&& !env->pwd->oldpwd)
-		return (printf("cd: OLDPWD not set\n"), *err = 1, NULL);
+	{
+		printf("cd: OLDPWD not set\n");
+		*err = 1;
+		return (NULL);
+	}
 	path = resolve_cd_path(arg, env, should_free);
 	if (!path)
 	{
@@ -69,9 +63,11 @@ static char	*get_cd_path(char *arg, t_env *env, int *err, int *should_free)
 			printf("cd: HOME not set\n");
 		else
 			printf("cd: OLDPWD not set\n");
-		return (*err = 1, NULL);
+		*err = 1;
+		return (NULL);
 	}
-	return (*err = 0, path);
+	*err = 0;
+	return (path);
 }
 
 int	builtin_cd(t_command *cmd, t_env *env)
