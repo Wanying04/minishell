@@ -22,6 +22,8 @@ static void	execute_pipeline_command(t_command *cmd, t_env *env)
 
 	if (is_builtin_command(cmd) == SUCCESS)
 	{
+		if (handle_redirections(cmd, env) != SUCCESS)
+			exit(EXIT_FAILURE);
 		status = execute_builtins(cmd, env);
 		exit(status);
 	}
