@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include <sys/stat.h>
 
 void	cleanup_empty_args(t_command *cmd)
 {
@@ -20,4 +21,15 @@ void	cleanup_empty_args(t_command *cmd)
 		i++;
 	}
 	cmd->argv[j] = NULL;
+}
+
+int	is_a_directory(const char *path)
+{
+	struct stat	path_stat;
+
+	if (!path)
+		return (0);
+	if (stat(path, &path_stat) != 0)
+		return (0);
+	return (S_ISDIR(path_stat.st_mode));
 }

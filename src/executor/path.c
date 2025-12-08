@@ -57,12 +57,7 @@ char	*find_command_path(char *cmd, t_env *env)
 	char	*result;
 
 	if (ft_strchr(cmd, '/'))
-	{
-		if (access(cmd, X_OK) == 0)
-			return (ft_strdup(cmd));
-		else
-			return (NULL);
-	}
+		return (ft_strdup(cmd));
 	path_env = env_get(env, "PATH");
 	if (!path_env || path_env[0] == '\0')
 		return (NULL);

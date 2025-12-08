@@ -6,7 +6,7 @@ void	child_process(t_command *cmd, t_env *env)
 
 	reset_signals_to_default();
 	if (handle_redirections(cmd, env) != SUCCESS)
-		exit (EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	path = find_command_path(cmd->argv[0], env);
 	if (!path)
 	{
@@ -14,9 +14,28 @@ void	child_process(t_command *cmd, t_env *env)
 		write(2, ": command not found\n", 20);
 		exit(127);
 	}
+	if (access(path, F_OK) == -1)
+	{
+		perror(path);
+		free(path);
+		exit(127);
+	}
+	if (is_a_directory(path))
+	{
+		write(2, path, ft_strlen(path));
+		write(2, ": Is a directory\n", 17);
+		free(path);
+		exit(126);
+	}
+	if (access(path, X_OK) == -1)
+	{
+		perror(path);
+		free(path);
+		exit(126);
+	}
 	if (execve(path, cmd->argv, env_to_array(env)) == -1)
 	{
-		perror(cmd->argv[0]);
+		perror(path);
 		free(path);
 		exit(126);
 	}
