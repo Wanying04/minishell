@@ -62,11 +62,7 @@ static void	process_input(char *input, t_env *env)
 			free_command(cmd_list);
 		}
 	}
-	else
-	{
-		/* Si parse_input retorna NULL, hubo un error de sintaxis */
-		env->exit_status = SYNTAX_ERROR;
-	}
+	/* Si parse_input retorna NULL, el exit_status ya fue asignado en el parser */
 }
 
 int	main(int argc, char **argv, char **envp)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_core.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/08 14:22:06 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/08 18:11:14 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,10 @@ t_command	*parse_input(char *input, t_env *env)
 	//Extrae los tokens del input y los guarda en un array de strings. MALLOC.
 	tokens = ft_split_tokens(input, &ctx); //["echo", "hello", ">", "out.txt", "|", "cat", "out.txt"]
 	if (!tokens)
+	{
+		env->exit_status = SYNTAX_ERROR;
 		return (NULL);
+	}
 	//Inicializa el contexto, una estructura (t_pctx ctx)
 	init_ctx(&ctx, tokens, env);
 	//que servirá para organizar los tokens y etiquetarlos
@@ -61,12 +64,23 @@ t_command	*parse_input(char *input, t_env *env)
 		return (NULL);
 	}
 	//Finaliza el último comando y libera recursos temporales si existen
+	if (ctx.args_count == 1 && ctx.args_temp[0][0] == '\0' && 
+		(ft_strncmp(input, "\"\"", 3) == 0 || ft_strncmp(input, "''", 3) == 0))
+	{
+		write(2, "Command '' not found\n", 21);
+		cleanup_resources(&ctx);
+		env->exit_status = 127;
+		return (NULL);
+	}
 	finalize_parsing(&ctx);
 	//Libera el array de tokens originales (ya copiados a node->argv)
 	ft_free_tokens(tokens);
 	//Si hubo error, limpia todo y retorna NULL
 	if (ctx.error)
+	{
+		env->exit_status = SYNTAX_ERROR;
 		return (cleanup_resources(&ctx), NULL);
+	}
 	//Retorna la lista de comandos
 	return (ctx.head);
 }
