@@ -22,10 +22,10 @@ int	builtin_exit(t_command *cmd)
 {
 	int	exit_status;
 
-	printf("exit\n");
+	write(1, "exit\n", 5);
 	if (cmd->argv[1] && cmd->argv[2])
 	{
-		printf("minishell: exit: too many arguments\n");
+		write(2, "minishell: exit: too many arguments\n", 34);
 		return (FAILURE);
 	}
 	exit_status = 0;
@@ -33,7 +33,7 @@ int	builtin_exit(t_command *cmd)
 	{
 		if (!is_integer(cmd->argv[1]))
 		{
-			printf("minishell: exit: numeric argument required\n");
+			write(2, "minishell: exit: numeric argument required\n", 43);
 			exit(2);
 		}
 		exit_status = ft_atoi(cmd->argv[1]);

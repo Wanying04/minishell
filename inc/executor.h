@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 19:31:10 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/05 20:45:59 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/08 14:10:23 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,6 @@ void	env_expand(t_env *env);
 char	**env_to_array(t_env *env);
 
 int		is_valid_var_name(char *str);
+void	cleanup_empty_args(t_command *cmd);
 
 #endif
