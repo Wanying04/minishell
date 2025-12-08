@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_token.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/02 19:33:33 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/08 14:22:06 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	process_redirection(t_pctx *ctx, char *tok)
 		//Si no hay nada después, ERROR
 		if (!ctx->tokens[ctx->i + 1])
 		{
-			ft_putendl_fd("minishell: syntax error", 2);
+			ft_putendl_fd("minishell: syntax error: unexpected end of input", 2);
 			ctx->error = 2;
 			return (2);
 		}

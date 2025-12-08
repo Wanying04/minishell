@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_core.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/04 19:03:22 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/08 14:22:06 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,10 @@ static int	finalize_parsing(t_pctx *ctx)
 		free_redir_temp(ctx);
 	//Libera el delimitador de heredoc si existe
 	if (ctx->heredoc_delim)
+	{
 		free(ctx->heredoc_delim);
+		ctx->heredoc_delim = NULL;
+	}
 	return (ctx->error);
 }
 //La función principal de todo el parser, recibe el input y las variables de entorno

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_ctx.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/04 19:19:50 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/08 14:22:06 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@ void	free_redir_temp(t_pctx *ctx)
 		z++;
 	}
 	free(ctx->redir_temp);//Libera el array
+	ctx->redir_temp = NULL;
+	ctx->redir_count = 0;
+	ctx->redir_cap = 0;
 }
 
 //Resetea campos temporales para procesar un nuevo comando
@@ -96,14 +99,26 @@ void	cleanup_resources(t_pctx *ctx)
 {
 	//Libera args_temp si existe
 	if (ctx->args_temp)
+	{
 		free_args_temp(ctx->args_temp, ctx->args_count);
+		ctx->args_temp = NULL;
+		ctx->args_count = 0;
+		ctx->args_cap = 0;
+	}
 	//Libera redir_temp si existe
 	if (ctx->redir_temp)
 		free_redir_temp(ctx);
 	//Libera heredoc_delim si existe
 	if (ctx->heredoc_delim)
+	{
 		free(ctx->heredoc_delim);
+		ctx->heredoc_delim = NULL;
+	}
 	//Libera toda la lista de comandos si existe
 	if (ctx->head)
+	{
 		free_command(ctx->head);
+		ctx->head = NULL;
+		ctx->curr = NULL;
+	}
 }
