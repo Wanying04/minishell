@@ -29,23 +29,57 @@ static int	read_heredoc_input(int write_fd, char *delimiter, t_env *env, int don
 
 static int	process_heredoc(char *delimiter, t_env *env, int dont_expand)
 {
-	int	pipefd[2];
+	int		pipefd[2];
+	pid_t	pid;
+	int		status;
+	struct sigaction	sa;
 
 	if (pipe(pipefd) == -1)
 	{
 		perror("minishell");
 		return (FAILURE);
 	}
-	read_heredoc_input(pipefd[1], delimiter, env, dont_expand);
-	close(pipefd[1]);
-	if (dup2(pipefd[0], STDIN_FILENO) == -1)
+	pid = fork();
+	if (pid == -1)
 	{
 		perror("minishell");
 		close(pipefd[0]);
+		close(pipefd[1]);
 		return (FAILURE);
 	}
-	close(pipefd[0]);
-	return (SUCCESS);
+	if (pid == 0)
+	{
+		close(pipefd[0]);
+		signal(SIGINT, SIG_DFL);
+		rl_catch_signals = 0;
+		read_heredoc_input(pipefd[1], delimiter, env, dont_expand);
+		close(pipefd[1]);
+		exit(SUCCESS);
+	}
+	else
+	{
+		close(pipefd[1]);
+		sa.sa_handler = SIG_IGN;
+		sigemptyset(&sa.sa_mask);
+		sa.sa_flags = 0;
+		sigaction(SIGINT, &sa, NULL);
+		waitpid(pid, &status, 0);
+		setup_signals();
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		{
+			close(pipefd[0]);
+			write(1, "\n", 1);
+			return (FAILURE);
+		}
+		if (dup2(pipefd[0], STDIN_FILENO) == -1)
+		{
+			perror("minishell");
+			close(pipefd[0]);
+			return (FAILURE);
+		}
+		close(pipefd[0]);
+		return (SUCCESS);
+	}
 }
 
 static int	open_and_dup(char *file, int flags, int mode, int target_fd)

@@ -16,9 +16,15 @@ void	handle_signal(int sig)
 
 void	setup_signals(void)
 {
-	signal(SIGINT, handle_signal);
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGTSTP, SIG_IGN);
+	struct sigaction	sa;
+
+	sa.sa_handler = handle_signal;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa, NULL);
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGQUIT, &sa, NULL);
+	sigaction(SIGTSTP, &sa, NULL);
 }
 
 static int	cleanup_and_exit(t_env *env)

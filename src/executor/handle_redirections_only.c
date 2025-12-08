@@ -25,25 +25,54 @@ static int	redir_without_command(t_redirect *redir)
 
 static int	heredoc_without_command(t_redirect *redir)
 {
+	pid_t	pid;
+	int		status;
 	char	*line;
+	struct sigaction	sa;
 
-	while (1)
+	pid = fork();
+	if (pid == -1)
 	{
-		line = readline("> ");
-		if (!line)
-		{
-			write(2, "minishell: warning: here-document delimited by end-of-file\n", 59);
-			break ;
-		}
-		if (ft_strncmp(line, redir->file, ft_strlen(redir->file)) == 0
-			&& line[ft_strlen(redir->file)] == '\0')
-		{
-			free(line);
-			break ;
-		}
-		free(line);
+		perror("minishell");
+		return (FAILURE);
 	}
-	return (SUCCESS);
+	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		rl_catch_signals = 0;
+		while (1)
+		{
+			line = readline("> ");
+			if (!line)
+			{
+				write(2, "minishell: warning: here-document delimited by end-of-file\n", 59);
+				break ;
+			}
+			if (ft_strncmp(line, redir->file, ft_strlen(redir->file)) == 0
+				&& line[ft_strlen(redir->file)] == '\0')
+			{
+				free(line);
+				break ;
+			}
+			free(line);
+		}
+		exit(SUCCESS);
+	}
+	else
+	{
+		sa.sa_handler = SIG_IGN;
+		sigemptyset(&sa.sa_mask);
+		sa.sa_flags = 0;
+		sigaction(SIGINT, &sa, NULL);
+		waitpid(pid, &status, 0);
+		setup_signals();
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		{
+			write(1, "\n", 1);
+			return (FAILURE);
+		}
+		return (SUCCESS);
+	}
 }
 
 int	handle_redirections_only(t_command *cmd)
