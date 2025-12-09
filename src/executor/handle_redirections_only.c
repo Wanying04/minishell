@@ -39,7 +39,7 @@ static int	heredoc_without_command(t_redirect *redir)
 	if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
-		rl_catch_signals = 0;
+		rl_catch_signals = 1;
 		while (1)
 		{
 			line = readline("> ");

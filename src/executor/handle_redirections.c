@@ -51,7 +51,8 @@ static int	process_heredoc(char *delimiter, t_env *env, int dont_expand)
 	{
 		close(pipefd[0]);
 		signal(SIGINT, SIG_DFL);
-		rl_catch_signals = 0;
+		rl_catch_signals = 1;
+		dup2(STDERR_FILENO, STDOUT_FILENO);
 		read_heredoc_input(pipefd[1], delimiter, env, dont_expand);
 		close(pipefd[1]);
 		exit(SUCCESS);
@@ -65,10 +66,13 @@ static int	process_heredoc(char *delimiter, t_env *env, int dont_expand)
 		sigaction(SIGINT, &sa, NULL);
 		waitpid(pid, &status, 0);
 		setup_signals();
+		rl_on_new_line();
+		rl_replace_line("", 0);
 		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 		{
+			write(STDERR_FILENO, "\n", 1);
 			close(pipefd[0]);
-			write(1, "\n", 1);
+			env->exit_status = 130;
 			return (FAILURE);
 		}
 		if (dup2(pipefd[0], STDIN_FILENO) == -1)

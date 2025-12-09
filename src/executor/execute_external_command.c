@@ -44,8 +44,14 @@ void	child_process(t_command *cmd, t_env *env)
 static int	wait_for_child(pid_t pid)
 {
 	int	status;
+	struct sigaction	sa;
 
+	sa.sa_handler = SIG_IGN;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, NULL);
 	waitpid(pid, &status, 0);
+	setup_signals();
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
