@@ -115,6 +115,14 @@ static int	open_and_dup(char *file, int flags, int mode, int target_fd, int shou
 
 static int	process_single_redirection(t_redirect *redir, t_env *env, int dont_expand, int should_dup)
 {
+	// 检查文件名是否以 $ 开头（表示是未展开的变量名，即 ambiguous redirect）
+	if (redir->file && redir->file[0] == '$')
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(redir->file, 2);
+		ft_putstr_fd(": ambiguous redirect\n", 2);
+		return (FAILURE);
+	}
 	if (redir->type == REDIR_IN)
 		return (open_and_dup(redir->file, O_RDONLY, 0, STDIN_FILENO, should_dup));
 	if (redir->type == REDIR_HEREDOC)
