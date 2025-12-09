@@ -21,6 +21,11 @@ void	cleanup_empty_args(t_command *cmd)
 				cmd->argv[j] = cmd->argv[i];
 			j++;
 		}
+		else
+		{
+			// Liberar el argumento vacío que será removido
+			free(cmd->argv[i]);
+		}
 		i++;
 	}
 	cmd->argv[j] = NULL;
