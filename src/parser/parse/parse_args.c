@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/05 20:14:43 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/09 18:54:51 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,13 @@ int	push_redir(t_pctx *ctx, const char *file, int typeval)
 	expanded = expand_variables(tilde_expanded, ctx->env, 0);
 	if (expanded != tilde_expanded && tilde_expanded != file)
 		free(tilde_expanded);
+	// Si la expansión resulta en vacío, usar el nombre original para el mensaje de error
+	if (!expanded || expanded[0] == '\0')
+	{
+		if (expanded)
+			free(expanded);
+		expanded = ft_strdup(file);
+	}
 	//guardamos el redirection file
 	ctx->redir_temp[ctx->redir_count].file = expanded;
 	//guardamos el redirection type
