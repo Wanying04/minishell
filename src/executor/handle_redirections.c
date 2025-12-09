@@ -27,7 +27,7 @@ static int	read_heredoc_input(int write_fd, char *delimiter, t_env *env, int don
 	}
 }
 
-static int	process_heredoc(char *delimiter, t_env *env, int dont_expand)
+static int	process_heredoc(char *delimiter, t_env *env, int dont_expand, int should_dup)
 {
 	int		pipefd[2];
 	pid_t	pid;
@@ -75,18 +75,21 @@ static int	process_heredoc(char *delimiter, t_env *env, int dont_expand)
 			env->exit_status = 130;
 			return (FAILURE);
 		}
-		if (dup2(pipefd[0], STDIN_FILENO) == -1)
+		if (should_dup)
 		{
-			perror("minishell");
-			close(pipefd[0]);
-			return (FAILURE);
+			if (dup2(pipefd[0], STDIN_FILENO) == -1)
+			{
+				perror("minishell");
+				close(pipefd[0]);
+				return (FAILURE);
+			}
 		}
 		close(pipefd[0]);
 		return (SUCCESS);
 	}
 }
 
-static int	open_and_dup(char *file, int flags, int mode, int target_fd)
+static int	open_and_dup(char *file, int flags, int mode, int target_fd, int should_dup)
 {
 	int	fd;
 
@@ -97,28 +100,31 @@ static int	open_and_dup(char *file, int flags, int mode, int target_fd)
 		perror("minishell");
 		return (FAILURE);
 	}
-	if (dup2(fd, target_fd) == -1)
+	if (should_dup)
 	{
-		perror("minishell");
-		close(fd);
-		return (FAILURE);
+		if (dup2(fd, target_fd) == -1)
+		{
+			perror("minishell");
+			close(fd);
+			return (FAILURE);
+		}
 	}
 	close(fd);
 	return (SUCCESS);
 }
 
-static int	process_single_redirection(t_redirect *redir, t_env *env, int dont_expand)
+static int	process_single_redirection(t_redirect *redir, t_env *env, int dont_expand, int should_dup)
 {
 	if (redir->type == REDIR_IN)
-		return (open_and_dup(redir->file, O_RDONLY, 0, STDIN_FILENO));
+		return (open_and_dup(redir->file, O_RDONLY, 0, STDIN_FILENO, should_dup));
 	if (redir->type == REDIR_HEREDOC)
-		return (process_heredoc(redir->file, env, dont_expand));
+		return (process_heredoc(redir->file, env, dont_expand, should_dup));
 	if (redir->type == REDIR_OUT)
 		return (open_and_dup(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
-			0644, STDOUT_FILENO));
+			0644, STDOUT_FILENO, 1));
 	if (redir->type == REDIR_APPEND)
 		return (open_and_dup(redir->file, O_WRONLY | O_CREAT | O_APPEND,
-			0644, STDOUT_FILENO));
+			0644, STDOUT_FILENO, 1));
 	write(2, "minishell: invalid redirection\n", 31);
 	return (FAILURE);
 }
@@ -126,11 +132,25 @@ static int	process_single_redirection(t_redirect *redir, t_env *env, int dont_ex
 int	handle_redirections(t_command *cmd, t_env *env)
 {
 	int	i;
+	int	last_input_redir;
+	int	should_dup;
 
+	i = 0;
+	last_input_redir = -1;
+	while (i < cmd->redirect_count)
+	{
+		if (cmd->redirects[i].type == REDIR_IN || cmd->redirects[i].type == REDIR_HEREDOC)
+			last_input_redir = i;
+		i++;
+	}
 	i = 0;
 	while (i < cmd->redirect_count)
 	{
-		if (process_single_redirection(&cmd->redirects[i], env, cmd->dont_expand) != SUCCESS)
+		should_dup = 1;
+		if ((cmd->redirects[i].type == REDIR_IN || cmd->redirects[i].type == REDIR_HEREDOC)
+			&& i != last_input_redir)
+			should_dup = 0;
+		if (process_single_redirection(&cmd->redirects[i], env, cmd->dont_expand, should_dup) != SUCCESS)
 			return (FAILURE);
 		i++;
 	}
