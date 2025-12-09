@@ -16,7 +16,8 @@ int	execute_builtins(t_command *cmd, t_env *env)
 		return (builtin_unset(cmd, env));
 	else if (ft_strncmp(cmd->argv[0], "env", 3) == 0 && cmd->argv[0][3] == '\0')
 		return (builtin_env(cmd, env));
-	else if (ft_strncmp(cmd->argv[0], "exit", 4) == 0 && cmd->argv[0][4] == '\0')
+	else if (ft_strncmp(cmd->argv[0], "exit", 4) == 0 && cmd->argv[0][4] == '\0'
+			&& !cmd->prev)
 		return (builtin_exit(cmd));
 	else
 		return (FAILURE);
