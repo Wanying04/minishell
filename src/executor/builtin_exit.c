@@ -23,11 +23,6 @@ int	builtin_exit(t_command *cmd)
 	int	exit_status;
 
 	write(1, "exit\n", 5);
-	if (cmd->argv[1] && cmd->argv[2])
-	{
-		write(2, "minishell: exit: too many arguments\n", 34);
-		return (FAILURE);
-	}
 	exit_status = 0;
 	if (cmd->argv[1])
 	{
@@ -37,6 +32,11 @@ int	builtin_exit(t_command *cmd)
 			exit(2);
 		}
 		exit_status = ft_atoi(cmd->argv[1]);
+	}
+	if (cmd->argv[1] && cmd->argv[2])
+	{
+		write(2, "minishell: exit: too many arguments\n", 36);
+		return (FAILURE);
 	}
 	exit_status = exit_status % 256;
 	if (exit_status < 0)
