@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/05 20:16:29 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/09 19:44:57 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,9 @@ char	*replace_var(char *result, char *var_name, t_env *env)
 	{
 		if (exit_str)
 			return (exit_str);
+		// Si el valor es vacío, devolver NULL para evitar alocar memoria innecesaria
+		if (!value || !*value)
+			return (NULL);
 		return (ft_strdup(value));
 	}
 	//Concatena result (lo leído hasta la variable) con el valor de la variable
