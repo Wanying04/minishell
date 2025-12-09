@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/05 20:21:27 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/09 20:36:40 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@ char	*get_var_name(char *str, int *i)
 
 	//Salta el $
 	(*i)++;
+	//Salta los marcadores de comillas vacías después de $
+	while (str[*i] == '\x01' || str[*i] == '\x02')
+		(*i)++;
 	//Caso especial: $? (exit status)
 	if (str[*i] == '?')
 	{

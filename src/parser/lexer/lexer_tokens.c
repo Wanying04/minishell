@@ -6,7 +6,7 @@
 /*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:26 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/09 17:30:26 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/09 20:51:33 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,56 @@ char	*ft_join_tokens(char *s1, char *s2)
 static char	*process_quoted_section(char *token, char *input, int *i, int start)
 {
 	char	*temp;
+	char	quote;
+	int		token_len;
+	int		empty_count;
 
 	if (*i > start)
 		//Une lo que haya en token
 		//con lo que ft_substr extrae del input, desde start, la longitud avanzada
 		//antes de la comilla
 		token = ft_join_tokens(token, ft_substr(input, start, *i - start));
+	//Verificar si hay comillas vacías después de $
+	quote = input[*i];
+	if (input[*i + 1] == quote)
+	{
+		//Es una comilla vacía
+		token_len = 0;
+		if (token)
+			token_len = ft_strlen(token);
+		//Verificar si el último carácter es $
+		if (token_len > 0 && token[token_len - 1] == '$')
+		{
+			//Eliminar el $ del final del token actual
+			token[token_len - 1] = '\0';
+			//Añadir marcadores de comillas vacías
+			if (quote == '\'')
+				temp = ft_strdup("\x01\x01");
+			else
+				temp = ft_strdup("\x02\x02");
+			token = ft_join_tokens(token, temp);
+			//Avanzar el índice pasando las comillas vacías
+			(*i) += 2;
+			return (token);
+		}
+		// Contar comillas vacías consecutivas del mismo tipo
+		empty_count = 0;
+		while (input[*i] == quote && input[*i + 1] == quote)
+		{
+			empty_count++;
+			(*i) += 2;
+		}
+		// Si hubo comillas vacías, añadir solo un par de marcadores
+		if (empty_count > 0)
+		{
+			if (quote == '\'')
+				temp = ft_strdup("\x01\x01");
+			else
+				temp = ft_strdup("\x02\x02");
+			token = ft_join_tokens(token, temp);
+			return (token);
+		}
+	}
 	//Extrae la parte entre comillas
 	temp = ft_get_quoted_token(input, i);
 	//La une con el resto del token

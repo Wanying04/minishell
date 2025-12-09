@@ -19,6 +19,8 @@ int	execute_builtins(t_command *cmd, t_env *env)
 	else if (ft_strncmp(cmd->argv[0], "exit", 4) == 0 && cmd->argv[0][4] == '\0'
 			&& !cmd->prev)
 		return (builtin_exit(cmd));
+	else if (ft_strncmp(cmd->argv[0], ".", 1) == 0 && cmd->argv[0][1] == '\0')
+		return (builtin_dot(cmd));
 	else
 		return (FAILURE);
 }
@@ -40,6 +42,8 @@ int	is_builtin_command(t_command *cmd)
 	if (ft_strncmp(cmd->argv[0], "env", 3) == 0 && cmd->argv[0][3] == '\0')
 		return (SUCCESS);
 	if (ft_strncmp(cmd->argv[0], "exit", 4) == 0 && cmd->argv[0][4] == '\0')
+		return (SUCCESS);
+	if (ft_strncmp(cmd->argv[0], ".", 1) == 0 && cmd->argv[0][1] == '\0')
 		return (SUCCESS);
 	return (FAILURE);
 }
