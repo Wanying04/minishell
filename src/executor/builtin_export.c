@@ -16,7 +16,8 @@ int	builtin_export(t_command *cmd, t_env *env)
 			write(2, "' not a valid identifier\n", 26);
 			return (FAILURE);
 		}
-		env_set(env, cmd->argv[i]);
+		if (ft_strchr(cmd->argv[i], '='))
+			env_set(env, cmd->argv[i]);
 		i++;
 	}
 	return (SUCCESS);
