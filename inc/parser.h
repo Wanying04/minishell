@@ -68,6 +68,7 @@ void		update_quote_state(char c, t_quote_state *qs);
 int			should_expand(char c, char next, t_quote_state *qs);
 char		*replace_var(char *result, char *var_name, t_env *env);
 char		*append_literal(char *result, char *str, int start, int end);
+char		*append_char(char *str, char c);
 
 // ============ Funciones de lexer (lexer_*.c) ============
 int			ft_isspace(char c);

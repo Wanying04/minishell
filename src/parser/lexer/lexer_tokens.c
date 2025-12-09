@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:26 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/05 20:22:10 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/09 17:30:26 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,10 @@ char	*ft_get_normal_token(char *input, int *i)
 	if (*i > start)
 		//Si salió del while y quedan cosas por guardar en token, lo hace
 		token = ft_join_tokens(token, ft_substr(input, start, *i - start));
-	if (token)
-		return (token);
-	else
+	// Si no hay token pero hubo comillas (token podría ser NULL si solo espacios/nada)
+	if (!token)
 		return (ft_strdup(""));
+	return (token);
 }
 //Libera el array de tokens completo
 void	ft_free_tokens(char **tokens)

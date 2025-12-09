@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_vars.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/04 12:54:45 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/09 17:37:52 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,15 +76,30 @@ static char	*process_expand_loop(char *str, char *result, t_env *env)
 char	*expand_variables(char *str, t_env *env, int in_single_quote) //in_single_quote sobra
 {
 	char	*result;
+	int		only_markers;
 
 	if (!str)
 		return (ft_strdup(""));
 	//Si está en comillas simples no expande nada
 	if (in_single_quote)
 		return (ft_strdup(str));
+	// Verificar si el string original solo contiene marcadores (comillas vacías)
+	only_markers = (ft_strlen(str) == 2 && (str[0] == '\x01' || str[0] == '\x02') 
+		&& (str[1] == '\x01' || str[1] == '\x02'));
 	//Procesa el string expandiendo las variables
 	result = process_expand_loop(str, NULL, env);
+	// Si el resultado es NULL pero originalmente eran comillas vacías, devolver los marcadores
 	if (!result)
+	{
+		if (only_markers)
+			return (ft_strdup(str));
 		return (ft_strdup(""));
+	}
+	// Si el resultado está vacío pero originalmente eran comillas vacías, devolver los marcadores
+	if (only_markers && ft_strlen(result) == 0)
+	{
+		free(result);
+		return (ft_strdup(str));
+	}
 	return (result);
 }

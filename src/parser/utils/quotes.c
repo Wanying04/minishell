@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:18:30 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/05 20:15:58 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/09 16:41:58 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 //Añadir un carácter a un string
-static char	*append_char(char *str, char c)
+char	*append_char(char *str, char c)
 {
 	char	*new;
 	int		len;

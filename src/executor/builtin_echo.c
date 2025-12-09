@@ -30,7 +30,12 @@ int	builtin_echo(t_command *cmd)
 	}
 	while (cmd->argv[i])
 	{
-		write(1, cmd->argv[i], ft_strlen(cmd->argv[i]));
+		// Si el argumento solo contiene marcadores de comillas vacías, no imprimir contenido
+		if (!(ft_strlen(cmd->argv[i]) == 2 && 
+			(cmd->argv[i][0] == '\x01' || cmd->argv[i][0] == '\x02')))
+		{
+			write(1, cmd->argv[i], ft_strlen(cmd->argv[i]));
+		}
 		if (cmd->argv[i + 1])
 			write(1, " ", 1);
 		i++;

@@ -12,7 +12,10 @@ void	cleanup_empty_args(t_command *cmd)
 	j = 0;
 	while (cmd->argv[i])
 	{
-		if (cmd->argv[i][0] != '\0')
+		// Si el argumento NO está vacío, O si contiene marcadores de comillas (comillas vacías '')
+		if (cmd->argv[i][0] != '\0' || 
+			(ft_strlen(cmd->argv[i]) == 2 && 
+			(cmd->argv[i][0] == '\x01' || cmd->argv[i][0] == '\x02')))
 		{
 			if (i != j)
 				cmd->argv[j] = cmd->argv[i];

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_split.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:26 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/05 20:21:46 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/09 17:37:52 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,6 @@ static void	fill_tokens(char **tokens, char *input, t_pctx *ctx)
 			tokens[k++] = ft_get_normal_token(input, &i);
 		}
 	}
-/* 	for(int j = 0; j < k; j++)
-		printf("tokens[%i]: %s\n", j, tokens[j]); */
 	tokens[k] = NULL;
 }
 //Divide el input del usuario en tokens individuales. Ej.: "ls", "-la".
