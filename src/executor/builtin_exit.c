@@ -1,9 +1,11 @@
 #include "minishell.h"
 
-static int	is_integer(char *str)
+int	is_integer(char *str)
 {
 	int	i;
 
+	if (*str == '$')
+		str++;
 	i = 0;
 	if (str[i] == '+' || str[i] == '-')
 		i++;
@@ -22,16 +24,16 @@ int	builtin_exit(t_command *cmd)
 {
 	int	exit_status;
 
-	write(1, "exit\n", 5);
+	if (!cmd->prev)
+		write(1, "exit\n", 5);
 	exit_status = 0;
 	if (cmd->argv[1])
 	{
-		if (!is_integer(cmd->argv[1]))
+		if (!is_integer(cmd->argv[1]) || !ft_atol(cmd->argv[1], &exit_status))
 		{
 			write(2, "minishell: exit: numeric argument required\n", 43);
 			exit(2);
 		}
-		exit_status = ft_atoi(cmd->argv[1]);
 	}
 	if (cmd->argv[1] && cmd->argv[2])
 	{

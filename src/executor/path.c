@@ -2,13 +2,18 @@
 
 static char	*search_in_directory(char *dir, char *cmd)
 {
-	char	full_path[1024];
+	char			full_path[1024];
+	struct stat		path_stat;
 
 	ft_strlcpy(full_path, dir, sizeof(full_path));
 	ft_strlcat(full_path, "/", sizeof(full_path));
 	ft_strlcat(full_path, cmd, sizeof(full_path));
 	if (access(full_path, X_OK) == 0)
+	{
+		if (stat(full_path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode))
+			return (NULL);
 		return (ft_strdup(full_path));
+	}
 	return (NULL);
 }
 

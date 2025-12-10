@@ -27,12 +27,8 @@ int	builtin_unset(t_command *cmd, t_env *env)
 	i = 1;
 	while (cmd->argv[i])
 	{
-		if (!is_valid_var_name(cmd->argv[i]))
-		{
-			printf("minishell: unset: not a valid identifier\n");
-			return (FAILURE);
-		}
-		env_unset(env, cmd->argv[i]);
+		if (is_valid_var_name(cmd->argv[i]))
+			env_unset(env, cmd->argv[i]);
 		i++;
 	}
 	return (SUCCESS);
