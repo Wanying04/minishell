@@ -47,10 +47,19 @@ static int	wait_for_all(pid_t last_pid)
 	int		status;
 	int		last_status;
 	pid_t	pid;
+	struct sigaction	sa;
+	int		interrupted;
 
+	interrupted = 0;
 	last_status = SUCCESS;
+	sa.sa_handler = SIG_IGN;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, NULL);
 	while ((pid = wait(&status)) > 0)
 	{
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+			interrupted = 1;
 		if (pid == last_pid)
 		{
 			if (WIFEXITED(status))
@@ -58,6 +67,11 @@ static int	wait_for_all(pid_t last_pid)
 			else if (WIFSIGNALED(status))
 				last_status = 128 + WTERMSIG(status);
 		}
+	}
+	setup_signals();
+	if (interrupted)
+	{
+		write(1, "\n", 1);
 	}
 	return (last_status);
 }
