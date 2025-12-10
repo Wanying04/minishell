@@ -1,62 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_cd.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 21:00:31 by wtang             #+#    #+#             */
+/*   Updated: 2025/12/10 21:03:12 by wtang            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-
-static char	*remove_last_component(char *path)
-{
-	char	*last_slash;
-	char	*result;
-
-	if (!path || !*path)
-		return (NULL);
-	if (ft_strncmp(path, "/", 2) == 0)
-		return (ft_strdup("/"));
-	last_slash = ft_strrchr(path, '/');
-	if (!last_slash)
-		return (ft_strdup("."));
-	if (last_slash == path)
-		return (ft_strdup("/"));
-	result = malloc(last_slash - path + 1);
-	if (!result)
-		return (NULL);
-	ft_strlcpy(result, path, last_slash - path + 1);
-	return (result);
-}
-
-static char	*build_logical_path(char *current_pwd, char *target)
-{
-	if (!current_pwd || !target)
-		return (NULL);
-	if (ft_strncmp(target, "..", 3) == 0 || !target[0])
-		return (remove_last_component(current_pwd));
-	return (NULL);
-}
-
-static void	set_env_var(t_env *env, const char *name, const char *value)
-{
-	char	*eq;
-	char	*env_str;
-
-	if (!value || !(eq = ft_strjoin(name, "=")))
-		return ;
-	env_str = ft_strjoin(eq, value);
-	free(eq);
-	if (env_str)
-	{
-		env_set(env, env_str);
-		free(env_str);
-	}
-}
-
-static void	update_pwd_oldpwd(t_env *env, char *old_cwd, char *new_cwd)
-{
-	if (env->pwd->oldpwd)
-		free(env->pwd->oldpwd);
-	env->pwd->oldpwd = old_cwd;
-	if (env->pwd->pwd)
-		free(env->pwd->pwd);
-	env->pwd->pwd = new_cwd;
-	set_env_var(env, "OLDPWD", old_cwd);
-	set_env_var(env, "PWD", new_cwd);
-}
 
 static char	*resolve_cd_path(char *arg, t_env *env, int *should_free)
 {
@@ -100,11 +54,37 @@ static char	*get_cd_path(char *arg, t_env *env, int *err, int *should_free)
 	return (path);
 }
 
+static int	do_cd_and_update_env(char *path, char *old_cwd,
+	t_command *cmd, t_env *env)
+{
+	char	*temp;
+	int		should_free;
+
+	should_free = 0;
+	if (chdir(path) != 0)
+	{
+		perror("minishell: cd");
+		free(old_cwd);
+		if (should_free)
+			free(path);
+		return (FAILURE);
+	}
+	if (cmd->argv[1] && ft_strncmp(cmd->argv[1], "-", 2) == 0
+		&& cmd->argv[1][1] == '\0')
+		printf("%s\n", path);
+	temp = getcwd(NULL, 0);
+	if (!temp)
+		temp = build_logical_path(env->pwd->pwd, cmd->argv[1]);
+	update_pwd_oldpwd(env, old_cwd, temp);
+	if (should_free)
+		free(path);
+	return (SUCCESS);
+}
+
 int	builtin_cd(t_command *cmd, t_env *env)
 {
 	char	*path;
 	char	*old_cwd;
-	char	*temp;
 	int		ret;
 	int		should_free;
 
@@ -117,24 +97,9 @@ int	builtin_cd(t_command *cmd, t_env *env)
 		return (perror("minishell: cd"), FAILURE);
 	path = get_cd_path(cmd->argv[1], env, &ret, &should_free);
 	if (!path)
-		return (free(old_cwd), ret);
-	if (chdir(path) != 0)
 	{
-		perror("minishell: cd");
 		free(old_cwd);
-		if (should_free)
-			free(path);
-		return (FAILURE);
+		return (ret);
 	}
-	if (cmd->argv[1] && ft_strncmp(cmd->argv[1], "-", 2) == 0
-		&& cmd->argv[1][1] == '\0')
-		printf("%s\n", path);
-	ret = 0;
-	temp = getcwd(NULL, 0);
-	if (!temp)
-		temp = build_logical_path(env->pwd->pwd, cmd->argv[1]);
-	update_pwd_oldpwd(env, old_cwd, temp);
-	if (should_free)
-		free(path);
-	return (SUCCESS);
+	return (do_cd_and_update_env(path, old_cwd, cmd, env));
 }
