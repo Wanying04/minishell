@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_single_command.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 18:33:22 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 18:33:41 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 20:49:20 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ static int	setup_redirections(t_command *cmd, int *saved_stdin,
 			restore_fds(*saved_stdin, *saved_stdout);
 			return (FAILURE);
 		}
-		if (handle_redirections(cmd, env) != SUCCESS)
+		if (handle_redirections(cmd, env, 0) != SUCCESS)
 		{
 			restore_fds(*saved_stdin, *saved_stdout);
 			return (FAILURE);

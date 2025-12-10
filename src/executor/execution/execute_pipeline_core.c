@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipeline_core.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 18:42:25 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 20:26:54 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 20:49:15 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	execute_pipeline_command(t_command *cmd, t_env *env)
 
 	if (is_builtin_command(cmd) == SUCCESS)
 	{
-		if (handle_redirections(cmd, env) != SUCCESS)
+		if (handle_redirections(cmd, env, 0) != SUCCESS)
 			exit(EXIT_FAILURE);
 		status = execute_builtins(cmd, env);
 		exit(status);
@@ -76,6 +76,7 @@ static int	wait_for_all(pid_t last_pid)
 			else if (WIFSIGNALED(status))
 				last_status = 128 + WTERMSIG(status);
 		}
+		pid = wait(&status);
 	}
 	if (interrupted)
 		write(1, "\n", 1);
