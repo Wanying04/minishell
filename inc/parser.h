@@ -1,13 +1,21 @@
-// ============ Utilidades de comillas para lexer (lexer_quoted_utils.c) ============
-char *handle_empty_quotes(char *token, char quote, char *input, int *i);
-char *extract_quoted_content(char *token, char *input, int *i);
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 00:00:00 by wtang             #+#    #+#             */
+/*   Updated: 2025/12/10 21:41:24 by wtang            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PARSER_H
 # define PARSER_H
 
-// Declaraciones adelantadas (evitar dependencias circulares)
-typedef struct s_command t_command;
-typedef struct s_env t_env;
-typedef struct s_redirect t_redirect;
+typedef struct s_command	t_command;
+typedef struct s_env		t_env;
+typedef struct s_redirect	t_redirect;
 
 typedef struct s_quote_state
 {
@@ -16,60 +24,45 @@ typedef struct s_quote_state
 
 typedef struct s_pctx
 {
-	int			heredoc_dont_expand;// 0. 0 expande, 1 no expande.
-	char		**tokens;			// 1. Array de tokens (entrada dividida)
-	t_env		*env;				// 2. Environment variables para expansión
-	char		**args_temp;		// 3. Argumentos temporales del comando actual
-	int			args_count;			// 4. Cuántos argumentos llevamos
-	int			args_cap;			// 5. Capacidad del array args_temp
-	t_redirect	*redir_temp;		// 6. Redirecciones temporales
-	int			redir_count;		// 7. Cuántas redirecciones llevamos
-	int			redir_cap;			// 8. Capacidad del array redir_temp
-	t_command	*head;				// 9. Primer comando de la lista
-	t_command	*curr;				// 10. Comando actual siendo construido
-	int			i;					// 11. Índice actual en tokens[]
-	int			error;				// 12. Flag de error
-	char		*heredoc_delim;		// 13. Delimitador de heredoc (<<)
-	int			is_in_pipe;			// 14. Flag: comando actual es parte de un pipe
+	int			heredoc_dont_expand;
+	char		**tokens;
+	t_env		*env;
+	char		**args_temp;
+	int			args_count;
+	int			args_cap;
+	t_redirect	*redir_temp;
+	int			redir_count;
+	int			redir_cap;
+	t_command	*head;
+	t_command	*curr;
+	int			i;
+	int			error;
+	char		*heredoc_delim;
+	int			is_in_pipe;
 }	t_pctx;
 
-// ============ Funciones principales del Parser ============
 t_command	*parse_input(char *input, t_env *env);
 void		free_command(t_command *cmd);
 int			validate_syntax(char *input);
-
-// ============ Funciones de contexto (parse_ctx.c) ============
 void		reset_ctx(t_pctx *ctx);
 void		init_ctx(t_pctx *ctx, char **tokens, t_env *env);
 void		free_args_temp(char **args_temp, int args_count);
 void		free_redir_temp(t_pctx *ctx);
 void		cleanup_resources(t_pctx *ctx);
-
-// ============ Funciones de argumentos (parse_args.c) ============
 int			push_arg(t_pctx *ctx, const char *tok);
 int			push_redir(t_pctx *ctx, const char *file, int typeval);
-
-// ============ Funciones de nodos (parse_node.c) ============
 t_command	*create_node_from_ctx(t_pctx *ctx);
 int			finalize_and_append(t_pctx *ctx);
-
-// ============ Funciones handlers (parse_handlers.c) ============
 int			handle_pipe(t_pctx *ctx);
 int			handle_redir(t_pctx *ctx);
-
-// ============ Funciones de procesamiento (parse_token.c) ============
 int			process_token(t_pctx *ctx, char *tok);
 void		process_tokens_loop(t_pctx *ctx);
-
-// ============ Funciones de expansión (expand_*.c) ============
 char		*get_var_name(char *str, int *i);
 void		update_quote_state(char c, t_quote_state *qs);
 int			should_expand(char c, char next, t_quote_state *qs);
 char		*replace_var(char *result, char *var_name, t_env *env);
 char		*append_literal(char *result, char *str, int start, int end);
 char		*append_char(char *str, char c);
-
-// ============ Funciones de lexer (lexer_*.c) ============
 int			ft_isspace(char c);
 int			ft_isspecial(char c);
 char		*ft_get_quoted_token(char *input, int *i);
@@ -81,8 +74,8 @@ char		*ft_join_tokens(char *s1, char *s2);
 int			ft_count_tokens(char *input);
 char		**ft_split_tokens(char *input, t_pctx *ctx);
 void		ft_free_tokens(char **tokens);
-
-// ============ Funciones de verificación (quote_check.c) ============
 int			ft_check_quotes(char *input);
+char		*handle_empty_quotes(char *token, char quote, char *input, int *i);
+char		*extract_quoted_content(char *token, char *input, int *i);
 
 #endif
