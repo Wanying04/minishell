@@ -13,6 +13,7 @@ LIBFT_A		:= $(LIBFT_DIR)/libft.a
 # Source files
 SRCS		:= src/main.c \
 			   src/executor/builtins/builtin_cd.c \
+			   src/executor/builtins/cd_utils.c \
 			   src/executor/builtins/builtin_dot.c \
 			   src/executor/builtins/builtin_echo.c \
 			   src/executor/builtins/builtin_env.c \
@@ -32,7 +33,7 @@ SRCS		:= src/main.c \
 			   src/executor/redirection/handle_redirections_only.c \
 			   src/executor/redirection/handle_redirections.c \
 			   src/executor/redirection/handle_file_redirection.c \
-               src/executor/redirection/process_heredoc.c \
+			   src/executor/redirection/process_heredoc.c \
 			   src/executor/signals.c \
 			   src/executor/utils/utils.c \
 			   src/executor/utils/utils2.c \
