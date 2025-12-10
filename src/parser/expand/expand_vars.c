@@ -3,32 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   expand_vars.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/10 17:20:02 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 18:26:33 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-//Procesa una variable encontrada: extrae su nombre y la reemplaza por su valor
 static char	*process_variable(char *result, char *str, int *i, t_env *env)
 {
 	char	*var_name;
 
-	//Extrae el nombre de la variable después del $
 	var_name = get_var_name(str, i);
 	if (var_name)
 	{
-		//Reemplaza la variable por su valor y lo añade a lo que teníamos (result)
 		result = replace_var(result, var_name, env);
 		free(var_name);
 	}
 	return (result);
 }
 
-//Inicializa las variables del estado de expansión y las comillas
 static void	init_expand_state(int *i, int *start, t_quote_state *qs)
 {
 	*i = 0;
@@ -50,21 +46,17 @@ static char	*process_expand_loop(char *str, char *result, t_env *env)
 		{
 			result = append_literal(result, str, start, i);
 			i++;
-			start = i;//Se actualiza start después del marcador
+			start = i;
 		}
-		//Si encuentra un $ expandible
 		else if (should_expand(str[i], str[i + 1], &qs))
 		{
-			//Añade el literal anterior (antes del $)
 			result = append_literal(result, str, start, i);
-			//Procesa y expande la variable
 			result = process_variable(result, str, &i, env);
-			start = i;//Se actualiza start después de la variable
+			start = i;
 		}
 		else
-			i++;//Carácter normal, continúa
+			i++;
 	}
-	//Si falta algo por añadir, lo hace
 	return (append_literal(result, str, start, i));
 }
 

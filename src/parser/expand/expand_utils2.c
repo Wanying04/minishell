@@ -3,22 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/10 17:17:07 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 18:25:58 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-//Obtiene el valor de una variable del entorno
-//Llamada desde replace_var()
+
 static char	*get_var_value(char *var_name, t_env *env, char **exit_str)
 {
 	char	*value;
 
 	*exit_str = NULL;
-	//Caso especial: $? devuelve el valor del exit status del último comando
 	if (ft_strncmp(var_name, "?", 2) == 0)
 	{
 		*exit_str = ft_itoa(env->exit_status);
@@ -26,14 +24,12 @@ static char	*get_var_value(char *var_name, t_env *env, char **exit_str)
 			return ("");
 		return (*exit_str);
 	}
-	//Busca la variable en el entorno
 	value = env_get(env, var_name);
 	if (!value)
 		return ("");
 	return (value);
 }
-//Crea un nuevo string concatenando result + value
-//Llamada desde replace_var()
+
 static char	*create_new_result(char *result, char *value)
 {
 	char	*new_result;
@@ -47,28 +43,22 @@ static char	*create_new_result(char *result, char *value)
 	ft_strlcat(new_result, value, len);
 	return (new_result);
 }
-//Reemplaza una variable por su valor en el resultado
-//Llamada desde: process_variable() en expand_vars.c
+
 char	*replace_var(char *result, char *var_name, t_env *env)
 {
 	char	*value;
 	char	*new_result;
 	char	*exit_str;
 
-	//printf("result: %s\n", result);
-	//Obtiene el valor de la variable
 	value = get_var_value(var_name, env, &exit_str);
-	//Si result está vacío, devuelve directamente el valor
-	if (!result)//Lo que hayamos leído hasta la variable
+	if (!result)
 	{
 		if (exit_str)
 			return (exit_str);
-		// Si el valor es vacío, devolver NULL para evitar alocar memoria innecesaria
 		if (!value || !*value)
 			return (NULL);
 		return (ft_strdup(value));
 	}
-	//Concatena result (lo leído hasta la variable) con el valor de la variable
 	new_result = create_new_result(result, value);
 	if (!new_result)
 	{
@@ -76,7 +66,6 @@ char	*replace_var(char *result, char *var_name, t_env *env)
 			free(exit_str);
 		return (result);
 	}
-	//printf("new_result: %s\n", new_result);
 	free(result);
 	if (exit_str)
 		free(exit_str);
