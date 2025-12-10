@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_pipeline_core.c                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 18:42:25 by wtang             #+#    #+#             */
+/*   Updated: 2025/12/10 20:26:54 by wtang            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	setup_child_pipe_io(int in_fd, int pipefd[2], t_command *cmd)
@@ -39,24 +51,21 @@ static void	manage_parent_process(int *in_fd, int pipefd[2], t_command *cmd)
 	{
 		close(pipefd[1]);
 		*in_fd = pipefd[0];
-	}	
+	}
 }
 
 static int	wait_for_all(pid_t last_pid)
 {
-	int		status;
-	int		last_status;
-	pid_t	pid;
-	struct sigaction	sa;
-	int		interrupted;
+	int					status;
+	int					last_status;
+	pid_t				pid;
+	int					interrupted;
 
 	interrupted = 0;
 	last_status = SUCCESS;
-	sa.sa_handler = SIG_IGN;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sigaction(SIGINT, &sa, NULL);
-	while ((pid = wait(&status)) > 0)
+	ignore_sigint();
+	pid = wait(&status);
+	while (pid > 0)
 	{
 		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 			interrupted = 1;
@@ -68,12 +77,9 @@ static int	wait_for_all(pid_t last_pid)
 				last_status = 128 + WTERMSIG(status);
 		}
 	}
-	setup_signals();
 	if (interrupted)
-	{
 		write(1, "\n", 1);
-	}
-	return (last_status);
+	return (setup_signals(), last_status);
 }
 
 int	execute_pipeline_core(t_command *cmd, t_env *env)
@@ -89,7 +95,8 @@ int	execute_pipeline_core(t_command *cmd, t_env *env)
 	{
 		if (cmd->next && pipe(pipefd) == -1)
 			return (perror("pipe"), FAILURE);
-		if ((pid = fork()) == -1)
+		pid = fork();
+		if (pid == -1)
 			return (perror("fork"), FAILURE);
 		if (pid == 0)
 		{

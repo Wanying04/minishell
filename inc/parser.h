@@ -1,6 +1,3 @@
-// Utilidades de comillas para lexer (lexer_quoted_utils.c)
-char *handle_empty_quotes(char *token, char quote, char *input, int *i);
-char *extract_quoted_content(char *token, char *input, int *i);
 // ============ Utilidades de comillas para lexer (lexer_quoted_utils.c) ============
 char *handle_empty_quotes(char *token, char quote, char *input, int *i);
 char *extract_quoted_content(char *token, char *input, int *i);

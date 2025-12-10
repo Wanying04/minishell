@@ -75,9 +75,18 @@ typedef struct s_command
 	int		dont_expand;
 }	t_command;
 
+typedef struct s_dupinfo {
+	char *file;
+	int flags;
+	int mode;
+	int target_fd;
+	int should_dup;
+} t_dupinfo;
+
 // ============ Signals (main.c) ============
 void	setup_signals(void);
 void	handle_signal(int sig);
+void	ignore_sigint(void);
 
 // ============ Environment Management (executor/env.c) ============
 // These functions are used across the entire project (parser, executor, main)
@@ -99,5 +108,7 @@ char	*expand_variables(char *str, t_env *env, int in_single_quote);
 char	*expand_heredoc(char *str, t_env *env, int dont_expand);
 int		cleanup_and_exit(t_env *env);
 int		is_empty_input(const char *str);
+int		process_heredoc(char *delimiter, t_env *env, int dont_expand, int should_dup);
+int		handle_file_redirection(t_redirect *redir, int should_dup);
 
 #endif

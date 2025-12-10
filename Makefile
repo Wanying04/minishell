@@ -12,28 +12,30 @@ LIBFT_A		:= $(LIBFT_DIR)/libft.a
 
 # Source files
 SRCS		:= src/main.c \
-			   src/executor/builtin_cd.c \
-			   src/executor/builtin_dot.c \
-			   src/executor/builtin_echo.c \
-			   src/executor/builtin_env.c \
-			   src/executor/builtin_exit.c \
-			   src/executor/builtin_export.c \
-			   src/executor/builtin_pwd.c \
-			   src/executor/builtin_unset.c \
-			   src/executor/env_core.c \
-			   src/executor/env_operations.c \
-			   src/executor/env_to_array.c \
-			   src/executor/execute_external_command.c \
-			   src/executor/execute_pipeline_core.c \
-			   src/executor/execute_pipeline.c \
-			   src/executor/execute_single_command.c \
-			   src/executor/execute.c \
-			   src/executor/handle_redirections_only.c \
-			   src/executor/handle_redirections.c \
-			   src/executor/path.c \
+			   src/executor/builtins/builtin_cd.c \
+			   src/executor/builtins/builtin_dot.c \
+			   src/executor/builtins/builtin_echo.c \
+			   src/executor/builtins/builtin_env.c \
+			   src/executor/builtins/builtin_exit.c \
+			   src/executor/builtins/builtin_export.c \
+			   src/executor/builtins/builtin_pwd.c \
+			   src/executor/builtins/builtin_unset.c \
+			   src/executor/env/env_core.c \
+			   src/executor/env/env_operations.c \
+			   src/executor/env/path.c \
+			   src/executor/env/env_to_array.c \
+			   src/executor/execution/execute_external_command.c \
+			   src/executor/execution/execute_pipeline_core.c \
+			   src/executor/execution/execute_pipeline.c \
+			   src/executor/execution/execute_single_command.c \
+			   src/executor/execution/execute.c \
+			   src/executor/redirection/handle_redirections_only.c \
+			   src/executor/redirection/handle_redirections.c \
+			   src/executor/redirection/handle_file_redirection.c \
+               src/executor/redirection/process_heredoc.c \
 			   src/executor/signals.c \
-			   src/executor/utils.c \
-			   src/executor/utils2.c \
+			   src/executor/utils/utils.c \
+			   src/executor/utils/utils2.c \
 			   src/parser/expand/expand_heredoc.c \
 			   src/parser/expand/expand_tilde.c \
 			   src/parser/expand/expand_utils.c \

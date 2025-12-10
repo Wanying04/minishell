@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_single_command.c                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 18:33:22 by wtang             #+#    #+#             */
+/*   Updated: 2025/12/10 18:33:41 by wtang            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	execute_builtins(t_command *cmd, t_env *env)
@@ -10,13 +22,16 @@ int	execute_builtins(t_command *cmd, t_env *env)
 		return (builtin_cd(cmd, env));
 	else if (ft_strncmp(cmd->argv[0], "pwd", 3) == 0 && cmd->argv[0][3] == '\0')
 		return (builtin_pwd(cmd, env));
-	else if (ft_strncmp(cmd->argv[0], "export", 6) == 0 && cmd->argv[0][6] == '\0')
+	else if (ft_strncmp(cmd->argv[0], "export", 6) == 0
+		&& cmd->argv[0][6] == '\0')
 		return (builtin_export(cmd, env));
-	else if (ft_strncmp(cmd->argv[0], "unset", 5) == 0 && cmd->argv[0][5] == '\0')
+	else if (ft_strncmp(cmd->argv[0], "unset", 5) == 0
+		&& cmd->argv[0][5] == '\0')
 		return (builtin_unset(cmd, env));
 	else if (ft_strncmp(cmd->argv[0], "env", 3) == 0 && cmd->argv[0][3] == '\0')
 		return (builtin_env(cmd, env));
-	else if (ft_strncmp(cmd->argv[0], "exit", 4) == 0 && cmd->argv[0][4] == '\0')
+	else if (ft_strncmp(cmd->argv[0], "exit", 4) == 0
+		&& cmd->argv[0][4] == '\0')
 		return (builtin_exit(cmd));
 	else if (ft_strncmp(cmd->argv[0], ".", 1) == 0 && cmd->argv[0][1] == '\0')
 		return (builtin_dot(cmd));
@@ -66,7 +81,6 @@ static int	setup_redirections(t_command *cmd, int *saved_stdin,
 {
 	*saved_stdin = -1;
 	*saved_stdout = -1;
-
 	if (cmd->redirect_count > 0)
 	{
 		*saved_stdin = dup(STDIN_FILENO);
@@ -93,14 +107,13 @@ int	execute_single_command(t_command *cmd, t_env *env)
 
 	if (is_builtin_command(cmd) == SUCCESS)
 	{
-		if (setup_redirections(cmd, &saved_stdin, &saved_stdout, env) != SUCCESS)
+		if (setup_redirections(cmd, &saved_stdin, &saved_stdout, env)
+			!= SUCCESS)
 			return (FAILURE);
 		status = execute_builtins(cmd, env);
 		restore_fds(saved_stdin, saved_stdout);
 	}
 	else
-	{
 		status = execute_external_command(cmd, env);
-	}
 	return (status);
 }

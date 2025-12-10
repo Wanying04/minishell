@@ -45,7 +45,6 @@ void	cleanup_empty_args(t_command *cmd)
 	j = 0;
 	while (cmd->argv[i])
 	{
-		// Si el argumento NO está vacío, O si contiene marcadores de comillas (comillas vacías '')
 		if (cmd->argv[i][0] != '\0' || 
 			(ft_strlen(cmd->argv[i]) == 2 && 
 			(cmd->argv[i][0] == '\x01' || cmd->argv[i][0] == '\x02')))
@@ -55,10 +54,7 @@ void	cleanup_empty_args(t_command *cmd)
 			j++;
 		}
 		else
-		{
-			// Liberar el argumento vacío que será removido
 			free(cmd->argv[i]);
-		}
 		i++;
 	}
 	cmd->argv[j] = NULL;
