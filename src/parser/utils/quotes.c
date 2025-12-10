@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:18:30 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/10 18:14:55 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 18:43:26 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	ft_skip_quoted_section(char *input, int *i)
 {
 	char	quote;
 
-	quote = input[*i]; 
+	quote = input[*i];
 	(*i)++;
 	while (input[*i] && input[*i] != quote)
 		(*i)++;

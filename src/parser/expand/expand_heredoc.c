@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/10 18:22:12 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/10 18:43:26 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,12 @@ static char	*process_heredoc_var(char *result, char *str, int *i, t_env *env)
 	return (result);
 }
 
-char	*expand_heredoc(char *str, t_env *env, int dont_expand)
+static char	*process_heredoc_loop(char *str, t_env *env)
 {
 	char	*result;
 	int		i;
 	int		start;
 
-	if (!str)
-		return (ft_strdup(""));
-	if (dont_expand)
-		return (ft_strdup(str));
 	result = NULL;
 	i = 0;
 	start = 0;
@@ -59,7 +55,18 @@ char	*expand_heredoc(char *str, t_env *env, int dont_expand)
 		else
 			i++;
 	}
-	result = append_literal(result, str, start, i);
+	return (append_literal(result, str, start, i));
+}
+
+char	*expand_heredoc(char *str, t_env *env, int dont_expand)
+{
+	char	*result;
+
+	if (!str)
+		return (ft_strdup(""));
+	if (dont_expand)
+		return (ft_strdup(str));
+	result = process_heredoc_loop(str, env);
 	if (!result)
 		return (ft_strdup(""));
 	return (result);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_node.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/10 16:43:18 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 18:43:26 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ static void	copy_argv_to_node(t_command *node, t_pctx *ctx)
 
 static void	set_redirects(t_command *node, t_pctx *ctx)
 {
-	
 	if (ctx->redir_count > 0)
 	{
 		node->redirects = ctx->redir_temp;
@@ -68,6 +67,7 @@ t_command	*create_node_from_ctx(t_pctx *ctx)
 	ctx->args_cap = 0;
 	return (node);
 }
+
 int	finalize_and_append(t_pctx *ctx)
 {
 	t_command	*node;

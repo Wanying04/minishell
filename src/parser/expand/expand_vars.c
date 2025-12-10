@@ -6,7 +6,7 @@
 /*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/10 18:26:33 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/10 18:35:05 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,9 @@ char	*expand_variables(char *str, t_env *env, int in_single_quote)
 		return (ft_strdup(""));
 	if (in_single_quote)
 		return (ft_strdup(str));
-	only_markers = (ft_strlen(str) == 2 && (str[0] == '\x01' || str[0] == '\x02') 
-		&& (str[1] == '\x01' || str[1] == '\x02'));
+	only_markers = (ft_strlen(str) == 2
+			&& (str[0] == '\x01' || str[0] == '\x02')
+			&& (str[1] == '\x01' || str[1] == '\x02'));
 	result = process_expand_loop(str, NULL, env);
 	if (!result)
 	{
