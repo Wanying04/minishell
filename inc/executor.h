@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 19:31:10 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 20:48:40 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/10 21:24:44 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
@@ -53,5 +55,6 @@ int		is_a_directory(const char *path);
 int		ft_atol(const char *nptr, int *value);
 int		is_integer(char *str);
 
+int 	process_heredoc(char *delimiter, t_env *env, int dont_expand, int should_dup);
+
 #endif
-int process_heredoc(char *delimiter, t_env *env, int dont_expand, int should_dup);

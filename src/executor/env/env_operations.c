@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_operations.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 21:10:09 by wtang             #+#    #+#             */
+/*   Updated: 2025/12/10 21:10:10 by wtang            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	update_if_exists(t_env *env, char *new_var, int name_len)
@@ -9,7 +21,7 @@ static int	update_if_exists(t_env *env, char *new_var, int name_len)
 	{
 		if (ft_strncmp(env->vars[i], new_var, name_len) == 0
 			&& (env->vars[i][name_len] == '='
-				|| env->vars[i][name_len] == '\0'))
+			|| env->vars[i][name_len] == '\0'))
 		{
 			free(env->vars[i]);
 			env->vars[i] = new_var;
@@ -53,7 +65,7 @@ char	*env_get(t_env *env, const char *name)
 	i = 0;
 	while (i < env->count)
 	{
-		if (ft_strncmp(env->vars[i], name, name_len) == 0 
+		if (ft_strncmp(env->vars[i], name, name_len) == 0
 			&& env->vars[i][name_len] == '=')
 		{
 			equal_sign = ft_strchr(env->vars[i], '=');
@@ -75,8 +87,8 @@ void	env_unset(t_env *env, const char *name)
 	i = 0;
 	while (i < env->count)
 	{
-		if (ft_strncmp(env->vars[i], name, name_len) == 0 && 
-			env->vars[i][name_len] == '=')
+		if (ft_strncmp(env->vars[i], name, name_len) == 0
+			&& env->vars[i][name_len] == '=')
 		{
 			free(env->vars[i]);
 			j = i;
