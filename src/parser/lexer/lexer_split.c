@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_split.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:26 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/10 17:36:58 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 18:43:26 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 static void	fill_tokens(char **tokens, char *input, t_pctx *ctx)
 {
 	int	i;
@@ -27,7 +28,7 @@ static void	fill_tokens(char **tokens, char *input, t_pctx *ctx)
 		else
 		{
 			if (k > 0 && ft_strncmp(tokens[k - 1], "<<", 3) == 0
-			&& (input[i] == '"' || input[i] == '\''))
+				&& (input[i] == '"' || input[i] == '\''))
 				ctx->heredoc_dont_expand = 1;
 			tokens[k++] = ft_get_normal_token(input, &i);
 		}

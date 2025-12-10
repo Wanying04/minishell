@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_tokens.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 18:50:00 by albarrei          #+#    #+#             */
+/*   Updated: 2025/12/10 18:43:26 by albarrei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*ft_get_special_token(char *input, int *i)
@@ -44,21 +56,23 @@ char	*ft_join_tokens(char *s1, char *s2)
 	return (result);
 }
 
-
-static char *process_quoted_section(char *token, char *input, int *i, int start)
+static char	*process_quoted_section(char *token, char *input, int *i,
+		int start)
 {
-	char quote;
+	char	quote;
+	char	*result;
+
 	if (*i > start)
 		token = ft_join_tokens(token, ft_substr(input, start, *i - start));
 	quote = input[*i];
 	if (input[*i + 1] == quote)
 	{
-		char *result = handle_empty_quotes(token, quote, input, i);
+		result = handle_empty_quotes(token, quote, input, i);
 		if (result)
-			return result;
+			return (result);
 	}
 	token = extract_quoted_content(token, input, i);
-	return token;
+	return (token);
 }
 
 char	*ft_get_normal_token(char *input, int *i)

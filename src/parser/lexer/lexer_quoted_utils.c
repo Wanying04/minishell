@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_quoted_utils.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 18:36:01 by albarrei          #+#    #+#             */
+/*   Updated: 2025/12/10 18:43:26 by albarrei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static char *handle_dollar_before_quotes(char *token, char quote, int *i)
+static char	*handle_dollar_before_quotes(char *token, char quote, int *i)
 {
 	char	*temp;
 
@@ -14,11 +26,13 @@ static char *handle_dollar_before_quotes(char *token, char quote, int *i)
 	return (token);
 }
 
-static char *handle_empty_quote_markers(char *token, char quote, char *input, int *i)
+static char	*handle_empty_quote_markers(char *token, char quote, char *input,
+		int *i)
 {
 	char	*temp;
-	int		empty_count = 0;
+	int		empty_count;
 
+	empty_count = 0;
 	while (input[*i] == quote && input[*i + 1] == quote)
 	{
 		empty_count++;
@@ -36,10 +50,11 @@ static char *handle_empty_quote_markers(char *token, char quote, char *input, in
 	return (NULL);
 }
 
-char *handle_empty_quotes(char *token, char quote, char *input, int *i)
+char	*handle_empty_quotes(char *token, char quote, char *input, int *i)
 {
-	int	token_len = 0;
+	int	token_len;
 
+	token_len = 0;
 	if (token)
 		token_len = ft_strlen(token);
 	if (token_len > 0 && token[token_len - 1] == '$')
@@ -47,9 +62,10 @@ char *handle_empty_quotes(char *token, char quote, char *input, int *i)
 	return (handle_empty_quote_markers(token, quote, input, i));
 }
 
-char *extract_quoted_content(char *token, char *input, int *i)
+char	*extract_quoted_content(char *token, char *input, int *i)
 {
-	char	*temp = ft_get_quoted_token(input, i);
+	char	*temp;
 
+	temp = ft_get_quoted_token(input, i);
 	return (ft_join_tokens(token, temp));
 }

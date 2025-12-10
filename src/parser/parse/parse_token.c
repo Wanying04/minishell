@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_token.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/10 17:07:09 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 18:43:26 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,12 @@ static int	process_pipe(t_pctx *ctx, char *tok)
 
 static int	process_redirection(t_pctx *ctx, char *tok)
 {
-
 	if (ft_strncmp(tok, ">", 2) == 0 || ft_strncmp(tok, ">>", 3) == 0
 		|| ft_strncmp(tok, "<", 2) == 0 || ft_strncmp(tok, "<<", 3) == 0)
 	{
 		if (!ctx->tokens[ctx->i + 1])
 		{
-			ft_putendl_fd("minishell: syntax error: unexpected end of input", 2);
+			ft_putendl_fd("minishell: syntax error: unexpected end", 2);
 			ctx->error = 2;
 			return (2);
 		}
@@ -41,6 +40,7 @@ static int	process_redirection(t_pctx *ctx, char *tok)
 int	process_token(t_pctx *ctx, char *tok)
 {
 	int	result;
+
 	result = process_pipe(ctx, tok);
 	if (result != -1)
 		return (result);

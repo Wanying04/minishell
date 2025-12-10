@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_count.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:26 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/10 17:35:21 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 18:35:33 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 static void	skip_normal_token(char *input, int *i)
 {
 	while (input[*i] && !ft_isspace(input[*i]) && !ft_isspecial(input[*i])

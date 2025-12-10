@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_core.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:29 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/10 17:28:29 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 18:43:26 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ static int	finalize_parsing(t_pctx *ctx)
 	}
 	return (ctx->error);
 }
+
 t_command	*parse_input(char *input, t_env *env)
 {
 	char	**tokens;
