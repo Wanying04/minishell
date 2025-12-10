@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   process_heredoc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 19:44:41 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 20:30:42 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 22:15:37 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,9 @@ int	process_heredoc(char *delimiter, t_env *env,
 	if (pid == 0)
 		process_heredoc_child(pipefd[1], delimiter, env, dont_expand);
 	else
+	{
+		close(pipefd[1]);
 		return (process_heredoc_parent(pipefd[0], pid, env, should_dup));
+	}
 	return (SUCCESS);
 }
