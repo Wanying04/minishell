@@ -100,15 +100,22 @@ void	env_unset(t_env *env, const char *name);
 // Main execution entry point, called by main.c
 int		execute(t_command *cmd, t_env *env);
 
+
+// ============ cd_utils.c ============
+char	*remove_last_component(char *path);
+char	*build_logical_path(char *current_pwd, char *target);
+void	set_env_var(t_env *env, const char *name, const char *value);
+void	update_pwd_oldpwd(t_env *env, char *old_cwd, char *new_cwd);
+
 // ============ Helper Functions ============
 // expand_tilde is used by both parser and executor
 char	*expand_tilde(char *path, t_env *env);
 // expand_variables expands $VAR with environment variables
 char	*expand_variables(char *str, t_env *env, int in_single_quote);
 char	*expand_heredoc(char *str, t_env *env, int dont_expand);
-int		cleanup_and_exit(t_env *env);
-int		is_empty_input(const char *str);
-int		process_heredoc(char *delimiter, t_env *env, int dont_expand, int should_dup);
-int		handle_file_redirection(t_redirect *redir, int should_dup);
+int	cleanup_and_exit(t_env *env);
+int	is_empty_input(const char *str);
+int	process_heredoc(char *delimiter, t_env *env, int dont_expand, int should_dup);
+int	handle_file_redirection(t_redirect *redir, int should_dup);
 
 #endif
