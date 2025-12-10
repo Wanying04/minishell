@@ -6,7 +6,7 @@
 /*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 19:31:10 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/09 20:34:20 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 13:10:21 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,7 @@ char	**env_to_array(t_env *env);
 int		is_valid_var_name(char *str);
 void	cleanup_empty_args(t_command *cmd);
 int		is_a_directory(const char *path);
+int		ft_atol(const char *nptr, int *value);
+int		is_integer(char *str);
 
 #endif

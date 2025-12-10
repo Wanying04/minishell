@@ -17,6 +17,7 @@
 # include <sys/ioctl.h>      // ioctl
 # include <termios.h>        // tcsetattr, tcgetattr
 # include <dirent.h>         // opendir, readdir, closedir
+# include <limits.h>         // LLONG_MAX, LLONG_MIN
 
 // Readline library headers
 # include <readline/readline.h>  // readline, rl_on_new_line, rl_replace_line, rl_redisplay

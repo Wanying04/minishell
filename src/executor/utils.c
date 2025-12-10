@@ -1,5 +1,38 @@
 #include "minishell.h"
-#include <sys/stat.h>
+
+int	ft_atol(const char *nptr, int *value)
+{
+	int			i;
+	long long	number;
+	int			sign;
+
+	i = 0;
+	number = 0;
+	sign = 1;
+	if (nptr[i] == '-')
+	{
+		sign = -1;
+		i++;
+	}
+	else if (nptr[i] == '+')
+		i++;
+	while (nptr[i])
+	{
+		if (number > LLONG_MAX / 10)
+			return (0);
+		if (number == LLONG_MAX / 10)
+		{
+			if (sign == 1 && (nptr[i] - '0') > LLONG_MAX % 10)
+				return (0);
+			if (sign == -1 && (nptr[i] - '0') > (LLONG_MAX % 10) + 1)
+				return (0);
+		}
+		number = 10 * number + (nptr[i] - '0');
+		i++;
+	}
+	*value = (int)(number * sign);
+	return (1);
+}
 
 void	cleanup_empty_args(t_command *cmd)
 {
