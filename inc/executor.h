@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 19:31:10 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 20:30:36 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 20:48:40 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int		builtin_exit(t_command *cmd);
 int		builtin_dot(t_command *cmd);
 
 void	child_process(t_command *cmd, t_env *env);
-int		handle_redirections(t_command *cmd, t_env *env);
+int		handle_redirections(t_command *cmd, t_env *env, int i);
 int		handle_redirections_only(t_command *cmd);
 char	*find_command_path(char *cmd, t_env *env);
 void	reset_signals_to_default(void);

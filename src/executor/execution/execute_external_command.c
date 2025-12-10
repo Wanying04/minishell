@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_external_command.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 18:46:43 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 18:59:50 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 20:48:51 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	child_process(t_command *cmd, t_env *env)
 	char	*path;
 
 	reset_signals_to_default();
-	if (handle_redirections(cmd, env) != SUCCESS)
+	if (handle_redirections(cmd, env, 0) != SUCCESS)
 		exit(EXIT_FAILURE);
 	path = resolve_command_path(cmd->argv[0], env);
 	if (execve(path, cmd->argv, env_to_array(env)) == -1)

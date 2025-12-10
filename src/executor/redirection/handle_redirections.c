@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_redirections.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 19:44:47 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 20:20:29 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 20:47:55 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,11 @@ static int	process_single_redirection(t_redirect *redir, t_env *env,
 	return (handle_file_redirection(redir, should_dup));
 }
 
-int	handle_redirections(t_command *cmd, t_env *env)
+int	handle_redirections(t_command *cmd, t_env *env, int i)
 {
-	int	i;
 	int	last_input_redir;
 	int	should_dup;
 
-	i = 0;
 	last_input_redir = -1;
 	while (i < cmd->redirect_count)
 	{
@@ -43,7 +41,7 @@ int	handle_redirections(t_command *cmd, t_env *env)
 		i++;
 	}
 	i = 0;
-	while (i++ < cmd->redirect_count)
+	while (i < cmd->redirect_count)
 	{
 		should_dup = 1;
 		if ((cmd->redirects[i].type == REDIR_IN || cmd->redirects[i].type
@@ -52,6 +50,7 @@ int	handle_redirections(t_command *cmd, t_env *env)
 		if (process_single_redirection(&cmd->redirects[i], env,
 				cmd->dont_expand, should_dup) != SUCCESS)
 			return (FAILURE);
+		i++;
 	}
 	return (SUCCESS);
 }
