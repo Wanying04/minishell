@@ -6,7 +6,7 @@
 /*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 19:31:10 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 20:30:36 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 21:21:01 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,6 @@ int		is_a_directory(const char *path);
 int		ft_atol(const char *nptr, int *value);
 int		is_integer(char *str);
 
+int 	process_heredoc(char *delimiter, t_env *env, int dont_expand, int should_dup);
+
 #endif
-int process_heredoc(char *delimiter, t_env *env, int dont_expand, int should_dup);

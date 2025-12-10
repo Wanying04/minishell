@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_to_array.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/10 21:09:15 by wtang             #+#    #+#             */
+/*   Updated: 2025/12/10 21:09:23 by wtang            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	free_env_array(char **env_array, int count)
@@ -13,7 +25,7 @@ static void	free_env_array(char **env_array, int count)
 	free(env_array);
 }
 
-char **env_to_array(t_env *env)
+char	**env_to_array(t_env *env)
 {
 	char	**env_array;
 	int		i;
