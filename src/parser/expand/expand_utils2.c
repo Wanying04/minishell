@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/09 19:44:57 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/10 17:17:07 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,7 @@ char	*replace_var(char *result, char *var_name, t_env *env)
 		free(exit_str);
 	return (new_result);
 }
-//Crea un nuevo string concatenando result + substring literal
-//Llamada desde append_literal()
+
 static char	*create_literal(char *result, char *str, int start, int end)
 {
 	char	*literal;
@@ -95,7 +94,6 @@ static char	*create_literal(char *result, char *str, int start, int end)
 	if (!new_result)
 		return (result);
 	ft_strlcpy(new_result, result, len);
-	//Extrae la parte literal del string original
 	literal = ft_substr(str, start, end - start);
 	if (!literal)
 		return (free(new_result), result);
@@ -104,19 +102,15 @@ static char	*create_literal(char *result, char *str, int start, int end)
 	free(literal);
 	return (new_result);
 }
-//Añade texto literal (no expandible) al resultado
-//Llamada desde: process_expand_lopp() en expand_vars.c
+
 char	*append_literal(char *result, char *str, int start, int end)
 {
 	int	literal_len;
 
-	//printf("result: %s, str: %s, start: %i, end: %i\n", result, str, start, end);
 	literal_len = end - start;
 	if (literal_len <= 0)
 		return (result);
-	//Si result está vacío, devuelve directamente el substring
 	if (!result)
 		return (ft_substr(str, start, literal_len));
-	//Si no, concatena el literal al resultado existente
 	return (create_literal(result, str, start, end));
 }

@@ -3,22 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_count.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:26 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/02 13:31:12 by albarrei         ###   ########.fr       */
+/*   Updated: 2025/12/10 17:35:21 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 static void	skip_normal_token(char *input, int *i)
 {
-	//Avanza el índice hasta encontrar espacio, operador especial, comillas, o el final
 	while (input[*i] && !ft_isspace(input[*i]) && !ft_isspecial(input[*i])
 		&& input[*i] != '"' && input[*i] != '\'')
 		(*i)++;
 }
-//Cuenta cuantos tokens hay en el input
+
 int	ft_count_tokens(char *input)
 {
 	int	count;
@@ -28,19 +27,15 @@ int	ft_count_tokens(char *input)
 	i = 0;
 	while (input[i])
 	{
-		//Salta espacios en blanco
 		if (ft_isspace(input[i]))
 			i++;
-		//Cuenta secciones entre comillas como un solo token
 		else if (input[i] == '"' || input[i] == '\'')
 			count += ft_skip_quoted_section(input, &i);
-		//Cuenta operadores especiales como tokens independientes ("|", ">", "<", ">>", "<<")
 		else if (ft_isspecial(input[i]))
 		{
 			count++;
 			i++;
 		}
-		//Cuenta palabras normales como tokens
 		else
 		{
 			count++;

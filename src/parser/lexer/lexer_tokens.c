@@ -1,17 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   lexer_tokens.c                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/25 15:19:26 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/09 20:51:33 by wtang            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
-//Extrae operadores especiales
+
 char	*ft_get_special_token(char *input, int *i)
 {
 	int		pos;
@@ -20,7 +8,6 @@ char	*ft_get_special_token(char *input, int *i)
 
 	pos = *i;
 	first = input[pos];
-	//Esto es por si es APPEND (>>) o HEREDOC (<<)
 	if ((first == '>' || first == '<') && input[pos + 1] == first)
 	{
 		buf[0] = first;
@@ -29,13 +16,12 @@ char	*ft_get_special_token(char *input, int *i)
 		*i = pos + 2;
 		return (ft_strdup(buf));
 	}
-	//Esto por si es IN (<) o OUT (>)
 	buf[0] = first;
 	buf[1] = '\0';
 	*i = pos + 1;
 	return (ft_strdup(buf));
 }
-//Concatena dos strings y libera los originales para evitar memory leaks
+
 char	*ft_join_tokens(char *s1, char *s2)
 {
 	char	*result;
@@ -48,79 +34,33 @@ char	*ft_join_tokens(char *s1, char *s2)
 		return (s1);
 	len1 = ft_strlen(s1);
 	len2 = ft_strlen(s2);
-	//Hace un nuevo malloc
 	result = ft_calloc(len1 + len2 + 1, 1);
 	if (!result)
 		return (NULL);
 	ft_strlcpy(result, s1, len1 + 1);
 	ft_strlcpy(result + len1, s2, len2 + 1);
-	//Libera la memoria de los punteros anteriores reservada por ft_strdup
 	free(s1);
 	free(s2);
 	return (result);
 }
 
-static char	*process_quoted_section(char *token, char *input, int *i, int start)
-{
-	char	*temp;
-	char	quote;
-	int		token_len;
-	int		empty_count;
 
+static char *process_quoted_section(char *token, char *input, int *i, int start)
+{
+	char quote;
 	if (*i > start)
-		//Une lo que haya en token
-		//con lo que ft_substr extrae del input, desde start, la longitud avanzada
-		//antes de la comilla
 		token = ft_join_tokens(token, ft_substr(input, start, *i - start));
-	//Verificar si hay comillas vacías después de $
 	quote = input[*i];
 	if (input[*i + 1] == quote)
 	{
-		//Es una comilla vacía
-		token_len = 0;
-		if (token)
-			token_len = ft_strlen(token);
-		//Verificar si el último carácter es $
-		if (token_len > 0 && token[token_len - 1] == '$')
-		{
-			//Eliminar el $ del final del token actual
-			token[token_len - 1] = '\0';
-			//Añadir marcadores de comillas vacías
-			if (quote == '\'')
-				temp = ft_strdup("\x01\x01");
-			else
-				temp = ft_strdup("\x02\x02");
-			token = ft_join_tokens(token, temp);
-			//Avanzar el índice pasando las comillas vacías
-			(*i) += 2;
-			return (token);
-		}
-		// Contar comillas vacías consecutivas del mismo tipo
-		empty_count = 0;
-		while (input[*i] == quote && input[*i + 1] == quote)
-		{
-			empty_count++;
-			(*i) += 2;
-		}
-		// Si hubo comillas vacías, añadir solo un par de marcadores
-		if (empty_count > 0)
-		{
-			if (quote == '\'')
-				temp = ft_strdup("\x01\x01");
-			else
-				temp = ft_strdup("\x02\x02");
-			token = ft_join_tokens(token, temp);
-			return (token);
-		}
+		char *result = handle_empty_quotes(token, quote, input, i);
+		if (result)
+			return result;
 	}
-	//Extrae la parte entre comillas
-	temp = ft_get_quoted_token(input, i);
-	//La une con el resto del token
-	token = ft_join_tokens(token, temp);
-	return (token);
+	token = extract_quoted_content(token, input, i);
+	return token;
 }
-//Extrae tokens normales (comandos, argumentos, archivos)
-//Cada vez que se llama, extrae un token
+
 char	*ft_get_normal_token(char *input, int *i)
 {
 	char	*token;
@@ -128,7 +68,6 @@ char	*ft_get_normal_token(char *input, int *i)
 
 	start = *i;
 	token = NULL;
-	//Avanza mientras no sea el final, un espacio o un operador especial
 	while (input[*i] && !ft_isspace(input[*i]) && !ft_isspecial(input[*i]))
 	{
 		if (input[*i] == '"' || input[*i] == '\'')
@@ -140,14 +79,12 @@ char	*ft_get_normal_token(char *input, int *i)
 			(*i)++;
 	}
 	if (*i > start)
-		//Si salió del while y quedan cosas por guardar en token, lo hace
 		token = ft_join_tokens(token, ft_substr(input, start, *i - start));
-	// Si no hay token pero hubo comillas (token podría ser NULL si solo espacios/nada)
 	if (!token)
 		return (ft_strdup(""));
 	return (token);
 }
-//Libera el array de tokens completo
+
 void	ft_free_tokens(char **tokens)
 {
 	int	i;

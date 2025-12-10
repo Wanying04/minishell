@@ -6,7 +6,7 @@
 /*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 15:19:18 by albarrei          #+#    #+#             */
-/*   Updated: 2025/12/09 20:36:40 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/10 17:14:52 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,9 @@ char	*get_var_name(char *str, int *i)
 	ft_strlcpy(name, str + start, len + 1);
 	return (name);
 }
-//Actualiza el estado de las comillas mientras recorre el string
-//Llamada desde: process_expand_loop() en expand_vars.c en cada iteración del bucle
+
 void	update_quote_state(char c, t_quote_state *qs)
 {
-	//Marca especial para comilla simple
 	if (c == '\x01')
 	{
 		if (qs->state == 0)
@@ -61,7 +59,6 @@ void	update_quote_state(char c, t_quote_state *qs)
 		else if (qs->state == 1)
 			qs->state = 0;
 	}
-	//Marca especial para comilla doble
 	else if (c == '\x02')
 	{
 		if (qs->state == 0)

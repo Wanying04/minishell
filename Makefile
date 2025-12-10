@@ -33,6 +33,7 @@ SRCS		:= src/main.c \
 			   src/executor/path.c \
 			   src/executor/signals.c \
 			   src/executor/utils.c \
+			   src/executor/utils2.c \
 			   src/parser/expand/expand_heredoc.c \
 			   src/parser/expand/expand_tilde.c \
 			   src/parser/expand/expand_utils.c \
@@ -41,13 +42,12 @@ SRCS		:= src/main.c \
 			   src/parser/lexer/lexer_count.c \
 			   src/parser/lexer/lexer_split.c \
 			   src/parser/lexer/lexer_tokens.c \
+			   src/parser/lexer/lexer_quoted_utils.c \
 			   src/parser/parse/parse_args.c \
 			   src/parser/parse/parse_core.c \
 			   src/parser/parse/parse_ctx.c \
-			   src/parser/parse/parse_debug.c \
 			   src/parser/parse/parse_handlers.c \
 			   src/parser/parse/parse_node.c \
-			   src/parser/parse/parse_print.c \
 			   src/parser/parse/parse_token.c \
 			   src/parser/utils/free_command.c \
 			   src/parser/utils/quote_check.c \

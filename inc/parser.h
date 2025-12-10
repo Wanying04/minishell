@@ -1,3 +1,9 @@
+// Utilidades de comillas para lexer (lexer_quoted_utils.c)
+char *handle_empty_quotes(char *token, char quote, char *input, int *i);
+char *extract_quoted_content(char *token, char *input, int *i);
+// ============ Utilidades de comillas para lexer (lexer_quoted_utils.c) ============
+char *handle_empty_quotes(char *token, char quote, char *input, int *i);
+char *extract_quoted_content(char *token, char *input, int *i);
 #ifndef PARSER_H
 # define PARSER_H
 
@@ -34,7 +40,6 @@ typedef struct s_pctx
 t_command	*parse_input(char *input, t_env *env);
 void		free_command(t_command *cmd);
 int			validate_syntax(char *input);
-void		print_command_list(t_command *head);
 
 // ============ Funciones de contexto (parse_ctx.c) ============
 void		reset_ctx(t_pctx *ctx);
@@ -58,9 +63,6 @@ int			handle_redir(t_pctx *ctx);
 // ============ Funciones de procesamiento (parse_token.c) ============
 int			process_token(t_pctx *ctx, char *tok);
 void		process_tokens_loop(t_pctx *ctx);
-
-// ============ Funciones de debug (parse_debug.c) ============
-void		parser_debug(t_pctx ctx);
 
 // ============ Funciones de expansión (expand_*.c) ============
 char		*get_var_name(char *str, int *i);

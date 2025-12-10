@@ -97,5 +97,7 @@ char	*expand_tilde(char *path, t_env *env);
 // expand_variables expands $VAR with environment variables
 char	*expand_variables(char *str, t_env *env, int in_single_quote);
 char	*expand_heredoc(char *str, t_env *env, int dont_expand);
+int		cleanup_and_exit(t_env *env);
+int		is_empty_input(const char *str);
 
 #endif
