@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_exit.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 20:53:35 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/11 12:14:18 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/11 12:54:08 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static t_command	*get_cmd_list_head(t_command *cmd)
+{
+	t_command	*head;
+
+	head = cmd;
+	while (head->prev)
+		head = head->prev;
+	return (head);
+}
 
 int	builtin_exit(t_command *cmd, t_env *env)
 {
@@ -35,6 +45,7 @@ int	builtin_exit(t_command *cmd, t_env *env)
 	exit_status = exit_status % 256;
 	if (exit_status < 0)
 		exit_status += 256;
+	free_command(get_cmd_list_head(cmd));
 	rl_clear_history();
 	env_destroy(env);
 	exit(exit_status);

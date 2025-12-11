@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 19:31:10 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/11 12:12:35 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/11 13:03:54 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void	cleanup_empty_args(t_command *cmd);
 int		is_a_directory(const char *path);
 int		ft_atol(const char *nptr, int *value);
 int		is_integer(char *str);
+void	cleanup_child_and_exit(t_command *cmd, t_env *env, int status);
 
 int		process_heredoc(char *delimiter, t_env *env, int dont_expand,
 			int should_dup);

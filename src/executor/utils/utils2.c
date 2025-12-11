@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 21:00:27 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 22:39:44 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/11 13:03:33 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,12 @@ int	is_integer(char *str)
 		i++;
 	}
 	return (1);
+}
+
+void	cleanup_child_and_exit(t_command *cmd, t_env *env, int status)
+{
+	free_command(cmd);
+	env_destroy(env);
+	rl_clear_history();
+	exit(status);
 }

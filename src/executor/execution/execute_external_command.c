@@ -3,47 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   execute_external_command.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
+/*   By: albarrei <albarrei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 18:46:43 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 22:39:20 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/11 13:05:54 by albarrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	command_not_found_error(char *cmd0)
+static void	command_not_found_error(char *cmd0, t_command *cmd, t_env *env)
 {
 	write(2, cmd0, ft_strlen(cmd0));
 	write(2, ": command not found\n", 20);
-	exit(127);
+	cleanup_child_and_exit(cmd, env, 127);
 }
 
-static char	*resolve_command_path(char *cmd0, t_env *env)
+static char	*resolve_command_path(char *cmd0, t_env *env, t_command *cmd)
 {
 	char	*path;
 
 	path = find_command_path(cmd0, env);
 	if (!path)
-		command_not_found_error(cmd0);
+		command_not_found_error(cmd0, cmd, env);
 	if (access(path, F_OK) == -1)
 	{
 		perror(path);
 		free(path);
-		exit(127);
+		cleanup_child_and_exit(cmd, env, 127);
 	}
 	if (is_a_directory(path))
 	{
 		write(2, path, ft_strlen(path));
 		write(2, ": Is a directory\n", 17);
 		free(path);
-		exit(126);
+		cleanup_child_and_exit(cmd, env, 126);
 	}
 	if (access(path, X_OK) == -1)
 	{
 		perror(path);
 		free(path);
-		exit(126);
+		cleanup_child_and_exit(cmd, env, 126);
 	}
 	return (path);
 }
@@ -51,16 +51,18 @@ static char	*resolve_command_path(char *cmd0, t_env *env)
 void	child_process(t_command *cmd, t_env *env)
 {
 	char	*path;
+	char	**env_array;
 
 	reset_signals_to_default();
 	if (handle_redirections(cmd, env, 0) != SUCCESS)
-		exit(EXIT_FAILURE);
-	path = resolve_command_path(cmd->argv[0], env);
-	if (execve(path, cmd->argv, env_to_array(env)) == -1)
+		cleanup_child_and_exit(cmd, env, EXIT_FAILURE);
+	path = resolve_command_path(cmd->argv[0], env, cmd);
+	env_array = env_to_array(env);
+	if (execve(path, cmd->argv, env_array) == -1)
 	{
 		perror(path);
 		free(path);
-		exit(126);
+		cleanup_child_and_exit(cmd, env, 126);
 	}
 }
 
@@ -99,11 +101,10 @@ int	execute_external_command(t_command *cmd, t_env *env)
 		perror("minishell: fork");
 		return (FAILURE);
 	}
-	else if (pid == 0)
+	if (pid == 0)
 	{
 		child_process(cmd, env);
-		exit (EXIT_FAILURE);
+		cleanup_child_and_exit(cmd, env, EXIT_FAILURE);
 	}
-	else
-		return (wait_for_child(pid));
+	return (wait_for_child(pid));
 }
