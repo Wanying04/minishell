@@ -6,13 +6,13 @@
 /*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 20:53:35 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 22:38:57 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/11 12:14:18 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	builtin_exit(t_command *cmd)
+int	builtin_exit(t_command *cmd, t_env *env)
 {
 	int	exit_status;
 
@@ -35,5 +35,7 @@ int	builtin_exit(t_command *cmd)
 	exit_status = exit_status % 256;
 	if (exit_status < 0)
 		exit_status += 256;
+	rl_clear_history();
+	env_destroy(env);
 	exit(exit_status);
 }

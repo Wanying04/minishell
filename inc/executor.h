@@ -6,7 +6,7 @@
 /*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 19:31:10 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 22:40:03 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/11 12:12:35 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int		builtin_pwd(t_command *cmd, t_env *env);
 int		builtin_export(t_command *cmd, t_env *env);
 int		builtin_unset(t_command *cmd, t_env *env);
 int		builtin_env(t_command *cmd, t_env *env);
-int		builtin_exit(t_command *cmd);
+int		builtin_exit(t_command *cmd, t_env *env);
 int		builtin_dot(t_command *cmd);
 
 void	child_process(t_command *cmd, t_env *env);

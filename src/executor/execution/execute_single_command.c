@@ -6,7 +6,7 @@
 /*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 18:33:22 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 22:39:23 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/11 12:11:55 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	execute_builtins(t_command *cmd, t_env *env)
 		return (builtin_env(cmd, env));
 	else if (ft_strncmp(cmd->argv[0], "exit", 4) == 0
 		&& cmd->argv[0][4] == '\0')
-		return (builtin_exit(cmd));
+		return (builtin_exit(cmd, env));
 	else if (ft_strncmp(cmd->argv[0], ".", 1) == 0 && cmd->argv[0][1] == '\0')
 		return (builtin_dot(cmd));
 	else
