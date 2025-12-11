@@ -6,7 +6,7 @@
 /*   By: wtang <wtang@student.42malaga.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 21:00:31 by wtang             #+#    #+#             */
-/*   Updated: 2025/12/10 22:38:48 by wtang            ###   ########.fr       */
+/*   Updated: 2025/12/11 11:25:09 by wtang            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,15 +58,11 @@ static int	do_cd_and_update_env(char *path, char *old_cwd,
 	t_command *cmd, t_env *env)
 {
 	char	*temp;
-	int		should_free;
 
-	should_free = 0;
 	if (chdir(path) != 0)
 	{
 		perror("minishell: cd");
 		free(old_cwd);
-		if (should_free)
-			free(path);
 		return (FAILURE);
 	}
 	if (cmd->argv[1] && ft_strncmp(cmd->argv[1], "-", 2) == 0
@@ -76,8 +72,6 @@ static int	do_cd_and_update_env(char *path, char *old_cwd,
 	if (!temp)
 		temp = build_logical_path(env->pwd->pwd, cmd->argv[1]);
 	update_pwd_oldpwd(env, old_cwd, temp);
-	if (should_free)
-		free(path);
 	return (SUCCESS);
 }
 
@@ -101,5 +95,8 @@ int	builtin_cd(t_command *cmd, t_env *env)
 		free(old_cwd);
 		return (ret);
 	}
-	return (do_cd_and_update_env(path, old_cwd, cmd, env));
+	ret = do_cd_and_update_env(path, old_cwd, cmd, env);
+	if (should_free)
+		free(path);
+	return (ret);
 }
